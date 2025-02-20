@@ -41,7 +41,7 @@ export default function ProfilePosts() {
       user: "Aaron",
       date: "20/02/2025",
       likes: 100,
-      Caption: "Photo 4",
+      Caption: "GITHYB TESTTTTTTTTTTTTTTT",
       url: "../../assets/postReal/4.jpeg",
       id:7
     }
