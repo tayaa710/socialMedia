@@ -1,0 +1,28 @@
+.postContainer{
+  margin: 20px;
+  padding: 15px;
+  flex: 1 1 calc(25% - 72px);
+  width: fit-content;
+  height: fit-content;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Softer border */
+  border-radius: 12px;
+  background: #E7EADC;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.8); /* Stronger shadow */
+
+  transform: translateY(0px); /* Keep it slightly lifted */
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.postContainer:hover {
+  transform: translateY(-5px); /* Adds a hover effect */
+}
+
+.postImage {
+  width: 100%;
+  border-radius: 10px;
+  transition: transform 0.4s ease;
+  object-fit: cover;
+
+}
+

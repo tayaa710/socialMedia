@@ -1,0 +1,12 @@
+.optionsContainer, .optionsContainerSelected{
+  border: none;
+  background: #F8F8F3;
+  color:  #4F5D46;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.optionsContainerSelected {
+  border-bottom: 4px solid;
+  padding-bottom: 4px;
+}

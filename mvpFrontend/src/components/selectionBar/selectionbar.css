@@ -1,0 +1,7 @@
+.selectionBarContainer{
+  height: 72px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
