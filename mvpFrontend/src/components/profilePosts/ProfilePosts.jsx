@@ -36,6 +36,15 @@ export default function ProfilePosts() {
       url: "../../assets/postReal/4.jpeg",
       id:4
     },
+
+    {
+      user: "Aaron",
+      date: "20/02/2025",
+      likes: 100,
+      Caption: "Photo 4",
+      url: "../../assets/postReal/4.jpeg",
+      id:7
+    }
   ]
   return (
    <div className="postsContainer">
