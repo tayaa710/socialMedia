@@ -3,6 +3,7 @@ import ProfilePosts from '../../components/profilePosts/ProfilePosts'
 import SelectionBar from '../../components/selectionBar/SelectionBar'
 import Topbar from '../../components/topbar/Topbar'
 import Userbar from '../../components/UserBar/Userbar'
+import ProfileFriends from '../../components/profileFriends/ProfileFriends'
 import './profile.css'
 import { useState } from 'react'
 
@@ -12,7 +13,7 @@ function App() {
     switch (selectedOption){
       case "Posts": {return <ProfilePosts/>}
 
-      case "Friends": {return <></>}
+      case "Friends": {return <ProfileFriends/>}
 
       case "Info": {return <ProfileInfo/>}
     }

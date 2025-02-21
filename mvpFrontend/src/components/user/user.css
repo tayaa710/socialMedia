@@ -1,0 +1,58 @@
+.userContainer{
+  margin: 10px;
+  padding: 15px;
+  height: fit-content; 
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background: #E7EADC;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.8);
+  position: relative; 
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.profilePicture {
+  width: 100%;
+  border-radius: 10px;
+  transition: transform 0.4s ease;
+  object-fit: cover;
+}
+
+.bottomBar{
+  opacity: 0;
+  max-height: 0;
+  transition: opacity 0.2s ease, padding 0.1s ease;
+
+}
+
+.userContainer:hover .bottomBar {
+  opacity: 1;
+  max-height: none;
+  padding: 10px 0;
+}
+
+.mutualFriends{
+  margin: 10px;
+}
+
+.followButton{
+  height: 43px;
+  width: 158px;
+  background-color: #E6B8B8;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 11px;
+  outline: 0;
+  border: 0;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+  transition: ease background-color 250ms;
+}
+
+.followButton:hover{
+  background-color: #D39E9E;
+}
+
