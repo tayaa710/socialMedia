@@ -1,5 +1,6 @@
 .postsContainer {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* Center posts */
+  justify-content:left; /* Center posts */
+  align-items: flex-start;
 }
