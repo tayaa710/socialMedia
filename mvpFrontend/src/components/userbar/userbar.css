@@ -4,6 +4,7 @@
   height: 375px;
   display: flex;
   align-items: center;
+  margin-top: 72px;
 }
 
 .userbarLeft {
