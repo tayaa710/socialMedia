@@ -1,22 +1,31 @@
-import { Search } from "@mui/icons-material"
+import { Search, LocalFlorist, LightbulbOutlined, Person } from "@mui/icons-material"
 import './topbar.css'
 
 export default function Topbar() {
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
-        <span className="logo">Haggis</span>
+        <LocalFlorist className="logoIcon" />
+        <span className="logo">Verdant</span>
       </div>
       <div className="topbarCenter">
         <div className="searchContainer">
-          
-          <input placeholder="search" className="searchInput" />
           <Search className="searchIcon" />
-
+          <input placeholder="Search for content..." className="searchInput" />
         </div>
       </div>
       <div className="topbarRight">
-
+        <div className="topbarIcons">
+          <div className="topbarIconItem">
+            <LightbulbOutlined />
+          </div>
+          <div className="topbarIconItem">
+            <Person />
+          </div>
+          <div className="topbarIconItem">
+            <img src="../../assets/person/profile.jpeg" alt="" className="topbarImg" />
+          </div>
+        </div>
       </div>
     </div>
   )

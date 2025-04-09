@@ -1,8 +1,10 @@
 import './button.css'
 
-const Button = ({message}) => {
-  return(
-    <div><button className='button' >{message}</button></div>
+const Button = ({ message, className }) => {
+  const buttonClass = className ? `button ${className}` : 'button';
+  
+  return (
+    <button className={buttonClass}>{message}</button>
   )
 }
 

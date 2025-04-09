@@ -1,0 +1,378 @@
+.friendsContainer {
+  padding: 40px 25px;
+  background-color: #F9F9F7;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.friendsContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2395d5b2' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.friendsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+  flex-wrap: wrap;
+  gap: 20px;
+  position: relative;
+}
+
+.friendsTitle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.friendsTitle-icon {
+  color: #2D6A4F;
+  font-size: 28px !important;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
+}
+
+.friendsTitle {
+  color: #1B4332;
+  font-size: 32px;
+  margin: 0;
+  font-weight: 700;
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+  display: inline-block;
+}
+
+.friendsTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 40%;
+  height: 4px;
+  background: linear-gradient(90deg, #2D6A4F, #74C69D);
+  border-radius: 2px;
+}
+
+.friendsActions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchWrapper {
+  position: relative;
+}
+
+.searchWrapper::before {
+  content: '🔍';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.friendSearchInput {
+  padding: 12px 15px 12px 35px;
+  border-radius: 30px;
+  border: 2px solid #95D5B2;
+  background-color: white;
+  font-size: 15px;
+  color: #2D6A4F;
+  transition: all 0.3s ease;
+  width: 220px;
+}
+
+.friendSearchInput:focus {
+  outline: none;
+  border-color: #2D6A4F;
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.2);
+  width: 250px;
+}
+
+.friendSearchInput::placeholder {
+  color: #95D5B2;
+  font-style: italic;
+}
+
+.sortWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.sortIconContainer {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #EFFDF5;
+  border-radius: 50%;
+  color: #2D6A4F;
+}
+
+.sortIcon {
+  font-size: 18px !important;
+}
+
+.friendsSortSelect {
+  padding: 12px 18px;
+  border-radius: 30px;
+  border: 2px solid #95D5B2;
+  background-color: white;
+  font-size: 15px;
+  color: #2D6A4F;
+  cursor: pointer;
+  appearance: none;
+  padding-right: 40px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  width: 200px;
+}
+
+.friendsSortSelect:focus {
+  outline: none;
+  border-color: #2D6A4F;
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.2);
+}
+
+.sortWrapper::after {
+  content: '▼';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #2D6A4F;
+  pointer-events: none;
+  font-size: 10px;
+}
+
+.friendsFilterButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 30px;
+  background: linear-gradient(45deg, #2D6A4F, #40916C);
+  color: white;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(45, 106, 79, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.friendsFilterButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s ease;
+}
+
+.friendsFilterButton:hover::before {
+  left: 100%;
+}
+
+.friendsFilterButton:hover {
+  background: linear-gradient(45deg, #1B4332, #2D6A4F);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(27, 67, 50, 0.3);
+}
+
+.friendsFilterButton.active {
+  background: #1B4332;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.friendsFilterPanel {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #E6F5EE;
+  animation: slideDown 0.3s ease-out;
+}
+
+.filterGroup h4 {
+  margin: 0 0 15px 0;
+  color: #1B4332;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.filterOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.filterChip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #F7FDF9;
+  padding: 6px 12px;
+  border-radius: 30px;
+  border: 1px solid #CBECE0;
+  transition: all 0.3s ease;
+}
+
+.filterChip:hover {
+  border-color: #74C69D;
+  background-color: #EFFDF5;
+}
+
+.filterChip input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #95D5B2;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterChip input[type="checkbox"]:checked {
+  background-color: #2D6A4F;
+  border-color: #2D6A4F;
+}
+
+.filterChip input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.filterChip label {
+  font-size: 14px;
+  color: #2D6A4F;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.friendsConnectionsBanner {
+  display: flex;
+  align-items: center;
+  padding: 20px 25px;
+  background: linear-gradient(120deg, rgba(45, 106, 79, 0.08), rgba(116, 198, 157, 0.08));
+  border-radius: 15px;
+  margin-bottom: 35px;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner-graphic {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  opacity: 0.15;
+}
+
+.banner-graphic.left {
+  left: -30px;
+  top: -30px;
+  background: radial-gradient(circle, #2D6A4F 0%, transparent 70%);
+}
+
+.banner-graphic.right {
+  right: -30px;
+  bottom: -30px;
+  background: radial-gradient(circle, #74C69D 0%, transparent 70%);
+}
+
+.banner-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 1;
+}
+
+.connectionIcon {
+  color: #2D6A4F;
+  font-size: 28px !important;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
+}
+
+.friendsConnectionsBanner p {
+  margin: 0;
+  color: #1B4332;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.friendsGrid {
+  position: relative;
+  padding: 10px;
+}
+
+.community-decoration {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.community-decoration.top-right {
+  top: -20px;
+  right: -20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232D6A4F'%3E%3Cpath d='M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z'/%3E%3C/svg%3E");
+  transform: rotate(15deg);
+}
+
+.community-decoration.bottom-left {
+  bottom: -20px;
+  left: -20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2374C69D'%3E%3Cpath d='M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z'/%3E%3C/svg%3E");
+  transform: rotate(-15deg);
+}
+
+.friends-masonry {
+  margin-top: 10px;
+}
+
+.noFriendsResult {
+  background-color: #F7FDF9;
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  margin: 30px auto;
+  max-width: 400px;
+  border: 1px dashed #95D5B2;
+}
+
+.noFriendsResult p {
+  color: #2D6A4F;
+  font-size: 16px;
+  margin: 0;
+  font-weight: 500;
+}

@@ -1,20 +1,53 @@
 /* eslint-disable react/prop-types */
 import './post.css'
+import { Favorite, VerifiedUser, Share, Comment, LocalFlorist } from '@mui/icons-material'
 
-export default function Post({date, likes, image, caption}) {
+export default function Post({date, likes, image, caption, verified = false}) {
   return (
     <div className="postContainer">
-      <div className="hiddenPostDetailsTop">
-        <p className="datePosted">Posted on {date}</p>
-        <p className="likes">{likes} Likes</p>
-      </div>
-      <img src={image} alt="not found" className="postImage" />
-      <p className="postCaption">Caption: {caption}</p>
-      <div className="hiddenPostDetailsBottom">
-        <img src="../../assets/like.png" alt="" className="likeButton" />
-        <img src="../../assets/heart.png" alt="" className="likeButton" />
+      <div className="postHeader">
+        <p className="datePosted">{date}</p>
+        {verified && (
+          <div className="verifiedBadge" title="Verified Content">
+            <VerifiedUser fontSize="small" /> <span>Verified Content</span>
+          </div>
+        )}
       </div>
       
+      <div className="imageWrapper">
+        <img src={image} alt="Post content" className="postImage" />
+        <div className="hoverOverlay">
+          <div className="overlayContent">
+            <span>{caption}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="postContent">
+        <p className="postCaption">{caption}</p>
+        
+        <div className="postStats">
+          <div className="statItem">
+            <LocalFlorist fontSize="small" className="statIcon" />
+            <span>{likes} people found this valuable</span>
+          </div>
+        </div>
+        
+        <div className="postActions">
+          <button className="actionButton likeButton">
+            <Favorite fontSize="small" />
+            <span>Valuable</span>
+          </button>
+          <button className="actionButton">
+            <Comment fontSize="small" />
+            <span>Discuss</span>
+          </button>
+          <button className="actionButton">
+            <Share fontSize="small" />
+            <span>Share</span>
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

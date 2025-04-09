@@ -1,19 +1,92 @@
-.button{
-  height: 43px;
-  width: 158px;
-  background-color: #E6B8B8;
-  color: white;
-  padding: 5px 15px;
-  border-radius: 11px;
+.button {
+  height: 48px;
+  min-width: 140px;
+  padding: 0 25px;
+  border-radius: 12px;
   outline: 0;
   border: 0;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
-  transition: ease background-color 250ms;
+  transition: all 0.3s ease-in-out;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: #74C69D;
+  clip-path: polygon(4% 0%, 100% 0%, 96% 100%, 0% 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-.button:hover{
-  background-color: #D39E9E;
+.button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s ease;
+}
+
+.button:hover::before {
+  left: 100%;
+}
+
+.button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+.button:active {
+  transform: translateY(1px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.primaryBtn {
+  background: linear-gradient(45deg, #2D6A4F, #40916C);
+  color: white;
+}
+
+.primaryBtn:hover {
+  background: linear-gradient(45deg, #1B4332, #2D6A4F);
+}
+
+.secondaryBtn {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(183, 228, 199, 0.3);
+  color: #D8F3DC;
+  clip-path: polygon(0 0%, 96% 0%, 100% 100%, 4% 100%);
+}
+
+.secondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(183, 228, 199, 0.5);
+}
+
+.warningBtn {
+  background: linear-gradient(45deg, #B81C1C, #E63946);
+  color: white;
+}
+
+.warningBtn:hover {
+  background: linear-gradient(45deg, #9D1717, #C1121F);
+}
+
+.iconButton {
+  gap: 8px;
+}
+
+.iconButton svg {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.iconButton:hover svg {
+  transform: scale(1.15);
 }

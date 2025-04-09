@@ -1,12 +1,40 @@
-.optionsContainer, .optionsContainerSelected{
+.optionsContainer, .optionsContainerSelected {
   border: none;
-  background: #F8F8F3;
-  color:  #4F5D46;
-  font-size: 25px;
-  font-weight: bold;
+  background: transparent;
+  color: #2D6A4F;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 12px 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 30px;
+}
+
+.optionsContainer:hover {
+  color: #1B4332;
+  transform: translateY(-2px);
+  background-color: rgba(116, 198, 157, 0.08);
 }
 
 .optionsContainerSelected {
-  border-bottom: 4px solid;
-  padding-bottom: 4px;
+  color: #1B4332;
+  font-weight: 700;
+  background-color: rgba(116, 198, 157, 0.15);
+}
+
+.optionsContainerSelected::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #2D6A4F;
 }
