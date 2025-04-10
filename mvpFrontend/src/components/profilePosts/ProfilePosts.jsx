@@ -6,7 +6,6 @@ import { FilterAlt, LocalFlorist, Favorite, TrendingUp, CalendarToday, VerifiedU
 
 export default function ProfilePosts() {
   const [sortOrder, setSortOrder] = useState("Recent");
-  const [filterOpen, setFilterOpen] = useState(false);
 
   const posts = [
     {
@@ -70,7 +69,7 @@ export default function ProfilePosts() {
       <div className="postsHeader">
         <div className="postsTitle-wrapper">
           <LocalFlorist className="postsTitle-icon" />
-          <h2 className="postsTitle">Your Authentic Journey</h2>
+          <h2 className="postsTitle">Users Posts</h2>
         </div>
         
         <div className="filterControls">
@@ -93,33 +92,8 @@ export default function ProfilePosts() {
               <option value="Verified">Verified Only</option>
             </select>
           </div>
-          
-          <button 
-            className={`filterButton ${filterOpen ? 'active' : ''}`}
-            onClick={() => setFilterOpen(!filterOpen)}
-          >
-            <FilterAlt className="filterIcon" /> 
-            <span>Curate View</span>
-          </button>
         </div>
       </div>
-      
-      {filterOpen && (
-        <div className="filterPanel">
-          <div className="filterOption">
-            <input type="checkbox" id="verified-only" />
-            <label htmlFor="verified-only">Authentic Content Only</label>
-          </div>
-          <div className="filterOption">
-            <input type="checkbox" id="with-media" />
-            <label htmlFor="with-media">Contains Media</label>
-          </div>
-          <div className="filterOption">
-            <input type="checkbox" id="eco-content" />
-            <label htmlFor="eco-content">Sustainability Focused</label>
-          </div>
-        </div>
-      )}
       
       <div className="postVerificationBanner">
         <div className="banner-graphic left"></div>
@@ -139,19 +113,27 @@ export default function ProfilePosts() {
           gutterBreakpoints={{ 350: "22px", 750: "25px", 900: "30px" }}
         >
           <Masonry className="masonry-grid">
-            {posts.map((post) => (
-              <Post
-                key={post.id}
-                date={post.date}
-                likes={post.likes}
-                caption={post.caption}
-                image={post.url}
-                verified={post.verified}
-              />
+            {[...posts]
+              .sort((a, b) => {
+                if (sortOrder === "Recent") return new Date(b.date) - new Date(a.date);
+                if (sortOrder === "Oldest") return new Date(a.date) - new Date(b.date);
+                if (sortOrder === "Popular") return b.likes - a.likes;
+                if (sortOrder === "Verified") return b.verified - a.verified;
+                return 0;
+              })
+              .map((post) => (
+                <Post
+                  key={post.id}
+                  date={post.date}
+                  likes={post.likes}
+                  caption={post.caption}
+                  image={post.url}
+                  verified={post.verified}
+                />
             ))}
           </Masonry>
         </ResponsiveMasonry>
       </div>
     </div>
-  );
+  )
 }
