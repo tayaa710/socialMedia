@@ -312,5 +312,36 @@
 }
 
 .masonry-grid {
-  margin-top: 30px;
+  padding: 5px;
+  width: 100%;
+}
+
+/* Add styles for the profile post item to prevent overlapping */
+.profile-post-item {
+  margin-bottom: 30px;
+  padding: 0;
+  width: 100%;
+}
+
+/* Override post container margin in profile view */
+.profile-post-item .postContainer {
+  margin: 0;
+  width: 100%;
+}
+
+/* Adjust the post wrapper to fit properly in the grid */
+.profile-post-item .postWrapper {
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .postsGridContainer {
+    padding: 0;
+  }
+  
+  .profile-post-item {
+    margin-bottom: 20px;
+  }
 }

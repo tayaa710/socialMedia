@@ -1,18 +1,58 @@
 /* eslint-disable react/prop-types */
 import './post.css'
-import { Favorite, VerifiedUser, Share, Comment, LocalFlorist } from '@mui/icons-material'
+import { useState } from 'react'
+import { Favorite, Share, Comment, LocalFlorist, HelpOutline, InfoOutlined } from '@mui/icons-material'
 
-const Post = ({date, likes, image, caption, verified = false}) => {
+const Post = ({ date, likes, image, caption, user, reason, tags = [] }) => {
+  const [showReason, setShowReason] = useState(false);
+
+  // Generate a more detailed explanation based on the reason
+  const getDetailedExplanation = () => {
+    if (!reason) return null;
+    
+    if (reason.includes('follow')) {
+      return `This post appears in your feed because you follow ${user}. Following accounts ensures you see their latest content.`;
+    } else if (reason.includes('similar')) {
+      return `Based on your engagement with ${tags.join(', ')} content, we thought you might enjoy this post about ${tags[0] || 'similar topics'}.`;
+    } else if (reason.includes('communities')) {
+      return `This post is popular in communities you're part of. ${likes} people in your network found this valuable.`;
+    } else if (reason.includes('Trending')) {
+      return `This content is currently trending in your region. It has received significant engagement in the past 24 hours.`;
+    } else if (reason.includes('interest')) {
+      return `You've shown interest in ${tags.join(', ')} content, so we're showing you more posts related to these topics.`;
+    }
+    return `This post matches your content preferences and feed settings.`;
+  };
+
   return (
     <div className="postContainer">
       <div className="postHeader">
         <p className="datePosted">{date}</p>
-        {verified && (
-          <div className="verifiedBadge" title="Verified Content">
-            <VerifiedUser fontSize="small" /> <span>Verified Content</span>
-          </div>
-        )}
+        <div className="headerRight">
+          {reason && (
+            <button 
+              className={`whyButton ${showReason ? 'active' : ''}`}
+              onClick={() => setShowReason(!showReason)}
+            >
+              <HelpOutline fontSize="small" />
+              <span>Why?</span>
+            </button>
+          )}
+        </div>
       </div>
+      
+      {reason && showReason && (
+        <div className="reasonPanel">
+          <div className="reasonContent">
+            <InfoOutlined fontSize="small" className="infoIcon" />
+            <p>{getDetailedExplanation()}</p>
+          </div>
+          <div className="reasonActions">
+            <button className="hideContentBtn">Hide similar</button>
+            <button className="seeMoreBtn">See more like this</button>
+          </div>
+        </div>
+      )}
       
       <div className="imageWrapper">
         <img src={image} alt="Post content" className="postImage" />

@@ -2,7 +2,7 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Post from "../post/Post";
 import "./profilePosts.css";
 import { useState } from "react";
-import { FilterAlt, LocalFlorist, Favorite, TrendingUp, CalendarToday, VerifiedUser } from "@mui/icons-material";
+import { FilterAlt, LocalFlorist, Favorite, TrendingUp, CalendarToday } from "@mui/icons-material";
 
 const ProfilePosts = () => {
   const [sortOrder, setSortOrder] = useState("Recent");
@@ -14,7 +14,6 @@ const ProfilePosts = () => {
       likes: 185,
       caption: "Exploring Hamilton Gardens - a space where nature and community converge in perfect harmony. #NaturalBeauty",
       url: "../../assets/postReal/1.JPG",
-      verified: true,
       id: 1,
     },
     {
@@ -23,7 +22,6 @@ const ProfilePosts = () => {
       likes: 327,
       caption: "Working together at the local community garden. Sustainable food production starts at the neighborhood level!",
       url: "../../assets/postReal/2.jpeg",
-      verified: true,
       id: 2,
     },
     {
@@ -32,7 +30,6 @@ const ProfilePosts = () => {
       likes: 239,
       caption: "Morning meditation by the lake. Finding inner balance helps us create outer harmony. #MindfulLiving",
       url: "../../assets/postReal/3.jpeg",
-      verified: true,
       id: 3,
     },
     {
@@ -41,7 +38,6 @@ const ProfilePosts = () => {
       likes: 412,
       caption: "Workshop on digital wellbeing and the importance of authentic online relationships. Great discussions today!",
       url: "../../assets/postReal/4.jpeg",
-      verified: true,
       id: 4,
     },
     {
@@ -50,7 +46,6 @@ const ProfilePosts = () => {
       likes: 293,
       caption: "Beach cleanup with friends. Every piece of plastic we remove today is one less threat to ocean life tomorrow.",
       url: "../../assets/postReal/4.jpeg",
-      verified: true,
       id: 7,
     },
     {
@@ -59,7 +54,6 @@ const ProfilePosts = () => {
       likes: 201,
       caption: "Supporting local artisans at the weekend market. Ethical consumption means knowing who made your purchases.",
       url: "../../assets/postReal/4.jpeg",
-      verified: true,
       id: 8,
     },
   ];
@@ -78,7 +72,6 @@ const ProfilePosts = () => {
               {sortOrder === "Recent" && <CalendarToday className="sortIcon" />}
               {sortOrder === "Oldest" && <CalendarToday className="sortIcon" />}
               {sortOrder === "Popular" && <Favorite className="sortIcon" />}
-              {sortOrder === "Verified" && <VerifiedUser className="sortIcon" />}
             </div>
             <select 
               name="orderSelector" 
@@ -89,7 +82,6 @@ const ProfilePosts = () => {
               <option value="Recent">Most Recent</option>
               <option value="Oldest">Oldest First</option>
               <option value="Popular">Most Valuable</option>
-              <option value="Verified">Verified Only</option>
             </select>
           </div>
         </div>
@@ -110,7 +102,7 @@ const ProfilePosts = () => {
         
         <ResponsiveMasonry
           columnsCountBreakPoints={{ 350: 1, 750: 2, 1050: 3, 1300: 4 }}
-          gutterBreakpoints={{ 350: "22px", 750: "25px", 900: "30px" }}
+          gutter="30px"
         >
           <Masonry className="masonry-grid">
             {[...posts]
@@ -118,19 +110,19 @@ const ProfilePosts = () => {
                 if (sortOrder === "Recent") return new Date(b.date) - new Date(a.date);
                 if (sortOrder === "Oldest") return new Date(a.date) - new Date(b.date);
                 if (sortOrder === "Popular") return b.likes - a.likes;
-                if (sortOrder === "Verified") return b.verified - a.verified;
                 return 0;
               })
               .map((post) => (
-                <Post
-                  key={post.id}
-                  date={post.date}
-                  likes={post.likes}
-                  caption={post.caption}
-                  image={post.url}
-                  verified={post.verified}
-                />
-            ))}
+                <div className="profile-post-item" key={post.id}>
+                  <Post
+                    date={post.date}
+                    likes={post.likes}
+                    caption={post.caption}
+                    image={post.url}
+                    user={post.user}
+                  />
+                </div>
+              ))}
           </Masonry>
         </ResponsiveMasonry>
       </div>

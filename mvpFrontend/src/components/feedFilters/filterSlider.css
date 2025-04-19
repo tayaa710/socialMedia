@@ -1,0 +1,218 @@
+.sliderContainer {
+  margin-bottom: 35px;
+  position: relative;
+  padding: 0 10px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  color: #2D6A4F;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.sliderLeftLabel, .sliderRightLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: rgba(216, 243, 220, 0.4);
+  transition: background-color 0.2s;
+}
+
+.sliderLeftLabel:hover, .sliderRightLabel:hover {
+  background-color: rgba(216, 243, 220, 0.8);
+}
+
+.sliderWithTicks {
+  position: relative;
+  width: 100%;
+  margin: 0 0 10px 0;
+}
+
+.tickMarks {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  width: 100%;
+  top: 4px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.tickMark {
+  width: 2px;
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 1px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+/* Slider track styling - single consistent gradient for all sliders */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 10px;
+  outline: none;
+  background: linear-gradient(90deg, #74C69D, #2D6A4F);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+/* Firefox slider track */
+.slider::-moz-range-track {
+  background: linear-gradient(90deg, #74C69D, #2D6A4F);
+  height: 10px;
+  border-radius: 10px;
+}
+
+/* Slider thumb styling */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #40916C;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #40916C;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover,
+.slider::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  background: #2D6A4F;
+}
+
+/* Slider value indicator */
+.sliderValue {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 14px;
+  color: #40916C;
+  font-weight: 500;
+  margin-top: 8px;
+  gap: 10px;
+  background-color: rgba(216, 243, 220, 0.2);
+  padding: 6px 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.currentValueTooltip {
+  font-size: 12px;
+  color: #555;
+  font-weight: normal;
+  font-style: italic;
+  max-width: 75%;
+  text-align: right;
+  line-height: 1.3;
+}
+
+/* Tooltip highlighting for the currently selected value */
+.tooltipMarker[data-active="true"] {
+  background-color: rgba(216, 243, 220, 0.9);
+  font-weight: 600;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Slider tooltip styles */
+.sliderTooltips {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0 1px 0;
+  position: relative;
+  font-size: 13px;
+  color: #666;
+  padding: 0;
+  z-index: 2;
+}
+
+.tooltipMarker {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 40px;
+  text-align: center;
+  transition: all 0.2s ease;
+  padding: 3px 5px;
+  border-radius: 12px;
+  color: #2D6A4F;
+  background-color: rgba(216, 243, 220, 0.3);
+  line-height: 1.2;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.tooltipMarker:hover {
+  color: #2D6A4F;
+  background-color: rgba(216, 243, 220, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Make tooltips appear above the marker on hover */
+.tooltipText {
+  visibility: hidden;
+  background-color: #f8f8f8;
+  color: #2D6A4F;
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px 10px;
+  width: max-content;
+  max-width: 180px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border: 1px solid #e0e0e0;
+  font-size: 11px;
+}
+
+.tooltipMarker:hover .tooltipText {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Arrow for tooltip */
+.tooltipText::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #e0e0e0 transparent transparent transparent;
+} 

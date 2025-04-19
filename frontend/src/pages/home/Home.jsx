@@ -7,16 +7,16 @@ import "./home.css"
 
 const Home = () => {
   return (
-  <>
-    <Topbar/>
-    <div className="homeContainer">
-    <Sidebar/>
-    <Feed/>
-    <Rightbar/>
-    </div>
-    
-  </>
-)
+    <>
+      <Topbar />
+      <div className="homeContainer">
+        <Sidebar />
+        <Feed />
+        <Rightbar />
+      </div>
+
+    </>
+  )
 }
 
 export default Home
