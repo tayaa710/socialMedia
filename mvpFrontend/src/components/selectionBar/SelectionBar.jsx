@@ -1,8 +1,8 @@
 import './selectionBar.css'
 import Option from './option/Option'
 import { useState } from 'react'
-export default function SelectionBar({setSelectedOption,selectedOption}) {
-  
+
+const SelectionBar = ({setSelectedOption, selectedOption}) => {
   const options = ["Posts", "Friends", "Info"]
   return (
     <div>
@@ -19,9 +19,10 @@ export default function SelectionBar({setSelectedOption,selectedOption}) {
         }
       </div>
       <div>
-        
-        <hr ></hr>
+        <hr></hr>
       </div>
     </div>
   )
 }
+
+export default SelectionBar

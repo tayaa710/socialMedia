@@ -1,9 +1,9 @@
-
 import { createRoot } from 'react-dom/client'
-import App from './pages/profile/Profile.jsx'
+import Profile from './pages/profile/Profile.jsx'
+import Login from './pages/login/Login.jsx'
 
 createRoot(document.getElementById('root')).render(
     <div>
-        <App />
+        <Login />
     </div>
 )

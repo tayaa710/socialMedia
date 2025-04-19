@@ -4,7 +4,7 @@ import "./profileFriends.css";
 import { useState } from "react";
 import { People, SortByAlpha, AccessTime, LocalFlorist, FilterAlt } from "@mui/icons-material";
 
-export default function ProfileFriends() {
+const ProfileFriends = () => {
   const [sortOrder, setSortOrder] = useState("Recent");
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -174,3 +174,5 @@ export default function ProfileFriends() {
     </div>
   );
 }
+
+export default ProfileFriends

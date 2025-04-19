@@ -3,7 +3,7 @@
 import './user.css'
 import { LocalFlorist, Favorite } from '@mui/icons-material'
 
-export default function User({name, interests = [], friendDate}) {
+const User = ({name, interests = [], friendDate}) => {
   return (
     <div className="userContainer">
       <img src="../../assets/postReal/daffy.jpeg" alt="Profile Picture" className="profilePicture" />
@@ -40,3 +40,5 @@ export default function User({name, interests = [], friendDate}) {
     </div>
   )
 }
+
+export default User

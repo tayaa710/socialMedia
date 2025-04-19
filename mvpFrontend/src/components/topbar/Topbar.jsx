@@ -1,7 +1,7 @@
 import { Search, LocalFlorist, LightbulbOutlined, Person } from "@mui/icons-material"
 import './topbar.css'
 
-export default function Topbar() {
+const Topbar = () => {
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
@@ -30,3 +30,5 @@ export default function Topbar() {
     </div>
   )
 }
+
+export default Topbar

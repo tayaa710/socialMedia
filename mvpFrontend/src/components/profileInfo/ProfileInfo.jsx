@@ -2,7 +2,7 @@
 import './ProfileInfo.css'
 import { School, Favorite, Cake, AccessTime, Public, LocationOn, Phone, LocalFlorist } from '@mui/icons-material'
 
-export default function ProfileInfo() {
+const ProfileInfo = () => {
   return (
     <div className="infoContainer">
       <div className="infoHeader">
@@ -74,3 +74,5 @@ const ValueTag = ({ text }) => {
     </div>
   )
 }
+
+export default ProfileInfo

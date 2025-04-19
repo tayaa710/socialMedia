@@ -4,7 +4,7 @@ import "./profilePosts.css";
 import { useState } from "react";
 import { FilterAlt, LocalFlorist, Favorite, TrendingUp, CalendarToday, VerifiedUser } from "@mui/icons-material";
 
-export default function ProfilePosts() {
+const ProfilePosts = () => {
   const [sortOrder, setSortOrder] = useState("Recent");
 
   const posts = [
@@ -137,3 +137,5 @@ export default function ProfilePosts() {
     </div>
   )
 }
+
+export default ProfilePosts

@@ -2,7 +2,7 @@
 import './post.css'
 import { Favorite, VerifiedUser, Share, Comment, LocalFlorist } from '@mui/icons-material'
 
-export default function Post({date, likes, image, caption, verified = false}) {
+const Post = ({date, likes, image, caption, verified = false}) => {
   return (
     <div className="postContainer">
       <div className="postHeader">
@@ -51,3 +51,5 @@ export default function Post({date, likes, image, caption, verified = false}) {
     </div>
   )
 }
+
+export default Post

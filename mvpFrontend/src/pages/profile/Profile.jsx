@@ -8,7 +8,7 @@ import './profile.css'
 import { useState } from 'react'
 import { LocalFlorist } from '@mui/icons-material'
 
-function Profile() {
+const Profile = () => {
   const [selectedOption, setSelectedOption] = useState("Posts")
   
   const renderOption = () => {
