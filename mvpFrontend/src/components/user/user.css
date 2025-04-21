@@ -1,15 +1,18 @@
-.userContainer{
+.userContainer {
   margin: 10px;
-  padding: 15px;
-  height: fit-content; 
+  padding: 55px 15px 20px;
+  height: 100%;
   text-align: center;
-  border: none;
   border-radius: 16px;
   background: #FFFFFF;
-  box-shadow: 0px 4px 20px rgba(45, 106, 79, 0.08);
-  position: relative; 
+  box-shadow: 0 5px 20px rgba(45, 106, 79, 0.07);
+  position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
 }
 
 .userContainer::before {
@@ -20,54 +23,151 @@
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, #2D6A4F, #74C69D);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: height 0.3s ease;
 }
 
 .userContainer:hover {
   transform: translateY(-5px);
-  box-shadow: 0px 8px 25px rgba(45, 106, 79, 0.15);
+  box-shadow: 0 15px 35px rgba(45, 106, 79, 0.15);
 }
 
 .userContainer:hover::before {
-  opacity: 1;
+  height: 6px;
+}
+
+/* User Header Styling */
+.userHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.profilePictureWrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin: -55px auto 15px;
+  border-radius: 50%;
+  padding: 5px;
+  background: white;
+  box-shadow: 0 6px 20px rgba(45, 106, 79, 0.2);
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.profilePictureWrapper.online {
+  background: linear-gradient(135deg, rgba(45, 106, 79, 0.8), rgba(116, 198, 157, 0.8));
+  animation: pulseGlow 2.5s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 8px 3px rgba(45, 106, 79, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 25px 8px rgba(45, 106, 79, 0.6);
+  }
 }
 
 .profilePicture {
-  width: 85px;
-  height: 85px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #EFFDF5;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  margin: 10px auto;
+  border: 3px solid white;
+  transition: transform 0.4s ease;
 }
 
-.userInfo {
-  padding: 10px 0;
+.userContainer:hover .profilePicture {
+  transform: scale(1.05);
+}
+
+.onlineIndicator {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #4CAF50;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
 }
 
 .userName {
-  margin: 10px 0 5px;
-  font-size: 18px;
-  font-weight: 600;
+  margin: 0 0 5px;
+  font-size: 22px;
+  font-weight: 700;
   color: #1B4332;
+  line-height: 1.2;
+  background: linear-gradient(90deg, #1B4332, #2D6A4F);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.onlineStatus {
+  font-size: 12px;
+  color: #4CAF50;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background-color: rgba(76, 175, 80, 0.1);
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin-top: 5px;
+  box-shadow: 0 2px 5px rgba(76, 175, 80, 0.1);
+}
+
+/* User Info Styling */
+.userInfo {
+  flex: 1;
+  padding: 0 5px;
+  margin-bottom: 10px;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.userContainer:hover .userInfo {
+  opacity: 1;
 }
 
 .friendSince {
   display: flex;
   flex-direction: column;
-  font-size: 12px;
+  font-size: 13px;
   margin-bottom: 8px;
+  color: #2D6A4F;
 }
 
 .friendLabel {
   color: #74C69D;
   font-weight: 500;
+  margin-bottom: 2px;
+  font-size: 11px;
 }
 
 .friendDate {
-  color: #40916C;
+  color: #2D6A4F;
   font-weight: 600;
 }
 
@@ -84,12 +184,18 @@
   align-items: center;
   gap: 4px;
   background-color: #EFFDF5;
-  border-radius: 30px;
+  border-radius: 20px;
   padding: 4px 8px;
   font-size: 11px;
   color: #2D6A4F;
   font-weight: 500;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(45, 106, 79, 0.05);
+  transition: all 0.2s ease;
+}
+
+.interestTag:hover {
+  background-color: #D8F3E9;
+  transform: scale(1.05);
 }
 
 .interestIcon {
@@ -97,28 +203,77 @@
   color: #40916C;
 }
 
-.bottomBar {
+/* Action Buttons */
+.userActions {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 0 5px;
-  border-top: 1px solid #F0F7F4;
-  margin-top: 10px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  gap: 8px;
+  margin-bottom: 12px;
   transform: translateY(5px);
-  opacity: 0;
+  opacity: 0.9;
+  transition: all 0.3s ease;
 }
 
-.userContainer:hover .bottomBar {
-  opacity: 1;
+.userContainer:hover .userActions {
   transform: translateY(0);
+  opacity: 1;
+}
+
+.actionButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  outline: none;
+}
+
+.actionButton.primary {
+  background: linear-gradient(90deg, #2D6A4F, #40916C);
+  color: white;
+  box-shadow: 0 3px 8px rgba(45, 106, 79, 0.15);
+}
+
+.actionButton.primary:hover {
+  background: linear-gradient(90deg, #1B4332, #2D6A4F);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(27, 67, 50, 0.2);
+}
+
+.actionButton.secondary {
+  background: #EFFDF5;
+  color: #2D6A4F;
+  border: 1px solid #D8F3E9;
+}
+
+.actionButton.secondary:hover {
+  background: #D8F3E9;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(45, 106, 79, 0.1);
+}
+
+.actionIcon {
+  font-size: 15px !important;
+}
+
+/* Bottom Bar */
+.bottomBar {
+  padding: 8px 0 0;
+  border-top: 1px solid #F0F7F4;
+  opacity: 0.8;
 }
 
 .mutualFriendsWrapper {
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin-bottom: 8px;
+  justify-content: center;
+  gap: 4px;
 }
 
 .mutualIcon {
@@ -130,43 +285,32 @@
   margin: 0;
   font-size: 12px;
   color: #52B788;
+  font-weight: 500;
 }
 
-.connectButton {
-  background: linear-gradient(90deg, #2D6A4F, #40916C);
-  color: white;
-  padding: 6px 16px;
-  border-radius: 30px;
-  outline: 0;
-  border: 0;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(45, 106, 79, 0.2);
-  transition: all 0.3s ease;
-  width: 90%;
-  position: relative;
-  overflow: hidden;
-}
-
-.connectButton::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: all 0.6s ease;
-}
-
-.connectButton:hover::before {
-  left: 100%;
-}
-
-.connectButton:hover {
-  background: linear-gradient(90deg, #1B4332, #2D6A4F);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(27, 67, 50, 0.3);
+/* Responsive Design */
+@media (max-width: 768px) {
+  .userContainer {
+    padding: 45px 12px 18px;
+  }
+  
+  .profilePictureWrapper {
+    width: 130px;
+    height: 130px;
+    margin-top: -45px;
+  }
+  
+  .userName {
+    font-size: 18px;
+  }
+  
+  .actionButton {
+    padding: 7px;
+    font-size: 12px;
+  }
+  
+  .actionIcon {
+    font-size: 14px !important;
+  }
 }
 

@@ -1,4 +1,3 @@
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import User from "../user/User";
 import "./profileFriends.css";
 import { useState } from "react";
@@ -8,26 +7,41 @@ const ProfileFriends = () => {
   const [sortOrder, setSortOrder] = useState("Recent");
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [onlineOnly, setOnlineOnly] = useState(false);
   
   const friends = [
-    { id: 100, name: "Daffy Duck", friendedDate: "2021-08-09", interests: ["Sustainability", "Gardening"] },
-    { id: 101, name: "Bob", friendedDate: "2020-02-19", interests: ["Local Food", "Community"] },
-    { id: 102, name: "Charlie", friendedDate: "2023-12-27", interests: ["Conservation", "Hiking"] },
-    { id: 103, name: "David", friendedDate: "2021-01-06", interests: ["Digital Ethics", "Mindfulness"] },
-    { id: 104, name: "Frank", friendedDate: "2023-06-30", interests: ["Ethical Tech", "Philosophy"] },
-    { id: 105, name: "Grace", friendedDate: "2023-07-06", interests: ["Ocean Conservation", "Art"] },
-    { id: 106, name: "Haggis", friendedDate: "2022-02-28", interests: ["Animal Rights", "Vegan Cooking"] },
-    { id: 107, name: "Alice", friendedDate: "2021-01-21", interests: ["Climate Action", "Cycling"] },
-    { id: 108, name: "Haggis", friendedDate: "2020-01-21", interests: ["Zero Waste", "DIY"] },
-    { id: 109, name: "George", friendedDate: "2021-12-12", interests: ["Permaculture", "Music"] },
-    { id: 110, name: "Ivy", friendedDate: "2020-03-25", interests: ["Renewable Energy", "Reading"] },
-    { id: 111, name: "Jack", friendedDate: "2022-06-09", interests: ["Mindfulness", "Yoga"] },
-    { id: 112, name: "Karen", friendedDate: "2024-01-10", interests: ["Ethical Fashion", "Photography"] },
-    { id: 113, name: "Liam", friendedDate: "2021-05-22", interests: ["Community Gardens", "Hiking"] },
+    { id: 101, name: "Emma Thompson", friendedDate: "2023-11-15", interests: ["Sustainable Living", "Organic Gardening"], isOnline: true, mutualConnections: 143 },
+    { id: 102, name: "Michael Chen", friendedDate: "2022-08-22", interests: ["Renewable Energy", "Community Building"], isOnline: false, mutualConnections: 87 },
+    { id: 103, name: "Sophia Rodriguez", friendedDate: "2024-01-30", interests: ["Digital Minimalism", "Ethical Tech"], isOnline: true, mutualConnections: 215 },
+    { id: 104, name: "Jamal Williams", friendedDate: "2023-04-17", interests: ["Zero Waste", "Local Food Systems"], isOnline: false, mutualConnections: 112 },
+    { id: 105, name: "Olivia Kim", friendedDate: "2021-12-08", interests: ["Mindfulness", "Sustainable Fashion"], isOnline: false, mutualConnections: 76 },
+    { id: 106, name: "Daniel Martinez", friendedDate: "2022-05-14", interests: ["Urban Farming", "Environmental Education"], isOnline: true, mutualConnections: 156 },
+    { id: 107, name: "Aisha Patel", friendedDate: "2023-09-02", interests: ["Ecological Conservation", "Vegetarian Cooking"], isOnline: false, mutualConnections: 134 },
+    { id: 108, name: "Noah Johnson", friendedDate: "2022-10-19", interests: ["Climate Action", "Minimalism"], isOnline: true, mutualConnections: 91 },
+    { id: 109, name: "Zoe Wilson", friendedDate: "2023-07-25", interests: ["Eco-friendly Travel", "Nature Photography"], isOnline: false, mutualConnections: 67 },
+    { id: 110, name: "Benjamin Taylor", friendedDate: "2021-06-11", interests: ["Sustainable Architecture", "Hiking"], isOnline: true, mutualConnections: 182 },
+    { id: 111, name: "Leila Hassan", friendedDate: "2022-03-08", interests: ["Ocean Conservation", "Marine Biology"], isOnline: false, mutualConnections: 95 },
+    { id: 112, name: "Gabriel Morales", friendedDate: "2023-01-14", interests: ["Permaculture", "Community Gardens"], isOnline: true, mutualConnections: 124 },
+    { id: 113, name: "Harper Lee", friendedDate: "2022-11-30", interests: ["Ethical Investing", "Solar Energy"], isOnline: false, mutualConnections: 73 },
+    { id: 114, name: "Samuel Nguyen", friendedDate: "2023-08-05", interests: ["Sustainable Transportation", "Cycling"], isOnline: true, mutualConnections: 158 },
+    { id: 115, name: "Isabella Clark", friendedDate: "2021-09-17", interests: ["Vegan Cooking", "Animal Rights"], isOnline: false, mutualConnections: 110 },
+    { id: 116, name: "Elijah Walker", friendedDate: "2024-02-12", interests: ["Green Tech", "Regenerative Agriculture"], isOnline: true, mutualConnections: 89 },
+    { id: 117, name: "Maya Anderson", friendedDate: "2023-05-29", interests: ["Eco Art", "Upcycling"], isOnline: false, mutualConnections: 137 },
+    { id: 118, name: "Lucas Wright", friendedDate: "2022-07-03", interests: ["Waste Reduction", "Composting"], isOnline: true, mutualConnections: 103 },
+    { id: 119, name: "Avery Scott", friendedDate: "2023-10-21", interests: ["Sustainable Forestry", "Bird Watching"], isOnline: false, mutualConnections: 82 },
+    { id: 120, name: "Chloe Robinson", friendedDate: "2022-02-14", interests: ["Plant-Based Diet", "Holistic Health"], isOnline: true, mutualConnections: 171 }
   ];
+  
+  // Calculate online friends count
+  const onlineFriendsCount = friends.filter(friend => friend.isOnline).length;
 
   const friendsSorted = () => {
     let filtered = [...friends];
+    
+    // Apply online filter if selected
+    if (onlineOnly) {
+      filtered = filtered.filter(friend => friend.isOnline);
+    }
     
     // Apply search filter
     if (searchTerm.trim() !== "") {
@@ -67,6 +81,16 @@ const ProfileFriends = () => {
         <div className="friendsTitle-wrapper">
           <People className="friendsTitle-icon" />
           <h2 className="friendsTitle">Your Community Circle</h2>
+          <div className="friendsStats">
+            <div className="friendsStat">
+              <span className="friendsStatNumber">{friends.length}</span>
+              <span className="friendsStatLabel">Total</span>
+            </div>
+            <div className="friendsStat online">
+              <span className="friendsStatNumber">{onlineFriendsCount}</span>
+              <span className="friendsStatLabel">Online</span>
+            </div>
+          </div>
         </div>
         
         <div className="friendsActions">
@@ -109,6 +133,21 @@ const ProfileFriends = () => {
       {filterOpen && (
         <div className="friendsFilterPanel">
           <div className="filterGroup">
+            <h4>Status</h4>
+            <div className="filterOptions">
+              <div className="filterChip">
+                <input 
+                  type="checkbox" 
+                  id="online-only" 
+                  checked={onlineOnly}
+                  onChange={() => setOnlineOnly(!onlineOnly)}
+                />
+                <label htmlFor="online-only">Online Only</label>
+              </div>
+            </div>
+          </div>
+          
+          <div className="filterGroup">
             <h4>Interests</h4>
             <div className="filterOptions">
               <div className="filterChip">
@@ -150,25 +189,23 @@ const ProfileFriends = () => {
             <p>No friends match your search criteria</p>
           </div>
         ) : (
-          <ResponsiveMasonry
-            columnsCountBreakPoints={{ 300: 2, 600: 3, 900: 4, 1200: 5 }}
-            gutterBreakpoints={{ 350: "15px", 750: "20px", 800: "25px" }}
-          >
-            <Masonry className="friends-masonry">
-              {friendsSorted().map((friend) => (
-                <User 
-                  key={friend.id} 
-                  name={friend.name} 
-                  interests={friend.interests}
-                  friendDate={new Date(friend.friendedDate).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric"
-                  })}
-                />
-              ))}
-            </Masonry>
-          </ResponsiveMasonry>
+          <div className="friends-grid-layout">
+            {friendsSorted().map((friend) => (
+              <User 
+                key={friend.id} 
+                id={friend.id}
+                name={friend.name} 
+                interests={friend.interests}
+                friendDate={new Date(friend.friendedDate).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric"
+                })}
+                isOnline={friend.isOnline}
+                mutualConnections={friend.mutualConnections}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>

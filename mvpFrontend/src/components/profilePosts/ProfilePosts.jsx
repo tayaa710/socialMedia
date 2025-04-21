@@ -1,12 +1,14 @@
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Post from "../post/Post";
 import "./profilePosts.css";
-import { useState } from "react";
-import { FilterAlt, LocalFlorist, Favorite, TrendingUp, CalendarToday } from "@mui/icons-material";
+import { useState, useEffect } from "react";
+import { FilterAlt, LocalFlorist, Favorite, TrendingUp, CalendarToday, ExpandMore } from "@mui/icons-material";
 
 const ProfilePosts = () => {
   const [sortOrder, setSortOrder] = useState("Recent");
+  const [visiblePosts, setVisiblePosts] = useState(6);
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Sample local posts data
   const posts = [
     {
       user: "Aaron",
@@ -45,7 +47,7 @@ const ProfilePosts = () => {
       date: "Feb 5, 2025",
       likes: 293,
       caption: "Beach cleanup with friends. Every piece of plastic we remove today is one less threat to ocean life tomorrow.",
-      url: "../../assets/postReal/4.jpeg",
+      url: "https://images.unsplash.com/photo-1618477462146-050d2797431c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
       id: 7,
     },
     {
@@ -53,10 +55,51 @@ const ProfilePosts = () => {
       date: "Feb 1, 2025",
       likes: 201,
       caption: "Supporting local artisans at the weekend market. Ethical consumption means knowing who made your purchases.",
-      url: "../../assets/postReal/4.jpeg",
+      url: "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
       id: 8,
     },
+    {
+      user: "Aaron",
+      date: "Jan 28, 2025",
+      likes: 256,
+      caption: "Urban farming workshop - learning how to grow food sustainably in city environments.",
+      url: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      id: 9,
+    },
+    {
+      user: "Aaron",
+      date: "Jan 22, 2025",
+      likes: 318,
+      caption: "Discussing the intersection of technology and environmental stewardship at the local tech meetup.",
+      url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      id: 10,
+    },
+    {
+      user: "Aaron",
+      date: "Jan 15, 2025",
+      likes: 275,
+      caption: "Forest restoration project completed! So rewarding to see native trees taking root again in this area.",
+      url: "https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      id: 11,
+    },
   ];
+
+  const handleShowMore = () => {
+    setIsLoading(true);
+    // Simulate a network request
+    setTimeout(() => {
+      setVisiblePosts(prev => prev + 3);
+      setIsLoading(false);
+    }, 600);
+  };
+
+  // Sort the posts based on the selected sort order
+  const sortedPosts = [...posts].sort((a, b) => {
+    if (sortOrder === "Recent") return new Date(b.date) - new Date(a.date);
+    if (sortOrder === "Oldest") return new Date(a.date) - new Date(b.date);
+    if (sortOrder === "Popular") return b.likes - a.likes;
+    return 0;
+  }).slice(0, visiblePosts);
 
   return (
     <div className="postsContainer">
@@ -100,31 +143,38 @@ const ProfilePosts = () => {
         <div className="leaf-decoration top-left"></div>
         <div className="leaf-decoration bottom-right"></div>
         
-        <ResponsiveMasonry
-          columnsCountBreakPoints={{ 350: 1, 750: 2, 1050: 3, 1300: 4 }}
-          gutter="30px"
-        >
-          <Masonry className="masonry-grid">
-            {[...posts]
-              .sort((a, b) => {
-                if (sortOrder === "Recent") return new Date(b.date) - new Date(a.date);
-                if (sortOrder === "Oldest") return new Date(a.date) - new Date(b.date);
-                if (sortOrder === "Popular") return b.likes - a.likes;
-                return 0;
-              })
-              .map((post) => (
-                <div className="profile-post-item" key={post.id}>
-                  <Post
-                    date={post.date}
-                    likes={post.likes}
-                    caption={post.caption}
-                    image={post.url}
-                    user={post.user}
-                  />
-                </div>
-              ))}
-          </Masonry>
-        </ResponsiveMasonry>
+        <div className="posts-grid">
+          {sortedPosts.map((post) => (
+            <div className="profile-post-item" key={post.id}>
+              <Post
+                date={post.date}
+                likes={post.likes}
+                caption={post.caption}
+                image={post.url}
+                user={post.user}
+              />
+            </div>
+          ))}
+        </div>
+        
+        {visiblePosts < posts.length && (
+          <div className="show-more-container">
+            <button 
+              className={`show-more-btn ${isLoading ? 'loading' : ''}`} 
+              onClick={handleShowMore}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span>Loading...</span>
+              ) : (
+                <>
+                  <span>Show More Posts</span>
+                  <ExpandMore className="expand-icon" />
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

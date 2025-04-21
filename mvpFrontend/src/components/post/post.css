@@ -1,100 +1,120 @@
 .postContainer {
-  margin: 16px;
+  margin: 0;
   padding: 0;
-  height: fit-content; 
+  height: 100%; 
   text-align: left;
   border-radius: 20px;
   background: white;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 25px rgba(45, 106, 79, 0.08);
   position: relative; 
   overflow: hidden;
-  transition: all 0.4s ease;
-  transform: rotate(0deg);
-  width: calc(100% - 32px); /* Account for the margin */
+  transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+  width: 100%;
   box-sizing: border-box;
-}
-
-.postContainer:nth-child(even) {
-  transform: rotate(0deg);
+  display: flex;
+  flex-direction: column;
 }
 
 .postContainer:hover {
-  transform: translateY(-8px) rotate(0);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(45, 106, 79, 0.15);
 }
 
 .postHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-  background-color: rgba(149, 213, 178, 0.04);
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(149, 213, 178, 0.15);
+  background-color: rgba(239, 253, 245, 0.5);
+  z-index: 1;
 }
 
 .datePosted {
-  font-size: 14px;
-  color: #40916C;
+  font-size: 15px;
+  color: #2D6A4F;
   margin: 0;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
 .imageWrapper {
   position: relative;
   overflow: hidden;
-  max-height: 500px;
+  width: 100%;
 }
 
 .postImage {
   width: 100%;
+  height: 100%;
   display: block;
-  transition: transform 0.5s ease;
+  transition: transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
   object-fit: cover;
+  object-position: center;
 }
 
 .postContainer:hover .postImage {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .hoverOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 50%, rgba(45, 106, 79, 0.85));
+  background: linear-gradient(to bottom, 
+    rgba(45, 106, 79, 0) 0%,
+    rgba(45, 106, 79, 0) 40%,
+    rgba(45, 106, 79, 0.85) 100%);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
   display: flex;
   align-items: flex-end;
+  transform: translateY(20px);
 }
 
 .postContainer:hover .hoverOverlay {
   opacity: 1;
+  transform: translateY(0);
 }
 
 .overlayContent {
-  padding: 30px 20px;
+  padding: 35px 25px;
   color: white;
   width: 100%;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .postContent {
-  padding: 20px;
+  padding: 18px 20px;
+  background: white;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .postCaption {
-  margin: 0 0 20px 0;
-  font-size: 16px;
-  line-height: 1.6;
+  margin: 0 0 15px 0;
+  font-size: 15px;
+  line-height: 1.5;
   color: #1B4332;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .postStats {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   padding-bottom: 15px;
   position: relative;
+  margin-top: auto;
 }
 
 .postStats::after {
@@ -103,56 +123,96 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 1px;
-  background: linear-gradient(to right, #95D5B2, transparent);
+  height: 2px;
+  background: linear-gradient(to right, #74C69D, rgba(116, 198, 157, 0.1));
+  border-radius: 1px;
 }
 
 .statItem {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #40916C;
-  font-size: 14px;
-  font-weight: 500;
+  gap: 10px;
+  color: #2D6A4F;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .statIcon {
   color: #2D6A4F;
+  font-size: 16px !important;
+  filter: drop-shadow(0 1px 2px rgba(45, 106, 79, 0.2));
 }
 
 .postActions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .actionButton {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 6px;
+  padding: 8px 14px;
   background: transparent;
-  border: none;
+  border: 1px solid rgba(116, 198, 157, 0.3);
   border-radius: 30px;
-  color: #40916C;
+  color: #2D6A4F;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .actionButton:hover {
+  background-color: rgba(116, 198, 157, 0.15);
+  color: #1B4332;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(45, 106, 79, 0.1);
+}
+
+.actionButton.likeButton {
   background-color: rgba(116, 198, 157, 0.1);
-  color: #2D6A4F;
-  transform: translateY(-2px);
+  border-color: rgba(45, 106, 79, 0.2);
 }
 
 .actionButton.likeButton:hover {
-  color: #1B4332;
+  background-color: rgba(45, 106, 79, 0.15);
+  border-color: rgba(45, 106, 79, 0.3);
 }
 
 .actionButton.likeButton:hover svg {
   color: #1B4332;
-  transform: scale(1.2);
+  transform: scale(1.3);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Add subtle pattern to the post background */
+.postContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%2395d5b2' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.8;
+  z-index: 0;
+}
+
+/* Subtle animation for the like button */
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.3); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.3); }
+  70% { transform: scale(1); }
+}
+
+.actionButton.likeButton:active svg {
+  animation: heartBeat 1s ease-in-out;
+  color: #1B4332;
 }
 
 .whyButton {

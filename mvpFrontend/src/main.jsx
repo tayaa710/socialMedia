@@ -6,6 +6,8 @@ import Feed from './pages/feed/Feed.jsx'
 
 createRoot(document.getElementById('root')).render(
     <div>
+        <Profile />
         <Feed />
+        <Login />
     </div>
 )
