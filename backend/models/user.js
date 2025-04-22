@@ -28,6 +28,54 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
+  birthday: {
+    type: Date,
+    required: true
+  },
+  age: {
+    type: Number
+  },
+  city: {
+    type: String
+  },
+  country: {
+    type: String
+  },
+  education: {
+    institution: {
+      type: String
+    },
+    status: {
+      type: String
+    }
+  },
+  mobileNumber: {
+    type: String
+  },
+  relationshipStatus: {
+    type: String,
+    enum: ['Single', 'In a relationship', 'Married', 'Other']
+  },
+  impactPoints: {
+    type: Number,
+    default: 0
+  },
+  trustRating: {
+    type: Number,
+    min: 0,
+    max: 100,
+    default: 0
+  },
+  role: {
+    type: String
+  },
+  valuesAndInterests: [{
+    type: String
+  }],
+  description: {
+    type: String,
+    max: 100
+  },
   followers: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -36,19 +84,9 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
-  description:{
-    type: String,
-    max:100
-  },
-  city:{
-    type:String
-  },
-  country:{
-    type: String
-  },
   posts: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref:'Post'
+    ref: 'Post'
   }]
 },
 { timestamps: true })
