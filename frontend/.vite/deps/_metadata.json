@@ -1,0 +1,31 @@
+{
+  "hash": "1c2381f5",
+  "configHash": "3eb6ac23",
+  "lockfileHash": "40c85cc9",
+  "browserHash": "1d28662e",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "89c408b4",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "000ad6c3",
+      "needsInterop": true
+    },
+    "@mui/icons-material": {
+      "src": "../../node_modules/@mui/icons-material/esm/index.js",
+      "file": "@mui_icons-material.js",
+      "fileHash": "d6be7d67",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-45FXRYJS": {
+      "file": "chunk-45FXRYJS.js"
+    }
+  }
+}
