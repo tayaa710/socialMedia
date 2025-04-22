@@ -2,7 +2,7 @@
 import './post.css'
 import { useState } from 'react'
 import { Favorite, Share, Comment, LocalFlorist, HelpOutline, InfoOutlined, Person } from '@mui/icons-material'
-import { Users } from "../../dummyData"
+import { Users } from "../../data/dummyData"
 
 
 const Post = ({ post }) => {

@@ -7,7 +7,7 @@ import Post from '../../components/post/Post'
 import PostCreate from '../../components/postCreate/PostCreate'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Posts } from '../../dummyData'
+import { Posts } from '../../data/dummyData'
 
 const Feed = () => {
     
