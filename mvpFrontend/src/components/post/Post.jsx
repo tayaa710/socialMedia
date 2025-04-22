@@ -2,23 +2,43 @@
 import './post.css'
 import { useState } from 'react'
 import { Favorite, Share, Comment, LocalFlorist, HelpOutline, InfoOutlined } from '@mui/icons-material'
+import { Users } from "../../dummyData"
 
-const Post = ({ date, likes, image, caption, user, reason, tags = [] }) => {
+const Post = ({ post, date, likes, image, caption, user, reason, tags = [] }) => {
+  // Support both formats - direct props and post object
+  const postDate = date || post?.date;
+  const postLikes = likes || post?.like;
+  const postImage = image || post?.photo;
+  const postCaption = caption || post?.desc;
+  const postUserId = post?.userId;
+  
+  // If we have a post object with userId, get the user from Users data
+  const userData = postUserId ? Users.filter(u => u.id === postUserId)[0] : null;
+  const postUser = user || userData?.username;
+  const postReason = reason || (userData ? `Post by ${userData.username}` : null);
+  
+  const [like, setLike] = useState(postLikes)
+  const [isLiked, setIsLiked] = useState(false)
   const [showReason, setShowReason] = useState(false);
+
+  const likeHandler = () => {
+    setLike(isLiked ? like - 1 : like + 1)
+    setIsLiked(!isLiked)
+  };
 
   // Generate a more detailed explanation based on the reason
   const getDetailedExplanation = () => {
-    if (!reason) return null;
+    if (!postReason) return null;
     
-    if (reason.includes('follow')) {
-      return `This post appears in your feed because you follow ${user}. Following accounts ensures you see their latest content.`;
-    } else if (reason.includes('similar')) {
+    if (postReason.includes('follow')) {
+      return `This post appears in your feed because you follow ${postUser}. Following accounts ensures you see their latest content.`;
+    } else if (postReason.includes('similar')) {
       return `Based on your engagement with ${tags.join(', ')} content, we thought you might enjoy this post about ${tags[0] || 'similar topics'}.`;
-    } else if (reason.includes('communities')) {
-      return `This post is popular in communities you're part of. ${likes} people in your network found this valuable.`;
-    } else if (reason.includes('Trending')) {
+    } else if (postReason.includes('communities')) {
+      return `This post is popular in communities you're part of. ${like} people in your network found this valuable.`;
+    } else if (postReason.includes('Trending')) {
       return `This content is currently trending in your region. It has received significant engagement in the past 24 hours.`;
-    } else if (reason.includes('interest')) {
+    } else if (postReason.includes('interest')) {
       return `You've shown interest in ${tags.join(', ')} content, so we're showing you more posts related to these topics.`;
     }
     return `This post matches your content preferences and feed settings.`;
@@ -32,9 +52,9 @@ const Post = ({ date, likes, image, caption, user, reason, tags = [] }) => {
   return (
     <div className="postContainer">
       <div className="postHeader">
-        <p className="datePosted">{date}</p>
+        <p className="datePosted">{postDate}</p>
         <div className="headerRight">
-          {reason && (
+          {postReason && (
             <button 
               className={`whyButton ${showReason ? 'active' : ''}`}
               onClick={() => setShowReason(!showReason)}
@@ -46,7 +66,7 @@ const Post = ({ date, likes, image, caption, user, reason, tags = [] }) => {
         </div>
       </div>
       
-      {reason && showReason && (
+      {postReason && showReason && (
         <div className="reasonPanel">
           <div className="reasonContent">
             <InfoOutlined fontSize="small" className="infoIcon" />
@@ -61,31 +81,31 @@ const Post = ({ date, likes, image, caption, user, reason, tags = [] }) => {
       
       <div className="imageWrapper">
         <img 
-          src={image} 
-          alt={`${user}'s post: ${caption.substring(0, 30)}...`} 
+          src={postImage} 
+          alt={`${postUser}'s post: ${postCaption?.substring(0, 30) || ''}...`} 
           className="postImage" 
           onError={handleImageError}
         />
         <div className="hoverOverlay">
           <div className="overlayContent">
-            <span>{caption}</span>
+            <span>{postCaption}</span>
           </div>
         </div>
       </div>
       
       <div className="postContent">
-        <p className="postCaption">{caption}</p>
+        <p className="postCaption">{postCaption}</p>
         
         <div className="postStats">
           <div className="statItem">
             <LocalFlorist fontSize="small" className="statIcon" />
-            <span>{likes} people found this valuable</span>
+            <span>{like} people found this valuable</span>
           </div>
         </div>
         
         <div className="postActions">
-          <button className="actionButton likeButton">
-            <Favorite fontSize="small" />
+          <button className="actionButton likeButton" onClick={likeHandler}>
+            <Favorite fontSize="small" className={isLiked ? "likeIcon liked" : "likeIcon"} />
             <span>Valuable</span>
           </button>
           <button className="actionButton">

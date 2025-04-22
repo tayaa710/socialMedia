@@ -1,11 +1,12 @@
 import './feed.css'
-import { useState } from 'react'
 import Topbar from '../../components/topbar/Topbar'
 import Sidebar from '../../components/sidebar/Sidebar'
 import Rightbar from '../../components/rightbar/Rightbar'
 import FeedFilters from '../../components/feedFilters/FeedFilters'
 import Post from '../../components/post/Post'
 import PostCreate from '../../components/postCreate/PostCreate'
+import { Posts as DummyPosts } from "../../dummyData"
+import { useState } from 'react'
 
 const Feed = () => {
     const [posts, setPosts] = useState([

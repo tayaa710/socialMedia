@@ -1,4 +1,5 @@
 import './sidebar.css'
+import { RssFeed, Chat, PlayCircleFilled, Bookmark, HelpOutline } from "@mui/icons-material"
 
 const Sidebar = () => {
   return (
@@ -6,15 +7,19 @@ const Sidebar = () => {
       <h3 className="sidebarTitle">Explore</h3>
       <ul className="sidebarList">
         <li className="sidebarItem active">
+          <RssFeed className="sidebarIcon"/>
           <span className="sidebarItemText">Home</span>
         </li>
         <li className="sidebarItem">
+          <Chat className="sidebarIcon"/>
           <span className="sidebarItemText">Trending</span>
         </li>
         <li className="sidebarItem">
+          <PlayCircleFilled className="sidebarIcon"/>
           <span className="sidebarItemText">Discover</span>
         </li>
         <li className="sidebarItem">
+          <Bookmark className="sidebarIcon"/>
           <span className="sidebarItemText">Saved</span>
         </li>
       </ul>
