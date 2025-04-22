@@ -6,17 +6,19 @@ import Userbar from '../../components/userbar/Userbar'
 import ProfileFriends from '../../components/profileFriends/ProfileFriends'
 import './profile.css'
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { LocalFlorist } from '@mui/icons-material'
 
 const Profile = () => {
   const [selectedOption, setSelectedOption] = useState("Posts")
+  const { username } = useParams()
   
   const renderOption = () => {
     switch (selectedOption) {
-      case "Posts": return <ProfilePosts />
-      case "Friends": return <ProfileFriends />
-      case "Info": return <ProfileInfo />
-      default: return <ProfilePosts />
+      case "Posts": return <ProfilePosts username={username} />
+      case "Friends": return <ProfileFriends username={username} />
+      case "Info": return <ProfileInfo username={username} />
+      default: return <ProfilePosts username={username} />
     }
   }
 
@@ -24,7 +26,7 @@ const Profile = () => {
     <div className='pageContainer'>
       <div className="heading">
         <Topbar />
-        <Userbar />
+        <Userbar username={username} />
         <SelectionBar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
       </div>
       

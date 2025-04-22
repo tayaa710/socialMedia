@@ -2,87 +2,169 @@ import Post from "../post/Post";
 import "./profilePosts.css";
 import { useState, useEffect } from "react";
 import { FilterAlt, LocalFlorist, Favorite, TrendingUp, CalendarToday, ExpandMore } from "@mui/icons-material";
+import { getUserByUsername } from "../../utils/userDataUtils";
 
-const ProfilePosts = () => {
+const ProfilePosts = ({ username = "Aaron" }) => {
   const [sortOrder, setSortOrder] = useState("Recent");
   const [visiblePosts, setVisiblePosts] = useState(6);
   const [isLoading, setIsLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [userFullName, setUserFullName] = useState("");
 
-  // Sample local posts data
-  const posts = [
-    {
-      user: "Aaron",
-      date: "Feb 20, 2025",
-      likes: 185,
-      caption: "Exploring Hamilton Gardens - a space where nature and community converge in perfect harmony. #NaturalBeauty",
-      url: "../../assets/postReal/1.JPG",
-      id: 1,
-    },
-    {
-      user: "Aaron",
-      date: "Feb 18, 2025",
-      likes: 327,
-      caption: "Working together at the local community garden. Sustainable food production starts at the neighborhood level!",
-      url: "../../assets/postReal/2.jpeg",
-      id: 2,
-    },
-    {
-      user: "Aaron",
-      date: "Feb 15, 2025",
-      likes: 239,
-      caption: "Morning meditation by the lake. Finding inner balance helps us create outer harmony. #MindfulLiving",
-      url: "../../assets/postReal/3.jpeg",
-      id: 3,
-    },
-    {
-      user: "Aaron",
-      date: "Feb 10, 2025",
-      likes: 412,
-      caption: "Workshop on digital wellbeing and the importance of authentic online relationships. Great discussions today!",
-      url: "../../assets/postReal/4.jpeg",
-      id: 4,
-    },
-    {
-      user: "Aaron",
-      date: "Feb 5, 2025",
-      likes: 293,
-      caption: "Beach cleanup with friends. Every piece of plastic we remove today is one less threat to ocean life tomorrow.",
-      url: "https://images.unsplash.com/photo-1618477462146-050d2797431c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-      id: 7,
-    },
-    {
-      user: "Aaron",
-      date: "Feb 1, 2025",
-      likes: 201,
-      caption: "Supporting local artisans at the weekend market. Ethical consumption means knowing who made your purchases.",
-      url: "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-      id: 8,
-    },
-    {
-      user: "Aaron",
-      date: "Jan 28, 2025",
-      likes: 256,
-      caption: "Urban farming workshop - learning how to grow food sustainably in city environments.",
-      url: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-      id: 9,
-    },
-    {
-      user: "Aaron",
-      date: "Jan 22, 2025",
-      likes: 318,
-      caption: "Discussing the intersection of technology and environmental stewardship at the local tech meetup.",
-      url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-      id: 10,
-    },
-    {
-      user: "Aaron",
-      date: "Jan 15, 2025",
-      likes: 275,
-      caption: "Forest restoration project completed! So rewarding to see native trees taking root again in this area.",
-      url: "https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-      id: 11,
-    },
-  ];
+  // Fetch posts based on username
+  useEffect(() => {
+    // Get user info for display name
+    const userData = getUserByUsername(username);
+    if (userData) {
+      setUserFullName(`${userData.firstName} ${userData.lastName}`);
+    } else {
+      setUserFullName(username);
+    }
+
+    // In a real app, this would fetch posts from an API
+    // For this MVP, we're using sample data
+
+    // Sample local posts data for Aaron
+    const aaronPosts = [
+      {
+        user: "Aaron",
+        date: "Feb 20, 2025",
+        likes: 185,
+        caption: "Exploring Hamilton Gardens - a space where nature and community converge in perfect harmony. #NaturalBeauty",
+        url: "../../assets/postReal/1.JPG",
+        id: 1,
+      },
+      {
+        user: "Aaron",
+        date: "Feb 18, 2025",
+        likes: 327,
+        caption: "Working together at the local community garden. Sustainable food production starts at the neighborhood level!",
+        url: "../../assets/postReal/2.jpeg",
+        id: 2,
+      },
+      {
+        user: "Aaron",
+        date: "Feb 15, 2025",
+        likes: 239,
+        caption: "Morning meditation by the lake. Finding inner balance helps us create outer harmony. #MindfulLiving",
+        url: "../../assets/postReal/3.jpeg",
+        id: 3,
+      },
+      {
+        user: "Aaron",
+        date: "Feb 10, 2025",
+        likes: 412,
+        caption: "Workshop on digital wellbeing and the importance of authentic online relationships. Great discussions today!",
+        url: "../../assets/postReal/4.jpeg",
+        id: 4,
+      },
+      {
+        user: "Aaron",
+        date: "Feb 5, 2025",
+        likes: 293,
+        caption: "Beach cleanup with friends. Every piece of plastic we remove today is one less threat to ocean life tomorrow.",
+        url: "https://images.unsplash.com/photo-1618477462146-050d2797431c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+        id: 7,
+      },
+      {
+        user: "Aaron",
+        date: "Feb 1, 2025",
+        likes: 201,
+        caption: "Supporting local artisans at the weekend market. Ethical consumption means knowing who made your purchases.",
+        url: "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+        id: 8,
+      },
+      {
+        user: "Aaron",
+        date: "Jan 28, 2025",
+        likes: 256,
+        caption: "Urban farming workshop - learning how to grow food sustainably in city environments.",
+        url: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+        id: 9,
+      },
+      {
+        user: "Aaron",
+        date: "Jan 22, 2025",
+        likes: 318,
+        caption: "Discussing the intersection of technology and environmental stewardship at the local tech meetup.",
+        url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+        id: 10,
+      },
+      {
+        user: "Aaron",
+        date: "Jan 15, 2025",
+        likes: 275,
+        caption: "Forest restoration project completed! So rewarding to see native trees taking root again in this area.",
+        url: "https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+        id: 11,
+      },
+    ];
+
+    // Generate posts based on user information
+    const generateUserPosts = (userObj) => {
+      if (!userObj) return [];
+      
+      // Use the user's values and interests to create relevant content
+      const interests = userObj.valuesAndInterests || [];
+      const location = userObj.city ? userObj.city : userObj.country ? userObj.country : "my area";
+      
+      // Collection of post templates that will be populated with user data
+      const postTemplates = [
+        {
+          template: "Exploring sustainable solutions in {location}. Every small choice makes a difference!",
+          imageUrl: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e",
+          date: "Feb 22, 2025",
+        },
+        {
+          template: "Attended a workshop on {interest} today. So inspired by the community's commitment.",
+          imageUrl: "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f",
+          date: "Feb 12, 2025",
+        },
+        {
+          template: "Working with local organizations to promote {interest}. Together we can create positive change.",
+          imageUrl: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2",
+          date: "Feb 5, 2025",
+        },
+        {
+          template: "Beautiful day in {location}. Grateful for these moments of connection with nature.",
+          imageUrl: "https://images.unsplash.com/photo-1495344517868-8ebaf0a2044a",
+          date: "Jan 25, 2025",
+        }
+      ];
+      
+      // Generate a set of posts for this user
+      return postTemplates.map((template, index) => {
+        // Choose a random interest if available
+        const randomInterest = interests.length > 0 ? 
+          interests[Math.floor(Math.random() * interests.length)] : 
+          "sustainability";
+        
+        // Generate caption from template
+        const caption = template.template
+          .replace("{interest}", randomInterest)
+          .replace("{location}", location);
+        
+        return {
+          user: userObj.username,
+          date: template.date,
+          likes: Math.floor(Math.random() * 300) + 100, // Random likes between 100-400
+          caption: caption,
+          url: template.imageUrl,
+          id: userObj.id * 100 + index
+        };
+      });
+    };
+
+    // Get posts based on username
+    if (username === "Aaron") {
+      setPosts(aaronPosts);
+    } else if (userData) {
+      setPosts(generateUserPosts(userData));
+    } else {
+      // Fallback to empty posts if user not found
+      setPosts([]);
+    }
+  }, [username]);
 
   const handleShowMore = () => {
     setIsLoading(true);
@@ -106,7 +188,7 @@ const ProfilePosts = () => {
       <div className="postsHeader">
         <div className="postsTitle-wrapper">
           <LocalFlorist className="postsTitle-icon" />
-          <h2 className="postsTitle">Users Posts</h2>
+          <h2 className="postsTitle">{userFullName}'s Posts</h2>
         </div>
         
         <div className="filterControls">
@@ -144,17 +226,24 @@ const ProfilePosts = () => {
         <div className="leaf-decoration bottom-right"></div>
         
         <div className="posts-grid">
-          {sortedPosts.map((post) => (
-            <div className="profile-post-item" key={post.id}>
-              <Post
-                date={post.date}
-                likes={post.likes}
-                caption={post.caption}
-                image={post.url}
-                user={post.user}
-              />
+          {sortedPosts.length > 0 ? (
+            sortedPosts.map((post) => (
+              <div className="profile-post-item" key={post.id}>
+                <Post
+                  date={post.date}
+                  likes={post.likes}
+                  caption={post.caption}
+                  image={post.url}
+                  user={post.user}
+                />
+              </div>
+            ))
+          ) : (
+            <div className="no-posts-message">
+              <LocalFlorist className="no-posts-icon" />
+              <p>No posts to display</p>
             </div>
-          ))}
+          )}
         </div>
         
         {visiblePosts < posts.length && (

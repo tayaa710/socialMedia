@@ -1,0 +1,467 @@
+[
+  {
+    "id": "1",
+    "username": "Aaron",
+    "firstName": "Aaron",
+    "lastName": "Taylor",
+    "email": "aaron.taylor@example.com",
+    "dateCreated": "2023-01-15T08:30:00.000Z",
+    "profilePicture": "../../assets/person/profile.jpeg",
+    "birthday": "2000-01-25T00:00:00.000Z",
+    "age": 23,
+    "city": "Hamilton",
+    "country": "New Zealand",
+    "education": {
+      "institution": "University of Otago",
+      "status": "Student"
+    },
+    "mobileNumber": "02904306765",
+    "relationshipStatus": "In a relationship",
+    "impactPoints": 1430,
+    "trustRating": 86,
+    "role": "user",
+    "valuesAndInterests": [
+      "Environmental Sustainability",
+      "Digital Wellbeing",
+      "Community Building",
+      "Ethical Technology",
+      "Mindfulness",
+      "Outdoor Activities"
+    ],
+    "description": "Passionate about sustainable technology and authentic connections. Building a better social experience for everyone."
+  },
+  {
+    "id": "2",
+    "username": "Emily",
+    "firstName": "Emily",
+    "lastName": "Johnson",
+    "email": "emily.johnson@example.com",
+    "dateCreated": "2023-02-10T10:15:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/women/12.jpg",
+    "birthday": "1995-03-18T00:00:00.000Z",
+    "age": 28,
+    "city": "Auckland",
+    "country": "New Zealand",
+    "education": {
+      "institution": "University of Auckland",
+      "status": "Graduate"
+    },
+    "mobileNumber": "021456789",
+    "relationshipStatus": "Single",
+    "impactPoints": 1250,
+    "trustRating": 92,
+    "role": "user",
+    "valuesAndInterests": [
+      "Sustainable Living",
+      "Yoga",
+      "Plant-based Diet",
+      "Photography",
+      "Hiking",
+      "Meditation"
+    ],
+    "description": "Environmental scientist passionate about conservation and sustainable living practices."
+  },
+  {
+    "id": "3",
+    "username": "Michael",
+    "firstName": "Michael",
+    "lastName": "Chen",
+    "email": "michael.chen@example.com",
+    "dateCreated": "2023-01-20T14:45:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/men/22.jpg",
+    "birthday": "1992-07-12T00:00:00.000Z",
+    "age": 31,
+    "city": "Wellington",
+    "country": "New Zealand",
+    "education": {
+      "institution": "Victoria University",
+      "status": "Alumni"
+    },
+    "mobileNumber": "022987654",
+    "relationshipStatus": "Married",
+    "impactPoints": 1850,
+    "trustRating": 94,
+    "role": "user",
+    "valuesAndInterests": [
+      "Renewable Energy",
+      "Community Building",
+      "Ethical Investment",
+      "Cycling",
+      "Urban Planning",
+      "Technology for Good"
+    ],
+    "description": "Software engineer working on renewable energy solutions and community-building technologies."
+  },
+  {
+    "id": "4",
+    "username": "Sophia",
+    "firstName": "Sophia",
+    "lastName": "Rodriguez",
+    "email": "sophia.rodriguez@example.com",
+    "dateCreated": "2023-03-05T09:20:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/women/34.jpg",
+    "birthday": "1997-11-24T00:00:00.000Z",
+    "age": 26,
+    "city": "Christchurch",
+    "country": "New Zealand",
+    "education": {
+      "institution": "University of Canterbury",
+      "status": "Graduate"
+    },
+    "mobileNumber": "023654789",
+    "relationshipStatus": "Single",
+    "impactPoints": 1560,
+    "trustRating": 88,
+    "role": "user",
+    "valuesAndInterests": [
+      "Digital Minimalism",
+      "Ethical Tech",
+      "Mental Wellness",
+      "Art",
+      "Sustainable Fashion",
+      "Local Food"
+    ],
+    "description": "Digital ethicist and UX designer creating human-centered, socially responsible technology."
+  },
+  {
+    "id": "5",
+    "username": "Jamal",
+    "firstName": "Jamal",
+    "lastName": "Williams",
+    "email": "jamal.williams@example.com",
+    "dateCreated": "2023-02-18T16:30:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/men/42.jpg",
+    "birthday": "1994-05-10T00:00:00.000Z",
+    "age": 29,
+    "city": "Dunedin",
+    "country": "New Zealand",
+    "education": {
+      "institution": "University of Otago",
+      "status": "PhD Candidate"
+    },
+    "mobileNumber": "027123456",
+    "relationshipStatus": "In a relationship",
+    "impactPoints": 1720,
+    "trustRating": 90,
+    "role": "user",
+    "valuesAndInterests": [
+      "Zero Waste",
+      "Local Food Systems",
+      "Environmental Justice",
+      "Regenerative Agriculture",
+      "Community Organizing",
+      "Education"
+    ],
+    "description": "Environmental researcher and community organizer working on food justice and sustainability projects."
+  },
+  {
+    "id": "6",
+    "username": "Olivia",
+    "firstName": "Olivia",
+    "lastName": "Kim",
+    "email": "olivia.kim@example.com",
+    "dateCreated": "2023-01-25T11:10:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/women/56.jpg",
+    "birthday": "1996-09-03T00:00:00.000Z",
+    "age": 27,
+    "city": "Tauranga",
+    "country": "New Zealand",
+    "education": {
+      "institution": "AUT University",
+      "status": "Graduate"
+    },
+    "mobileNumber": "021789456",
+    "relationshipStatus": "Married",
+    "impactPoints": 1340,
+    "trustRating": 87,
+    "role": "user",
+    "valuesAndInterests": [
+      "Mindfulness",
+      "Sustainable Fashion",
+      "Ethical Consumption",
+      "Social Entrepreneurship",
+      "Mental Health",
+      "Creative Arts"
+    ],
+    "description": "Fashion designer and mental health advocate focusing on sustainable production and ethical labor practices."
+  },
+  {
+    "id": "7",
+    "username": "Daniel",
+    "firstName": "Daniel",
+    "lastName": "Martinez",
+    "email": "daniel.martinez@example.com",
+    "dateCreated": "2023-03-12T13:25:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/men/62.jpg",
+    "birthday": "1993-12-15T00:00:00.000Z",
+    "age": 30,
+    "city": "Hamilton",
+    "country": "New Zealand",
+    "education": {
+      "institution": "Waikato University",
+      "status": "Alumni"
+    },
+    "mobileNumber": "022456123",
+    "relationshipStatus": "Single",
+    "impactPoints": 1650,
+    "trustRating": 91,
+    "role": "user",
+    "valuesAndInterests": [
+      "Urban Farming",
+      "Environmental Education",
+      "Community Gardens",
+      "Food Justice",
+      "Permaculture",
+      "Youth Mentorship"
+    ],
+    "description": "Urban farmer and educator connecting communities through sustainable food systems and environmental justice."
+  },
+  {
+    "id": "8",
+    "username": "Aisha",
+    "firstName": "Aisha",
+    "lastName": "Patel",
+    "email": "aisha.patel@example.com",
+    "dateCreated": "2023-02-05T15:40:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/women/72.jpg",
+    "birthday": "1998-02-28T00:00:00.000Z",
+    "age": 25,
+    "city": "Auckland",
+    "country": "New Zealand",
+    "education": {
+      "institution": "Massey University",
+      "status": "Student"
+    },
+    "mobileNumber": "021234567",
+    "relationshipStatus": "In a relationship",
+    "impactPoints": 1180,
+    "trustRating": 85,
+    "role": "user",
+    "valuesAndInterests": [
+      "Ecological Conservation",
+      "Vegetarian Cooking",
+      "Cultural Diversity",
+      "Social Justice",
+      "Interfaith Dialogue",
+      "Ocean Protection"
+    ],
+    "description": "Marine biologist and interfaith community builder working to protect ocean ecosystems and promote cultural understanding."
+  },
+  {
+    "id": "9",
+    "username": "Noah",
+    "firstName": "Noah",
+    "lastName": "Johnson",
+    "email": "noah.johnson@example.com",
+    "dateCreated": "2023-03-20T09:50:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/men/82.jpg",
+    "birthday": "1995-08-17T00:00:00.000Z",
+    "age": 28,
+    "city": "Wellington",
+    "country": "New Zealand",
+    "education": {
+      "institution": "Victoria University",
+      "status": "Graduate"
+    },
+    "mobileNumber": "027654321",
+    "relationshipStatus": "Single",
+    "impactPoints": 1490,
+    "trustRating": 89,
+    "role": "user",
+    "valuesAndInterests": [
+      "Climate Action",
+      "Minimalism",
+      "Renewable Energy",
+      "Policy Advocacy",
+      "Sustainable Transportation",
+      "Public Speaking"
+    ],
+    "description": "Climate scientist and policy advocate working to implement sustainable solutions at the local and national level."
+  },
+  {
+    "id": "10",
+    "username": "Zoe",
+    "firstName": "Zoe",
+    "lastName": "Wilson",
+    "email": "zoe.wilson@example.com",
+    "dateCreated": "2023-01-30T12:15:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/women/92.jpg",
+    "birthday": "1997-04-05T00:00:00.000Z",
+    "age": 26,
+    "city": "Queenstown",
+    "country": "New Zealand",
+    "education": {
+      "institution": "Lincoln University",
+      "status": "Graduate"
+    },
+    "mobileNumber": "023987654",
+    "relationshipStatus": "Single",
+    "impactPoints": 1270,
+    "trustRating": 86,
+    "role": "user",
+    "valuesAndInterests": [
+      "Eco-friendly Travel",
+      "Nature Photography",
+      "Wilderness Conservation",
+      "Adventure Sports",
+      "Environmental Writing",
+      "Sustainable Tourism"
+    ],
+    "description": "Adventure photographer and eco-tourism consultant documenting natural landscapes and promoting sustainable travel practices."
+  },
+  {
+    "id": "11",
+    "username": "Benjamin",
+    "firstName": "Benjamin",
+    "lastName": "Taylor",
+    "email": "benjamin.taylor@example.com",
+    "dateCreated": "2023-02-25T10:05:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/men/32.jpg",
+    "birthday": "1991-10-12T00:00:00.000Z",
+    "age": 32,
+    "city": "Nelson",
+    "country": "New Zealand",
+    "education": {
+      "institution": "University of Canterbury",
+      "status": "Alumni"
+    },
+    "mobileNumber": "021876543",
+    "relationshipStatus": "Married",
+    "impactPoints": 1890,
+    "trustRating": 94,
+    "role": "user",
+    "valuesAndInterests": [
+      "Sustainable Architecture",
+      "Hiking",
+      "Green Building",
+      "Community Design",
+      "Tiny House Movement",
+      "Off-grid Living"
+    ],
+    "description": "Architect specializing in sustainable building design and community-centered spaces that connect people with nature."
+  },
+  {
+    "id": "12",
+    "username": "Leila",
+    "firstName": "Leila",
+    "lastName": "Hassan",
+    "email": "leila.hassan@example.com",
+    "dateCreated": "2023-03-15T14:30:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/women/42.jpg",
+    "birthday": "1994-06-28T00:00:00.000Z",
+    "age": 29,
+    "city": "Auckland",
+    "country": "New Zealand",
+    "education": {
+      "institution": "University of Auckland",
+      "status": "PhD Candidate"
+    },
+    "mobileNumber": "022345678",
+    "relationshipStatus": "In a relationship",
+    "impactPoints": 1540,
+    "trustRating": 90,
+    "role": "user",
+    "valuesAndInterests": [
+      "Ocean Conservation",
+      "Marine Biology",
+      "Plastic Pollution",
+      "Science Communication",
+      "Diving",
+      "Environmental Education"
+    ],
+    "description": "Marine biologist and science communicator focused on ocean conservation and engaging communities in environmental protection."
+  },
+  {
+    "id": "13",
+    "username": "Gabriel",
+    "firstName": "Gabriel",
+    "lastName": "Morales",
+    "email": "gabriel.morales@example.com",
+    "dateCreated": "2023-02-08T16:45:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/men/52.jpg",
+    "birthday": "1996-11-09T00:00:00.000Z",
+    "age": 27,
+    "city": "Wellington",
+    "country": "New Zealand",
+    "education": {
+      "institution": "Massey University",
+      "status": "Graduate"
+    },
+    "mobileNumber": "027234567",
+    "relationshipStatus": "Single",
+    "impactPoints": 1420,
+    "trustRating": 88,
+    "role": "user",
+    "valuesAndInterests": [
+      "Permaculture",
+      "Community Gardens",
+      "Food Sovereignty",
+      "Indigenous Knowledge",
+      "Seed Saving",
+      "Natural Building"
+    ],
+    "description": "Permaculture designer and community organizer creating resilient local food systems and regenerative landscapes."
+  },
+  {
+    "id": "14",
+    "username": "Harper",
+    "firstName": "Harper",
+    "lastName": "Lee",
+    "email": "harper.lee@example.com",
+    "dateCreated": "2023-01-18T11:55:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/women/62.jpg",
+    "birthday": "1993-03-07T00:00:00.000Z",
+    "age": 30,
+    "city": "Christchurch",
+    "country": "New Zealand",
+    "education": {
+      "institution": "University of Otago",
+      "status": "Alumni"
+    },
+    "mobileNumber": "021765432",
+    "relationshipStatus": "Married",
+    "impactPoints": 1380,
+    "trustRating": 87,
+    "role": "user",
+    "valuesAndInterests": [
+      "Ethical Investing",
+      "Solar Energy",
+      "Financial Literacy",
+      "Social Impact",
+      "Sustainable Business",
+      "Women's Empowerment"
+    ],
+    "description": "Financial advisor focused on ethical investing and helping people align their money with their values for positive impact."
+  },
+  {
+    "id": "15",
+    "username": "Samuel",
+    "firstName": "Samuel",
+    "lastName": "Nguyen",
+    "email": "samuel.nguyen@example.com",
+    "dateCreated": "2023-03-25T10:35:00.000Z",
+    "profilePicture": "https://randomuser.me/api/portraits/men/72.jpg",
+    "birthday": "1995-12-03T00:00:00.000Z",
+    "age": 28,
+    "city": "Hamilton",
+    "country": "New Zealand",
+    "education": {
+      "institution": "Waikato University",
+      "status": "Graduate"
+    },
+    "mobileNumber": "023456789",
+    "relationshipStatus": "Single",
+    "impactPoints": 1610,
+    "trustRating": 91,
+    "role": "user",
+    "valuesAndInterests": [
+      "Sustainable Transportation",
+      "Cycling",
+      "Urban Planning",
+      "Public Transit",
+      "Car-free Living",
+      "Clean Air Advocacy"
+    ],
+    "description": "Urban planner and transportation advocate working to create more livable, walkable, and bike-friendly cities."
+  }
+] 
