@@ -7,21 +7,10 @@ import Post from '../../components/post/Post'
 import PostCreate from '../../components/postCreate/PostCreate'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-const Feed = () => {
-    const [posts, setPosts] = useState([])
+import { Posts } from '../../dummyData'
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const res = await axios.get('/api/timeline/67a6e1027a3b113ab8e0f8b4')
-                console.log(res.data)
-                setPosts(res.data)
-            } catch (error) {
-                console.error('Error fetching posts:', error)
-            }
-        }
-        fetchPosts()
-    }, [])
+const Feed = () => {
+    
 
     const [excludedTags, setExcludedTags] = useState(['Adult'])
     const [filterSettings, setFilterSettings] = useState({})
@@ -29,7 +18,6 @@ const Feed = () => {
     const handleFilterChange = ({ excludedTags, settings }) => {
         setExcludedTags(excludedTags)
         setFilterSettings(settings)
-        // In a real app, you'd likely fetch posts based on these filter settings
     }
 
     return (
@@ -48,7 +36,7 @@ const Feed = () => {
                         />
                         
                         <PostCreate />
-                        {posts.map((post) => {
+                        {Posts.map((post) => {
                             return (
                                 <Post 
                                     key={post.id}

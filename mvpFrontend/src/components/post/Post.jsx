@@ -1,32 +1,20 @@
 /* eslint-disable react/prop-types */
 import './post.css'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Favorite, Share, Comment, LocalFlorist, HelpOutline, InfoOutlined, Person } from '@mui/icons-material'
-import axios from 'axios'
+import { Users } from "../../dummyData"
+
 
 const Post = ({ post }) => {
   const [showReason, setShowReason] = useState(false)
+  const [like, setLike] = useState(post.like)
+  const user = Users.filter(user => user.id === post.userId)[0]
   const [isLiked, setIsLiked] = useState(false)
-  const [postImage, setPostImage] = useState(null)
-  
-  useEffect(() => {
-    // Set post image if available
-    if (post.img) {
-      setPostImage(post.img);
-    }
-  }, [post.img]);
 
   const likeHandler = () => {
     setIsLiked(!isLiked)
+    setLike(isLiked ? like - 1 : like + 1)
   }
-
-  const handleImageError = (e) => {
-    e.target.onerror = null;
-    e.target.src = "https://via.placeholder.com/400x300?text=Image+Not+Available";
-  };
-
-  // Make sure description is available
-  const description = post.description || '';
 
   return (
     <div className="postContainer">
@@ -34,11 +22,12 @@ const Post = ({ post }) => {
         <div className="headerLeft">
           <div className="userInfoArea">
             <Person fontSize="small" className="userIcon" />
-            <span className="postUsername">{post.userId}</span>
+            <span className="postUsername">{user.username}</span>
+            <span className="postDate">{post.date}</span>
           </div>
         </div>
         <div className="headerRight">
-          <button 
+          <button
             className={`whyButton ${showReason ? 'active' : ''}`}
             onClick={() => setShowReason(!showReason)}
           >
@@ -47,7 +36,7 @@ const Post = ({ post }) => {
           </button>
         </div>
       </div>
-      
+
       {showReason && (
         <div className="reasonPanel">
           <div className="reasonContent">
@@ -60,36 +49,34 @@ const Post = ({ post }) => {
           </div>
         </div>
       )}
-      
-      {/* Show image if we have one from useEffect */}
-      {postImage && (
-        <div className="imageWrapper">
-          <img 
-            src={postImage} 
-            alt={`Post by ${post.userId}`} 
-            className="postImage" 
-            onError={handleImageError}
-          />
-          <div className="hoverOverlay">
-            <div className="overlayContent">
-              <span>{post.description}</span>
-            </div>
+
+
+      <div className="imageWrapper">
+        <img
+          src={post.photo}
+          alt={`Post by ${user.username}`}
+          className="postImage"
+        />
+        <div className="hoverOverlay">
+          <div className="overlayContent">
+            <span>{post.desc}</span>
           </div>
         </div>
-      )}
-      
+      </div>
+
+
       <div className="postContent">
         <p className="postCaption">
-          <span className="captionUsername">{post.userId}</span> {description}
+          <span className="captionUsername">{post.desc}</span>
         </p>
-        
+
         <div className="postStats">
           <div className="statItem">
             <LocalFlorist fontSize="small" className="statIcon" />
-            <span>100 people found this valuable</span>
+            <span>{like} people found this valuable</span>
           </div>
         </div>
-        
+
         <div className="postActions">
           <button className="actionButton likeButton" onClick={likeHandler}>
             <Favorite fontSize="small" className={isLiked ? "likeIcon liked" : "likeIcon"} />
