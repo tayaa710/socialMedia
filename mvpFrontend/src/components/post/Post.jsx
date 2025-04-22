@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import './post.css'
 import { useState } from 'react'
-import { Favorite, Share, Comment, LocalFlorist, HelpOutline, InfoOutlined } from '@mui/icons-material'
+import { Favorite, Share, Comment, LocalFlorist, HelpOutline, InfoOutlined, Person } from '@mui/icons-material'
 import { Users } from "../../dummyData"
 
 const Post = ({ post, date, likes, image, caption, user, reason, tags = [] }) => {
@@ -52,7 +52,13 @@ const Post = ({ post, date, likes, image, caption, user, reason, tags = [] }) =>
   return (
     <div className="postContainer">
       <div className="postHeader">
-        <p className="datePosted">{postDate}</p>
+        <div className="headerLeft">
+          <div className="userInfoArea">
+            <Person fontSize="small" className="userIcon" />
+            <span className="postUsername">{postUser}</span>
+          </div>
+          <p className="datePosted">{postDate}</p>
+        </div>
         <div className="headerRight">
           {postReason && (
             <button 
@@ -94,7 +100,9 @@ const Post = ({ post, date, likes, image, caption, user, reason, tags = [] }) =>
       </div>
       
       <div className="postContent">
-        <p className="postCaption">{postCaption}</p>
+        <p className="postCaption">
+          <span className="captionUsername">{postUser}</span> {postCaption}
+        </p>
         
         <div className="postStats">
           <div className="statItem">
