@@ -5,6 +5,7 @@ import Sidebar from '../../components/sidebar/Sidebar'
 import Rightbar from '../../components/rightbar/Rightbar'
 import FeedFilters from '../../components/feedFilters/FeedFilters'
 import Post from '../../components/post/Post'
+import PostCreate from '../../components/postCreate/PostCreate'
 
 const Feed = () => {
     const [posts, setPosts] = useState([
@@ -88,6 +89,8 @@ const Feed = () => {
                             onFilterChange={handleFilterChange}
                             initialExcludedTags={excludedTags}
                         />
+                        
+                        <PostCreate />
                         
                         {filteredPosts.map(post => (
                             <Post 
