@@ -1,10 +1,46 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { getAllUsernames, getUserByUsername, formatFullName } from '../../utils/userDataUtils';
 import './userList.css';
 
 const UserList = () => {
-  const usernames = getAllUsernames();
+  // Hardcoded sample users
+  const sampleUsers = [
+    {
+      username: 'Sarah',
+      firstName: 'Sarah',
+      lastName: 'Johnson',
+      profilePicture: 'https://randomuser.me/api/portraits/women/42.jpg',
+      description: 'Passionate about environmental conservation and sustainable living.'
+    },
+    {
+      username: 'Michael',
+      firstName: 'Michael',
+      lastName: 'Williams',
+      profilePicture: 'https://randomuser.me/api/portraits/men/32.jpg',
+      description: 'Tech enthusiast working on solutions for climate change.'
+    },
+    {
+      username: 'Emma',
+      firstName: 'Emma',
+      lastName: 'Brown',
+      profilePicture: 'https://randomuser.me/api/portraits/women/21.jpg',
+      description: 'Community organizer and advocate for social justice.'
+    },
+    {
+      username: 'David',
+      firstName: 'David',
+      lastName: 'Miller',
+      profilePicture: 'https://randomuser.me/api/portraits/men/64.jpg',
+      description: 'Researcher focused on renewable energy technologies.'
+    },
+    {
+      username: 'Olivia',
+      firstName: 'Olivia',
+      lastName: 'Davis',
+      profilePicture: 'https://randomuser.me/api/portraits/women/54.jpg',
+      description: 'Health and wellness coach promoting holistic living.'
+    }
+  ];
   
   return (
     <div className="user-list-container">
@@ -12,26 +48,25 @@ const UserList = () => {
       <p className="user-list-instruction">Click on a user to view their profile</p>
       
       <div className="user-list">
-        {usernames.map(username => {
-          const userData = getUserByUsername(username);
+        {sampleUsers.map(user => {
           return (
             <Link 
-              to={`/profile/${username}`} 
-              key={username} 
+              to={`/profile/${user.username}`} 
+              key={user.username} 
               className="user-list-item"
             >
               <div className="user-list-avatar">
                 <img 
-                  src={userData.profilePicture} 
-                  alt={`${username}'s avatar`} 
+                  src={user.profilePicture} 
+                  alt={`${user.username}'s avatar`} 
                   className="user-avatar-img"
                 />
                 {Math.random() > 0.7 && <span className="online-indicator"></span>}
               </div>
               <div className="user-list-info">
-                <h3 className="user-list-name">{formatFullName(userData)}</h3>
-                <p className="user-list-username">@{username}</p>
-                <p className="user-list-description">{userData.description.substring(0, 60)}...</p>
+                <h3 className="user-list-name">{`${user.firstName} ${user.lastName}`}</h3>
+                <p className="user-list-username">@{user.username}</p>
+                <p className="user-list-description">{user.description.substring(0, 60)}...</p>
               </div>
             </Link>
           );

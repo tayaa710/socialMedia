@@ -2,7 +2,6 @@ import User from "../user/User";
 import "./profileFriends.css";
 import { useState, useEffect } from "react";
 import { People, SortByAlpha, AccessTime, LocalFlorist, FilterAlt } from "@mui/icons-material";
-import { getUserByUsername } from "../../utils/userDataUtils";
 
 const ProfileFriends = ({ username = "Aaron" }) => {
   const [sortOrder, setSortOrder] = useState("Recent");
@@ -13,13 +12,8 @@ const ProfileFriends = ({ username = "Aaron" }) => {
   const [userFullName, setUserFullName] = useState("");
   
   useEffect(() => {
-    // Get user info for display name
-    const userData = getUserByUsername(username);
-    if (userData) {
-      setUserFullName(`${userData.firstName} ${userData.lastName}`);
-    } else {
-      setUserFullName(username);
-    }
+    // Set display name without dependency on getUserByUsername
+    setUserFullName(username);
     
     // In a real app, this would fetch friends based on the username from an API
     // For this MVP, we're using sample data
@@ -47,39 +41,23 @@ const ProfileFriends = ({ username = "Aaron" }) => {
       { id: 120, name: "Chloe Robinson", friendedDate: "2022-02-14", interests: ["Plant-Based Diet", "Holistic Health"], isOnline: true, mutualConnections: 171 }
     ];
 
-    // Generate friends based on sample user data
-    const generateFriendsFromSampleUsers = () => {
-      // Take a subset of the sample users as friends
-      // In a real app, this would be based on actual friend connections
-      const sampleUsernames = ["Emily", "Michael", "Sophia", "Jamal", "Olivia"];
-      const randomFriends = sampleUsernames.map(friendUsername => {
-        const friendData = getUserByUsername(friendUsername);
-        if (!friendData) return null;
-        
-        // Generate random dates within the last year
-        const now = new Date();
-        const randomMonths = Math.floor(Math.random() * 12);
-        const friendedDate = new Date(now);
-        friendedDate.setMonth(now.getMonth() - randomMonths);
-        
-        return {
-          id: parseInt(friendData.id),
-          name: `${friendData.firstName} ${friendData.lastName}`,
-          friendedDate: friendedDate.toISOString().split('T')[0],
-          interests: friendData.valuesAndInterests?.slice(0, 2) || [],
-          isOnline: Math.random() > 0.5, // Randomly online or offline
-          mutualConnections: Math.floor(Math.random() * 150) + 20 // Random mutual connections
-        };
-      }).filter(Boolean); // Remove any null entries
-      
-      return randomFriends;
+    // Generate a smaller friend list for other users
+    const generateGenericFriends = () => {
+      // Smaller set of friends for non-Aaron users
+      return [
+        { id: 201, name: "Emily Johnson", friendedDate: "2023-10-05", interests: ["Sustainable Living", "Education"], isOnline: true, mutualConnections: 78 },
+        { id: 202, name: "Michael Smith", friendedDate: "2023-08-12", interests: ["Technology", "Outdoors"], isOnline: false, mutualConnections: 42 },
+        { id: 203, name: "Sophia Brown", friendedDate: "2023-11-20", interests: ["Community", "Art"], isOnline: true, mutualConnections: 65 },
+        { id: 204, name: "David Wilson", friendedDate: "2024-01-15", interests: ["Environment", "Photography"], isOnline: false, mutualConnections: 31 },
+        { id: 205, name: "Olivia Miller", friendedDate: "2023-09-08", interests: ["Wellness", "Reading"], isOnline: true, mutualConnections: 57 }
+      ];
     };
 
     if (username === "Aaron") {
       setFriends(defaultFriends);
     } else {
-      // For other users, generate a smaller friend list
-      setFriends(generateFriendsFromSampleUsers());
+      // For other users, set a smaller generic friend list
+      setFriends(generateGenericFriends());
     }
   }, [username]);
   
@@ -197,70 +175,39 @@ const ProfileFriends = ({ username = "Aaron" }) => {
               </div>
             </div>
           </div>
-          
-          <div className="filterGroup">
-            <h4>Interests</h4>
-            <div className="filterOptions">
-              <div className="filterChip">
-                <input type="checkbox" id="sustainability" />
-                <label htmlFor="sustainability">Sustainability</label>
-              </div>
-              <div className="filterChip">
-                <input type="checkbox" id="ethics" />
-                <label htmlFor="ethics">Ethics</label>
-              </div>
-              <div className="filterChip">
-                <input type="checkbox" id="community" />
-                <label htmlFor="community">Community</label>
-              </div>
-              <div className="filterChip">
-                <input type="checkbox" id="mindfulness" />
-                <label htmlFor="mindfulness">Mindfulness</label>
-              </div>
-            </div>
-          </div>
         </div>
       )}
       
-      <div className="friendsConnectionsBanner">
+      <div className="connectionsBanner">
         <div className="banner-graphic left"></div>
         <div className="banner-content">
-          <LocalFlorist className="connectionIcon" />
-          <p>Your authentic connections form the foundation of a meaningful digital experience.</p>
+          <LocalFlorist className="bannerIcon" />
+          <p>Meaningful connections create a more intentional digital experience.</p>
         </div>
         <div className="banner-graphic right"></div>
       </div>
       
-      <div className="friendsGrid">
-        <div className="community-decoration top-right"></div>
-        <div className="community-decoration bottom-left"></div>
-        
-        {friendsSorted().length === 0 ? (
-          <div className="noFriendsResult">
-            <p>No friends match your search criteria</p>
-          </div>
+      <div className="friendsList">
+        {friendsSorted().length > 0 ? (
+          friendsSorted().map(friend => (
+            <User 
+              key={friend.id}
+              name={friend.name} 
+              friendSince={friend.friendedDate}
+              interests={friend.interests}
+              isOnline={friend.isOnline}
+              mutualConnections={friend.mutualConnections}
+            />
+          ))
         ) : (
-          <div className="friends-grid-layout">
-            {friendsSorted().map((friend) => (
-              <User 
-                key={friend.id} 
-                id={friend.id}
-                name={friend.name} 
-                interests={friend.interests}
-                friendDate={new Date(friend.friendedDate).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric"
-                })}
-                isOnline={friend.isOnline}
-                mutualConnections={friend.mutualConnections}
-              />
-            ))}
+          <div className="noFriendsMessage">
+            <LocalFlorist className="noFriendsIcon" />
+            <p>No matching friends found</p>
           </div>
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default ProfileFriends
+export default ProfileFriends;

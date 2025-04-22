@@ -5,70 +5,26 @@ import Rightbar from '../../components/rightbar/Rightbar'
 import FeedFilters from '../../components/feedFilters/FeedFilters'
 import Post from '../../components/post/Post'
 import PostCreate from '../../components/postCreate/PostCreate'
-import { Posts as DummyPosts } from "../../dummyData"
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 const Feed = () => {
-    const [posts, setPosts] = useState([
-        {
-            id: 1,
-            date: 'July 24, 2023',
-            likes: 142,
-            image: 'https://images.unsplash.com/photo-1500485035595-cbe6f645feb1',
-            caption: 'Beautiful sunset at the beach today!',
-            user: 'Alex Morgan',
-            reason: 'You follow Alex Morgan',
-            tags: ['Nature', 'Travel']
-        },
-        {
-            id: 2,
-            date: 'July 22, 2023',
-            likes: 89,
-            image: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929',
-            caption: 'Homemade breakfast - starting the day right',
-            user: 'Jamie Chen',
-            reason: 'You liked similar cooking posts',
-            tags: ['Food', 'Cooking']
-        },
-        {
-            id: 3,
-            date: 'July 20, 2023',
-            likes: 215,
-            image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-            caption: 'Weekend hiking trip to the mountains',
-            user: 'Hiking Community',
-            reason: 'Popular in communities you follow',
-            tags: ['Outdoors', 'Hiking']
-        },
-        {
-            id: 4,
-            date: 'July 18, 2023',
-            likes: 76,
-            image: 'https://images.unsplash.com/photo-1555952517-2e8e729e0b44',
-            caption: 'Check out this amazing cryptocurrency opportunity!',
-            user: 'CryptoEnthusiast',
-            reason: 'Trending in your area',
-            tags: ['Crypto', 'Finance']
-        },
-        {
-            id: 5,
-            date: 'July 17, 2023',
-            likes: 128,
-            image: 'https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2',
-            caption: 'My new tech setup for 2023',
-            user: 'TechGuru',
-            reason: 'Based on your interest in technology',
-            tags: ['Tech', 'Gadgets']
+    const [posts, setPosts] = useState([])
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const res = await axios.get('/api/timeline/67a6e1027a3b113ab8e0f8b4')
+                console.log(res.data)
+                setPosts(res.data)
+            } catch (error) {
+                console.error('Error fetching posts:', error)
+            }
         }
-    ])
+        fetchPosts()
+    }, [])
 
-    const [excludedTags, setExcludedTags] = useState(['Crypto'])
+    const [excludedTags, setExcludedTags] = useState(['Adult'])
     const [filterSettings, setFilterSettings] = useState({})
-
-    // Filter posts based on excluded tags
-    const filteredPosts = posts.filter(post => {
-        return !post.tags.some(tag => excludedTags.includes(tag))
-    })
 
     const handleFilterChange = ({ excludedTags, settings }) => {
         setExcludedTags(excludedTags)
@@ -92,19 +48,14 @@ const Feed = () => {
                         />
                         
                         <PostCreate />
-                        
-                        {filteredPosts.map(post => (
-                            <Post 
-                                key={post.id}
-                                date={post.date}
-                                likes={post.likes}
-                                image={post.image}
-                                caption={post.caption}
-                                user={post.user}
-                                reason={post.reason}
-                                tags={post.tags}
-                            />
-                        ))}
+                        {posts.map((post) => {
+                            return (
+                                <Post 
+                                    key={post.id}
+                                    post={post}
+                                />
+                            )
+                        })}
                     </div>
                 </div>
 

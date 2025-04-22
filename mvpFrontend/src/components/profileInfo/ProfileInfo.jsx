@@ -2,7 +2,6 @@
 import './ProfileInfo.css'
 import { useState, useEffect } from 'react'
 import { School, Favorite, Cake, AccessTime, Public, LocationOn, Phone, LocalFlorist } from '@mui/icons-material'
-import { getUserByUsername, formatEducation } from '../../utils/userDataUtils'
 
 const ProfileInfo = ({ username = "Aaron" }) => {
   const [userInfo, setUserInfo] = useState({
@@ -28,34 +27,26 @@ const ProfileInfo = ({ username = "Aaron" }) => {
   });
 
   useEffect(() => {
-    // Get user data from sample users
-    const user = getUserByUsername(username);
-    
-    if (user) {
-      // Format the date
-      const formatDate = (dateString) => {
-        if (!dateString) return "Not available";
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-GB', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }).replace(/\//g, '/');
-      };
-      
+    // Use default data for Aaron, and custom data for other users
+    if (username && username !== "Aaron") {
       setUserInfo({
         personal: {
-          birthday: formatDate(user.birthday),
-          age: user.age?.toString() || "—",
-          country: user.country || "—",
-          city: user.city || "—"
+          birthday: "01/01/2000",
+          age: "24",
+          country: "New Zealand",
+          city: "Wellington"
         },
         relationships: {
-          status: user.relationshipStatus || "Not specified",
-          education: formatEducation(user) || "Not specified",
-          phone: user.mobileNumber || "Not shared"
+          status: "Single",
+          education: "University Graduate",
+          phone: "Not shared"
         },
-        values: user.valuesAndInterests || []
+        values: [
+          "Sustainability",
+          "Community",
+          "Education",
+          "Technology"
+        ]
       });
     }
   }, [username]);

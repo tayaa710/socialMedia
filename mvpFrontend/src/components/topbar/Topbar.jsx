@@ -1,12 +1,15 @@
 import { Search, LocalFlorist, LightbulbOutlined, Person } from "@mui/icons-material"
 import './topbar.css'
+import { Link } from "react-router-dom"
 
 const Topbar = () => {
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
-        <LocalFlorist className="logoIcon" />
-        <span className="logo">Verdant</span>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit', outline: 'none' }}>
+          <LocalFlorist className="logoIcon" />
+          <span className="logo">Verdant</span>
+        </Link>
       </div>
       <div className="topbarCenter">
         <div className="searchContainer">

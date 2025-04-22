@@ -2,7 +2,6 @@ import Button from '../button/Button'
 import './userbar.css'
 import { VerifiedUser, LocationOn, Cake, Favorite, LocalFlorist } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
-import { getUserByUsername, formatFullName, formatLocation, formatEducation } from '../../utils/userDataUtils'
 
 const Userbar = ({ username }) => {
   const [userData, setUserData] = useState({
@@ -17,20 +16,17 @@ const Userbar = ({ username }) => {
   })
   
   useEffect(() => {
-    // Get user data from sample users
-    const user = getUserByUsername(username);
-    console.log(`Viewing profile for: ${username || 'default user'}`, user);
-    
-    if (user) {
+    // Use default profile data or customize based on username
+    if (username && username !== "Aaron") {
       setUserData({
-        name: formatFullName(user),
-        bio: user.description || `This is ${username}'s profile.`,
-        age: user.age?.toString() || "—",
-        location: formatLocation(user),
-        interest: user.valuesAndInterests?.[0] || "—",
-        impactPoints: user.impactPoints?.toLocaleString() || "0",
-        trustRating: `${user.trustRating || 0}%`,
-        profilePicture: user.profilePicture || "../../assets/person/profile.jpeg"
+        name: username,
+        bio: `This is ${username}'s profile.`,
+        age: "—",
+        location: "New Zealand",
+        interest: "Sustainability",
+        impactPoints: "0",
+        trustRating: "0%",
+        profilePicture: "https://via.placeholder.com/150"
       });
     }
   }, [username]);
