@@ -5,12 +5,12 @@ import Topbar from '../../components/topbar/Topbar'
 import Userbar from '../../components/userbar/Userbar'
 import ProfileFriends from '../../components/profileFriends/ProfileFriends'
 import './profile.css'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Users } from '../../data/dummyData'
 
 const Profile = () => {
   const [selectedOption, setSelectedOption] = useState("Posts")
-  const [user, setUser] = useState(Users[Math.floor(Math.random() * Users.length)])
+  const user = useMemo(() => Users[Math.floor(Math.random() * Users.length)], [])
   
   const renderOption = () => {
     switch (selectedOption) {
@@ -25,7 +25,7 @@ const Profile = () => {
     <div className='pageContainer'>
       <div className="heading">
         <Topbar />
-        <Userbar username={user.username} />
+        <Userbar user={user} />
         <SelectionBar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
       </div>
       
