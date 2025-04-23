@@ -2,19 +2,26 @@
 import { useState, useEffect } from "react";
 import "./profilePosts.css";
 import { LocalFlorist, AccessTime, Favorite, Grid3x3 } from "@mui/icons-material";
-import { Posts } from "../../data/dummyData";
 import Post from "../post/Post";
-
+import axios from "axios";
 const ProfilePosts = ({user}) => {
   const [posts, setPosts] = useState([]);
   const [sortMethod, setSortMethod] = useState("recent");
   const [viewMode, setViewMode] = useState("grid");
-  const userId = user.id;
 
-  useEffect(() => {
-    const userPosts = Posts.filter(post => post.userId === userId);
-    setPosts(userPosts);
-  }, [userId]);
+ useEffect(() => {
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get(`/api/posts/user/${user.id}`);
+      setPosts(response.data);
+    } catch (error) {
+      console.error("Failed to fetch posts:", error);
+    }
+  };
+
+  fetchPosts();
+}, [user.id]);
+  
 
   const sortedPosts = () => {
     if (sortMethod === "popular") {
@@ -30,7 +37,7 @@ const ProfilePosts = ({user}) => {
       <div className="profilePostsHeader">
         <div className="postsTitle-wrapper">
           <LocalFlorist className="postsTitle-icon" />
-          <h2 className="postsTitle">{user.username}&apos;s Posts</h2>
+          <h2 className="postsTitle">{user.firstName} {user.lastName}&apos;s Posts</h2>
           <span className="postCount">{posts.length} posts</span>
         </div>
         

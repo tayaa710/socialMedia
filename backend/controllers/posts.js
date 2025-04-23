@@ -4,18 +4,18 @@ const Post = require('../models/post')
 const { tokenExtractor, userExtractor } = require('../utils/middleware');
 
 postsRouter.get('/', async (request, response) => {
-  const posts = await Post.find({}).populate("user", { firstName: 1 })
-  .populate("likes", { firstName: 1});
+  const posts = await Post.find({}).populate("user", { username: 1 })
   response.json(posts)
 })
 
 //Create a post
 postsRouter.post('/', tokenExtractor, userExtractor, async (req, res) => {
-  const { description, image } = req.body
+  const { description, photo, ...rest } = req.body
   const newPost = new Post({
     user: req.user.id,
     description,
-    image
+    photo,
+    ...rest
   })
   const post = await newPost.save()
   const postId = post._id
@@ -75,10 +75,21 @@ postsRouter.put('/:id/like', tokenExtractor, userExtractor, async (req, res) => 
 postsRouter.get('/:id',async (request, response) => {
   const post = await Post.findById(request.params.id).populate("user", { firstName: 1 })
   response.status(200).json(post)
-
 })
 
-
-
+//get all posts from a specific user
+postsRouter.get('/user/:userId', async (request, response) => {
+  try {
+    const user = await User.findById(request.params.userId)
+    if (!user) {
+      return response.status(404).json({ error: 'User not found' })
+    }
+    
+    const userPosts = await Post.find({user: user._id})
+    response.status(200).json(userPosts)
+  } catch (error) {
+    response.status(500).json({ error: 'Failed to fetch user posts' })
+  }
+})
 
 module.exports = postsRouter

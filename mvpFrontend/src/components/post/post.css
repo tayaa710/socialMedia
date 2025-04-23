@@ -77,6 +77,7 @@
   color: #666;
   cursor: pointer;
   transition: all 0.2s ease;
+  outline: none;
 }
 
 .whyButton:hover, .whyButton.active {
@@ -119,6 +120,7 @@
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  outline: none;
 }
 
 .hideContentBtn {
@@ -235,6 +237,7 @@
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  outline: none;
 }
 
 .actionButton:hover {
@@ -332,6 +335,7 @@
   font-size: 0.85rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  outline: none;
 }
 
 .hideContentBtn {
@@ -353,4 +357,61 @@
 /* Icon styling */
 .greenIcon {
   color: #40916C !important;
+}
+
+.profilePicture {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.userProfilePic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+  border: 2px solid #34a853;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.userProfilePic:hover {
+  transform: scale(1.1);
+}
+
+.likeCount {
+  margin-left: 5px;
+  font-weight: bold;
+  background-color: #f0f2f5;
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 14px;
+  color: #1877f2;
+  display: inline-block;
+}
+
+/* Add this at the bottom of the file to ensure it takes precedence */
+/* Remove button outlines */
+button, 
+.actionButton,
+.whyButton,
+.reasonActions button,
+.hideContentBtn,
+.seeMoreBtn {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+button:focus, 
+.actionButton:focus,
+.whyButton:focus,
+.reasonActions button:focus,
+.hideContentBtn:focus,
+.seeMoreBtn:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: inherit;
 }

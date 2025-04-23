@@ -74,6 +74,8 @@ const ProfileFriends = ({user}) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="searchInput"
+            name="friendSearch"
+            id="friendSearch"
           />
         </div>
         

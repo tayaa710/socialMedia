@@ -1,29 +1,53 @@
 /* eslint-disable react/prop-types */
 import './post.css'
-import { useState } from 'react'
-import { Favorite, Share, Comment, LocalFlorist, HelpOutline, InfoOutlined, Person } from '@mui/icons-material'
-import { Users } from "../../data/dummyData"
-
+import { useState, useEffect } from 'react'
+import { Favorite, Share, Comment, HelpOutline, InfoOutlined } from '@mui/icons-material'
+import axios from 'axios'
+import {format} from "timeago.js"
 
 const Post = ({ post }) => {
   const [showReason, setShowReason] = useState(false)
-  const [like, setLike] = useState(post.like)
-  const user = Users.filter(user => user.id === post.userId)[0]
+  const [likes, setLikes] = useState(post.likes.length)
   const [isLiked, setIsLiked] = useState(false)
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFhcm9udGF5bG9yMjQiLCJpZCI6IjY4MDg2MzlkMTU4ZDQyZTQ5ZGJlMmY0MSIsImlhdCI6MTc0NTM4MjQ3NiwiZXhwIjoxNzQ1OTg3Mjc2fQ.AdjUi4yHqdsWjq5WZC76R93GZQibBTTNlKW3fL2ySiE'
+        const response = await axios.get(`/api/users/${post.user}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        setUser(response.data)
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+    
+    fetchUser();
+  }, [post.user]);
 
   const likeHandler = () => {
     setIsLiked(!isLiked)
-    setLike(isLiked ? like - 1 : like + 1)
+    setLikes(isLiked ? likes - 1 : likes + 1)
   }
+
+  if (!user) return null; // Don't render until user data is loaded
 
   return (
     <div className="postContainer">
       <div className="postHeader">
         <div className="headerLeft">
           <div className="userInfoArea">
-            <Person fontSize="small" className="userIcon" />
-            <span className="postUsername">{user.username}</span>
-            <span className="postDate">{post.date}</span>
+            <img 
+              src={user.profilePicture} 
+              alt="Profile" 
+              className="userProfilePic"
+            />
+            <span className="postUsername">{user.firstName} {user.lastName}</span>
+            <span className="postDate">{format(post.createdAt)}</span>
           </div>
         </div>
         <div className="headerRight">
@@ -54,12 +78,12 @@ const Post = ({ post }) => {
       <div className="imageWrapper">
         <img
           src={post.photo}
-          alt={`Post by ${user.username}`}
+          alt={`Post by ${user.firstName} ${user.lastName}`}
           className="postImage"
         />
         <div className="hoverOverlay">
           <div className="overlayContent">
-            <span>{post.desc}</span>
+            <span>{post.description}</span>
           </div>
         </div>
       </div>
@@ -67,20 +91,14 @@ const Post = ({ post }) => {
 
       <div className="postContent">
         <p className="postCaption">
-          <span className="captionUsername">{post.desc}</span>
+          <span className="captionUsername">{post.description}</span>
         </p>
-
-        <div className="postStats">
-          <div className="statItem">
-            <LocalFlorist fontSize="small" className="statIcon" />
-            <span>{like} people found this valuable</span>
-          </div>
-        </div>
 
         <div className="postActions">
           <button className="actionButton likeButton" onClick={likeHandler}>
             <Favorite fontSize="small" className={isLiked ? "likeIcon liked" : "likeIcon"} />
             <span>Valuable</span>
+            {likes > 0 && <span className="likeCount">{likes}</span>}
           </button>
           <button className="actionButton">
             <Comment fontSize="small" />

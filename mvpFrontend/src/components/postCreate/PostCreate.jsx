@@ -27,6 +27,8 @@ const PostCreate = () => {
           placeholder="What's on your mind?"
           value={postText}
           onChange={handleInputChange}
+          name="postText"
+          id="postText"
         />
         <div className="postCreateActions">
           <div className="postCreateButtons">

@@ -2,29 +2,29 @@ let mongoose = require('mongoose')
 
 const postSchema = new mongoose.Schema(
   {
-    userId: {
-      type: Number,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true
     },
-    desc: {
+    description: {
       type: String,
       max: 500
     },
     photo: {
       type: String
     },
-    date: {
-      type: String
-    },
-    like: {
-      type: Number,
-      default: 0
+    likes: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
+      default: []
     },
     comment: {
       type: Number,
       default: 0
     }
-  }
+  },
+  { timestamps: true }
 )
 
 postSchema.set('toJSON', {

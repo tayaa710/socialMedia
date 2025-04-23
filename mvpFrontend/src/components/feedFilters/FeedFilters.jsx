@@ -285,6 +285,8 @@ const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'] }) => {
               className="excludeInput"
               placeholder="Add tag to exclude... (press Enter)" 
               onKeyDown={handleAddExcludedTag}
+              name="excludeTag"
+              id="excludeTag"
             />
           </div>
         </div>
