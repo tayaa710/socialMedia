@@ -8,7 +8,8 @@ export const Users = [
     location: "San Francisco, CA",
     friends: [2, 5, 8, 10],
     impactPoints: 782,
-    trustRating: 94
+    trustRating: 94,
+    isOnline: true
   },
   {
     id:2,
@@ -19,7 +20,8 @@ export const Users = [
     location: "Portland, OR",
     friends: [1, 3, 7],
     impactPoints: 546,
-    trustRating: 87
+    trustRating: 87,
+    isOnline: false
   },
   {
     id:3,
@@ -30,7 +32,8 @@ export const Users = [
     location: "Austin, TX",
     friends: [2, 4, 6, 9],
     impactPoints: 921,
-    trustRating: 91
+    trustRating: 91,
+    isOnline: true
   },
   {
     id:4,
@@ -41,7 +44,8 @@ export const Users = [
     location: "Denver, CO",
     friends: [3, 5, 7],
     impactPoints: 315,
-    trustRating: 79
+    trustRating: 79,
+    isOnline: false
   },
   {
     id:5,
@@ -52,7 +56,8 @@ export const Users = [
     location: "Chicago, IL",
     friends: [1, 4, 6, 10],
     impactPoints: 658,
-    trustRating: 88
+    trustRating: 88,
+    isOnline: true
   },
   {
     id:6,
@@ -63,7 +68,8 @@ export const Users = [
     location: "Seattle, WA",
     friends: [3, 5, 8],
     impactPoints: 472,
-    trustRating: 82
+    trustRating: 82,
+    isOnline: false
   },
   {
     id:7,
@@ -74,7 +80,8 @@ export const Users = [
     location: "Boston, MA",
     friends: [2, 4, 9],
     impactPoints: 823,
-    trustRating: 96
+    trustRating: 96,
+    isOnline: true
   },
   {
     id:8,
@@ -85,7 +92,8 @@ export const Users = [
     location: "New York, NY",
     friends: [1, 6, 10],
     impactPoints: 594,
-    trustRating: 85
+    trustRating: 85,
+    isOnline: false
   },
   {
     id:9,
@@ -96,7 +104,8 @@ export const Users = [
     location: "Miami, FL",
     friends: [3, 7, 10],
     impactPoints: 412,
-    trustRating: 81
+    trustRating: 81,
+    isOnline: true
   },
   {
     id:10,
@@ -107,7 +116,8 @@ export const Users = [
     location: "Los Angeles, CA",
     friends: [1, 5, 8, 9],
     impactPoints: 752,
-    trustRating: 93
+    trustRating: 93,
+    isOnline: false
   },
 ];
 

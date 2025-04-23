@@ -1,37 +1,27 @@
-/* eslint-disable react/prop-types */
-
 import './user.css'
 import { LocalFlorist, Favorite, PersonAdd, Message } from '@mui/icons-material'
 
-// Generate a random profile photo URL based on user ID or name
-const getProfilePhoto = (name, id = null) => {
-  const seed = id || name.toLowerCase().replace(/\s+/g, '');
-  const styles = ['adventurer', 'adventurer-neutral', 'avataaars', 'big-ears', 'big-smile', 'bottts', 'croodles', 'fun-emoji', 'icons', 'identicon', 'initials', 'lorelei', 'micah', 'miniavs', 'open-peeps', 'personas', 'pixel-art'];
-  const style = styles[Math.floor(Math.abs(hashCode(seed)) % styles.length)];
-  return `https://api.dicebear.com/7.x/${style}/svg?seed=${seed}`;
-}
 
-// Simple hash function for generating consistent random values
-const hashCode = (str) => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-}
-
-const User = ({name, interests = [], friendDate, isOnline = false, id = null, mutualConnections = 0}) => {
+const User = ({user}) => {
+  // Generate a random date from the past 3 years
+  const randomMonths = Math.floor(Math.random() * 36); // Random number between 0-36 months
+  const date = new Date();
+  date.setMonth(date.getMonth() - randomMonths);
+  const friendDate = date.toLocaleDateString();
+  
+  // Default values for now
+  const mutualConnections = user.mutualConnections || Math.floor(Math.random() * 12);
+  
   return (
     <div className="userContainer">
       <div className="userHeader">
-        <div className={`profilePictureWrapper ${isOnline ? 'online' : ''}`}>
-          <img src={getProfilePhoto(name, id)} alt={`${name}'s Profile`} className="profilePicture" />
-          {isOnline && <div className="onlineIndicator"></div>}
+        <div className={`profilePictureWrapper ${user.isOnline ? 'online' : ''}`}>
+          <img src={user.profilePicture} alt={`${user.username}'s Profile`} className="profilePicture" />
+          {user.isOnline && <div className="onlineIndicator"></div>}
         </div>
         
-        <h3 className="userName">{name}</h3>
-        {isOnline && <span className="onlineStatus">Online</span>}
+        <h3 className="userName">{user.username}</h3>
+        {user.isOnline && <span className="onlineStatus">Online</span>}
       </div>
 
       <div className="userInfo">
@@ -42,9 +32,9 @@ const User = ({name, interests = [], friendDate, isOnline = false, id = null, mu
           </div>
         )}
         
-        {interests && interests.length > 0 && (
+        {user.interests && user.interests.length > 0 && (
           <div className="interestsContainer">
-            {interests.map((interest, index) => (
+            {user.interests.map((interest, index) => (
               <span key={index} className="interestTag">
                 <LocalFlorist className="interestIcon" />
                 {interest}
