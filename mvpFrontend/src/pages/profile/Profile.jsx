@@ -5,12 +5,13 @@ import Topbar from '../../components/topbar/Topbar'
 import Userbar from '../../components/userbar/Userbar'
 import ProfileFriends from '../../components/profileFriends/ProfileFriends'
 import './profile.css'
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { Users } from '../../data/dummyData'
-
+import { useParams } from 'react-router-dom'
 const Profile = () => {
+  const id = useParams().id
   const [selectedOption, setSelectedOption] = useState("Posts")
-  const user = useMemo(() => Users[Math.floor(Math.random() * Users.length)], [])
+  const user = Users.find(user => user.id === parseInt(id))
   
   const renderOption = () => {
     switch (selectedOption) {
