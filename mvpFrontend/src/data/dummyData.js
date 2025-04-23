@@ -9,7 +9,26 @@ export const Users = [
     friends: [2, 5, 8, 10],
     impactPoints: 782,
     trustRating: 94,
-    isOnline: true
+    isOnline: true,
+    personal: {
+      birthday: "15/04/1992",
+      age: 32,
+      country: "United States",
+      city: "San Francisco"
+    },
+    relationships: {
+      status: "Single",
+      education: "MBA from Stanford University",
+      phone: "4158763421"
+    },
+    values: [
+      "Innovation",
+      "Global Citizenship",
+      "Digital Freedom",
+      "Cultural Exchange",
+      "Adventure",
+      "Sustainability"
+    ]
   },
   {
     id:2,
@@ -21,7 +40,26 @@ export const Users = [
     friends: [1, 3, 7],
     impactPoints: 546,
     trustRating: 87,
-    isOnline: false
+    isOnline: false,
+    personal: {
+      birthday: "22/09/1996",
+      age: 28,
+      country: "United States",
+      city: "Portland"
+    },
+    relationships: {
+      status: "In a relationship",
+      education: "BFA in Photography from Portland State",
+      phone: "5039872345"
+    },
+    values: [
+      "Environmental Conservation",
+      "Artistic Expression",
+      "Mindfulness",
+      "Authenticity",
+      "Outdoor Adventure",
+      "Sustainability"
+    ]
   },
   {
     id:3,
@@ -33,7 +71,26 @@ export const Users = [
     friends: [2, 4, 6, 9],
     impactPoints: 921,
     trustRating: 91,
-    isOnline: true
+    isOnline: true,
+    personal: {
+      birthday: "03/11/1989",
+      age: 35,
+      country: "United States",
+      city: "Austin"
+    },
+    relationships: {
+      status: "Married",
+      education: "Computer Science degree from UT Austin",
+      phone: "5127653421"
+    },
+    values: [
+      "Open Source",
+      "Creative Expression",
+      "Work-Life Balance",
+      "Digital Rights",
+      "Community Building",
+      "Innovation"
+    ]
   },
   {
     id:4,
@@ -45,7 +102,26 @@ export const Users = [
     friends: [3, 5, 7],
     impactPoints: 315,
     trustRating: 79,
-    isOnline: false
+    isOnline: false,
+    personal: {
+      birthday: "17/06/1993",
+      age: 31,
+      country: "United States",
+      city: "Denver"
+    },
+    relationships: {
+      status: "Single",
+      education: "MS in Exercise Science from Colorado State",
+      phone: "7203459876"
+    },
+    values: [
+      "Holistic Health",
+      "Mental Wellbeing",
+      "Physical Fitness",
+      "Nutrition",
+      "Outdoor Activities",
+      "Community Support"
+    ]
   },
   {
     id:5,
@@ -57,7 +133,26 @@ export const Users = [
     friends: [1, 4, 6, 10],
     impactPoints: 658,
     trustRating: 88,
-    isOnline: true
+    isOnline: true,
+    personal: {
+      birthday: "29/03/1987",
+      age: 37,
+      country: "United States",
+      city: "Chicago"
+    },
+    relationships: {
+      status: "Divorced",
+      education: "Culinary Institute of America graduate",
+      phone: "3125678901"
+    },
+    values: [
+      "Cultural Diversity",
+      "Culinary Traditions",
+      "Sustainable Food",
+      "Community Dining",
+      "Artisanal Craftsmanship",
+      "Food Education"
+    ]
   },
   {
     id:6,
@@ -69,7 +164,26 @@ export const Users = [
     friends: [3, 5, 8],
     impactPoints: 472,
     trustRating: 82,
-    isOnline: false
+    isOnline: false,
+    personal: {
+      birthday: "11/12/1995",
+      age: 29,
+      country: "United States",
+      city: "Seattle"
+    },
+    relationships: {
+      status: "It's complicated",
+      education: "MFA in Creative Writing from UW",
+      phone: "2064567890"
+    },
+    values: [
+      "Literary Arts",
+      "Intellectual Freedom",
+      "Storytelling",
+      "Digital Literacy",
+      "Empathy",
+      "Creative Expression"
+    ]
   },
   {
     id:7,
@@ -81,7 +195,26 @@ export const Users = [
     friends: [2, 4, 9],
     impactPoints: 823,
     trustRating: 96,
-    isOnline: true
+    isOnline: true,
+    personal: {
+      birthday: "05/02/1990",
+      age: 34,
+      country: "United States",
+      city: "Boston"
+    },
+    relationships: {
+      status: "Married",
+      education: "PhD in Environmental Science from MIT",
+      phone: "6172345678"
+    },
+    values: [
+      "Environmental Sustainability",
+      "Climate Action",
+      "Scientific Integrity",
+      "Social Justice",
+      "Renewable Energy",
+      "Biodiversity"
+    ]
   },
   {
     id:8,
@@ -93,7 +226,26 @@ export const Users = [
     friends: [1, 6, 10],
     impactPoints: 594,
     trustRating: 85,
-    isOnline: false
+    isOnline: false,
+    personal: {
+      birthday: "23/08/1997",
+      age: 27,
+      country: "United States",
+      city: "New York"
+    },
+    relationships: {
+      status: "Single",
+      education: "MA in Art Therapy from NYU",
+      phone: "9173456789"
+    },
+    values: [
+      "Mental Health Awareness",
+      "Creative Healing",
+      "Accessibility",
+      "Self-Expression",
+      "Empathy",
+      "Community Care"
+    ]
   },
   {
     id:9,
@@ -105,7 +257,26 @@ export const Users = [
     friends: [3, 7, 10],
     impactPoints: 412,
     trustRating: 81,
-    isOnline: true
+    isOnline: true,
+    personal: {
+      birthday: "14/07/1988",
+      age: 36,
+      country: "United States",
+      city: "Miami"
+    },
+    relationships: {
+      status: "Single",
+      education: "Computer Engineering from Georgia Tech",
+      phone: "3053456789"
+    },
+    values: [
+      "Digital Innovation",
+      "Decentralization",
+      "Financial Freedom",
+      "Technological Ethics",
+      "Privacy",
+      "Global Connectivity"
+    ]
   },
   {
     id:10,
@@ -117,7 +288,26 @@ export const Users = [
     friends: [1, 5, 8, 9],
     impactPoints: 752,
     trustRating: 93,
-    isOnline: false
+    isOnline: false,
+    personal: {
+      birthday: "19/05/1991",
+      age: 33,
+      country: "United States",
+      city: "Los Angeles"
+    },
+    relationships: {
+      status: "In a relationship",
+      education: "Marketing degree from UCLA",
+      phone: "2133456789"
+    },
+    values: [
+      "Authentic Communication",
+      "Ethical Branding",
+      "Digital Wellbeing",
+      "Creative Storytelling",
+      "Community Building",
+      "Cultural Diversity"
+    ]
   },
 ];
 

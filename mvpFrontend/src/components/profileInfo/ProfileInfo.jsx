@@ -1,61 +1,14 @@
 /* eslint-disable react/prop-types */
 import './ProfileInfo.css'
-import { useState, useEffect } from 'react'
 import { School, Favorite, Cake, AccessTime, Public, LocationOn, Phone, LocalFlorist } from '@mui/icons-material'
 
-const ProfileInfo = ({ username = "Aaron" }) => {
-  const [userInfo, setUserInfo] = useState({
-    personal: {
-      birthday: "25/01/2002",
-      age: "23",
-      country: "New Zealand",
-      city: "Hamilton"
-    },
-    relationships: {
-      status: "In a relationship",
-      education: "Studies at University of Otago",
-      phone: "02904306765"
-    },
-    values: [
-      "Environmental Sustainability",
-      "Digital Wellbeing",
-      "Community Building",
-      "Ethical Technology",
-      "Mindfulness",
-      "Outdoor Activities"
-    ]
-  });
-
-  useEffect(() => {
-    // Use default data for Aaron, and custom data for other users
-    if (username && username !== "Aaron") {
-      setUserInfo({
-        personal: {
-          birthday: "01/01/2000",
-          age: "24",
-          country: "New Zealand",
-          city: "Wellington"
-        },
-        relationships: {
-          status: "Single",
-          education: "University Graduate",
-          phone: "Not shared"
-        },
-        values: [
-          "Sustainability",
-          "Community",
-          "Education",
-          "Technology"
-        ]
-      });
-    }
-  }, [username]);
+const ProfileInfo = ({user }) => {
 
   return (
     <div className="infoContainer">
       <div className="infoHeader">
         <LocalFlorist className="infoTitle-icon" />
-        <h2 className="infoTitle">{username}'s Personal Journey</h2>
+        <h2 className="infoTitle">{user.username}'s Personal Journey</h2>
       </div>
       
       <div className="infoBanner">
@@ -70,27 +23,27 @@ const ProfileInfo = ({ username = "Aaron" }) => {
         <div className="infoSection">
           <h3 className="sectionTitle">Personal</h3>
           <div className="infoCards">
-            <InfoCard icon={<Cake />} title="Birthday" text={userInfo.personal.birthday} />
-            <InfoCard icon={<AccessTime />} title="Age" text={userInfo.personal.age} />
-            <InfoCard icon={<Public />} title="Country" text={userInfo.personal.country} />
-            <InfoCard icon={<LocationOn />} title="City" text={userInfo.personal.city} />
+            <InfoCard icon={<Cake />} title="Birthday" text={user.personal.birthday} />
+            <InfoCard icon={<AccessTime />} title="Age" text={user.personal.age} />
+            <InfoCard icon={<Public />} title="Country" text={user.personal.country} />
+            <InfoCard icon={<LocationOn />} title="City" text={user.personal.city} />
           </div>
         </div>
         
         <div className="infoSection">
           <h3 className="sectionTitle">Relationships</h3>
           <div className="infoCards">
-            <InfoCard icon={<Favorite />} title="Relationship Status" text={userInfo.relationships.status} />
-            <InfoCard icon={<School />} title="Education" text={userInfo.relationships.education} />
-            <InfoCard icon={<Phone />} title="Mobile Number" text={userInfo.relationships.phone} />
+            <InfoCard icon={<Favorite />} title="Relationship Status" text={user.relationships.status} />
+            <InfoCard icon={<School />} title="Education" text={user.relationships.education} />
+            <InfoCard icon={<Phone />} title="Mobile Number" text={user.relationships.phone} />
           </div>
         </div>
         
         <div className="infoSection">
           <h3 className="sectionTitle">Values & Interests</h3>
           <div className="infoCards values">
-            {userInfo.values.length > 0 ? (
-              userInfo.values.map((value, index) => (
+            {user.values.length > 0 ? (
+              user.values.map((value, index) => (
                 <ValueTag key={index} text={value} />
               ))
             ) : (

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import User from "../user/User";
 import "./profileFriends.css";
-import { People, SortByAlpha, AccessTime, LocalFlorist, FilterAlt } from "@mui/icons-material";
+import { Person, SortByAlpha, AccessTime, Search, LocalFlorist, ViewModule, ViewList } from "@mui/icons-material";
 import { Users } from "../../data/dummyData";
-const ProfileFriends = ({user}) => {
 
+const ProfileFriends = ({user}) => {
   const [friends, setFriends] = useState([]);
-  const [filterOpen, setFilterOpen] = useState(false);
   const [sortMethod, setSortMethod] = useState("default");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState("grid");
 
   useEffect(() => {
     const userFriends = user.friends.map(friend => {
@@ -23,22 +24,34 @@ const ProfileFriends = ({user}) => {
     setFriends(userFriends);
   }, [user]);
 
-  const friendsSorted = () => {
-    if (sortMethod === "alphabetical") {
-      return [...friends].sort((a, b) => a.username.localeCompare(b.username));
-    } else if (sortMethod === "recent") {
-      return [...friends].sort((a, b) => b.friendedDate - a.friendedDate);
-    } else {
-      return friends;
+  const filteredFriends = () => {
+    let result = [...friends];
+    
+    // Apply search filter
+    if (searchTerm.trim() !== "") {
+      result = result.filter(friend => 
+        friend.username.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
+    
+    // Apply sorting
+    if (sortMethod === "alphabetical") {
+      result.sort((a, b) => a.username.localeCompare(b.username));
+    } else if (sortMethod === "recent") {
+      result.sort((a, b) => b.friendedDate - a.friendedDate);
+    } else if (sortMethod === "online") {
+      result.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
+    }
+    
+    return result;
   };
 
   return (
-    <div className="friendsContainer">
+    <div className="friendsWrapper">
       <div className="friendsHeader">
         <div className="friendsTitle-wrapper">
-          <People className="friendsTitle-icon" />
-          <h2 className="friendsTitle">{user.username}&apos;s Community Circle</h2>
+          <Person className="friendsTitle-icon" />
+          <h2 className="friendsTitle">Connections</h2>
           <div className="friendsStats">
             <div className="friendsStat">
               <span className="friendsStatNumber">{friends.length}</span>
@@ -50,56 +63,81 @@ const ProfileFriends = ({user}) => {
             </div>
           </div>
         </div>
+      </div>
+      
+      <div className="friendsControls">
+        <div className="friendsSearch">
+          <Search className="searchIcon" />
+          <input
+            type="text"
+            placeholder="Search connections..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="searchInput"
+          />
+        </div>
         
-        <button 
-          className={`friendsFilterButton ${filterOpen ? 'active' : ''}`}
-          onClick={() => setFilterOpen(!filterOpen)}
-        >
-          <FilterAlt className="filterIcon" /> 
-          <span>Filter</span>
-        </button>
-      </div>
-      
-      {filterOpen && (
         <div className="sortControls">
-          <button 
-            className={`sortButton ${sortMethod === "alphabetical" ? 'active' : ''}`}
-            onClick={() => setSortMethod("alphabetical")}
-          >
-            <SortByAlpha className="sortIcon" />
-            <span>Alphabetical</span>
-          </button>
-          <button 
-            className={`sortButton ${sortMethod === "recent" ? 'active' : ''}`}
-            onClick={() => setSortMethod("recent")}
-          >
-            <AccessTime className="sortIcon" />
-            <span>Most Recent</span>
-          </button>
+          <div className="sortButtons">
+            <button 
+              className={`sortButton ${sortMethod === "default" ? 'active' : ''}`}
+              onClick={() => setSortMethod("default")}
+            >
+              <LocalFlorist className="sortIcon" />
+              <span>Default</span>
+            </button>
+            <button 
+              className={`sortButton ${sortMethod === "alphabetical" ? 'active' : ''}`}
+              onClick={() => setSortMethod("alphabetical")}
+            >
+              <SortByAlpha className="sortIcon" />
+              <span>A-Z</span>
+            </button>
+            <button 
+              className={`sortButton ${sortMethod === "recent" ? 'active' : ''}`}
+              onClick={() => setSortMethod("recent")}
+            >
+              <AccessTime className="sortIcon" />
+              <span>Recent</span>
+            </button>
+            <button 
+              className={`sortButton ${sortMethod === "online" ? 'active' : ''}`}
+              onClick={() => setSortMethod("online")}
+            >
+              <span className="onlineDot"></span>
+              <span>Online</span>
+            </button>
+          </div>
+          
+          <div className="viewModeToggle">
+            <button 
+              className={`viewModeButton ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => setViewMode('grid')}
+            >
+              <ViewModule />
+            </button>
+            <button 
+              className={`viewModeButton ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => setViewMode('list')}
+            >
+              <ViewList />
+            </button>
+          </div>
         </div>
-      )}
-      
-      <div className="connectionsBanner">
-        <div className="banner-graphic left"></div>
-        <div className="banner-content">
-          <LocalFlorist className="bannerIcon" />
-          <p>Meaningful connections create a more intentional digital experience.</p>
-        </div>
-        <div className="banner-graphic right"></div>
       </div>
       
-      <div className="friendsList">
-        {friendsSorted().length > 0 ? (
-          friendsSorted().map(friend => (
-            <User 
-              user={friend}
-              key={friend.id}
-            />
+      <div className={`friendsList ${viewMode}`}>
+        {filteredFriends().length > 0 ? (
+          filteredFriends().map(friend => (
+            <div className="friendCard" key={friend.id}>
+              <User user={friend} />
+            </div>
           ))
         ) : (
           <div className="noFriendsMessage">
             <LocalFlorist className="noFriendsIcon" />
-            <p>No matching friends found</p>
+            <h3>No connections found</h3>
+            <p>Try adjusting your search or filters</p>
           </div>
         )}
       </div>

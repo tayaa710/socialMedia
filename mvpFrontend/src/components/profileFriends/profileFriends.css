@@ -1,14 +1,17 @@
 /* ProfileFriends Component Styles */
 
-.friendsContainer {
-  padding: 40px 25px;
-  background-color: #F9F9F7;
+.friendsWrapper {
+  width: 100%;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
   position: relative;
-  border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.friendsContainer::before {
+.friendsWrapper::before {
   content: '';
   position: absolute;
   top: 0;
@@ -24,456 +27,33 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 35px;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
-  gap: 20px;
-  position: relative;
+  gap: 1rem;
 }
 
 .friendsTitle-wrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .friendsTitle-icon {
-  color: #2D6A4F;
-  font-size: 28px !important;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
+  color: #4caf50;
+  font-size: 1.75rem !important;
 }
 
 .friendsTitle {
-  color: #1B4332;
-  font-size: 32px;
-  margin: 0;
-  font-weight: 700;
-  position: relative;
-  font-family: 'Poppins', sans-serif;
-  display: inline-block;
-}
-
-.friendsTitle::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 40%;
-  height: 4px;
-  background: linear-gradient(90deg, #2D6A4F, #74C69D);
-  border-radius: 2px;
-}
-
-.friendsActions {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.searchWrapper {
-  position: relative;
-}
-
-.searchWrapper::before {
-  content: '🔍';
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  pointer-events: none;
-}
-
-.friendSearchInput {
-  padding: 12px 15px 12px 35px;
-  border-radius: 30px;
-  border: 2px solid #95D5B2;
-  background-color: white;
-  font-size: 15px;
-  color: #2D6A4F;
-  transition: all 0.3s ease;
-  width: 220px;
-}
-
-.friendSearchInput:focus {
-  outline: none;
-  border-color: #2D6A4F;
-  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.2);
-  width: 250px;
-}
-
-.friendSearchInput::placeholder {
-  color: #95D5B2;
-  font-style: italic;
-}
-
-.sortWrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  position: relative;
-}
-
-.sortIconContainer {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #EFFDF5;
-  border-radius: 50%;
-  color: #2D6A4F;
-}
-
-.sortIcon {
-  font-size: 18px !important;
-}
-
-.friendsSortSelect {
-  padding: 12px 18px;
-  border-radius: 30px;
-  border: 2px solid #95D5B2;
-  background-color: white;
-  font-size: 15px;
-  color: #2D6A4F;
-  cursor: pointer;
-  appearance: none;
-  padding-right: 40px;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  width: 200px;
-}
-
-.friendsSortSelect:focus {
-  outline: none;
-  border-color: #2D6A4F;
-  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.2);
-}
-
-.sortWrapper::after {
-  content: '▼';
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #2D6A4F;
-  pointer-events: none;
-  font-size: 10px;
-}
-
-.friendsFilterButton {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  border-radius: 30px;
-  background: linear-gradient(45deg, #2D6A4F, #40916C);
-  color: white;
-  border: none;
-  font-size: 15px;
+  font-size: 1.75rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(45, 106, 79, 0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-.friendsFilterButton::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: all 0.6s ease;
-}
-
-.friendsFilterButton:hover::before {
-  left: 100%;
-}
-
-.friendsFilterButton:hover {
-  background: linear-gradient(45deg, #1B4332, #2D6A4F);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(27, 67, 50, 0.3);
-}
-
-.friendsFilterButton.active {
-  background: #1B4332;
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.friendsFilterPanel {
-  background: white;
-  border-radius: 15px;
-  padding: 25px;
-  margin-bottom: 25px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  box-shadow: 0 8px 30px rgba(45, 106, 79, 0.08);
-  border: 1px solid #E6F5EE;
-  animation: slideDown 0.3s ease-out;
-  position: relative;
-}
-
-.friendsFilterPanel::after {
-  content: '';
-  position: absolute;
-  top: -12px;
-  right: 70px;
-  width: 0;
-  height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-bottom: 12px solid white;
-  filter: drop-shadow(0 -3px 3px rgba(0, 0, 0, 0.05));
-}
-
-.filterGroup {
-  display: flex;
-  flex-direction: column;
-}
-
-.filterGroup h4 {
-  margin: 0 0 15px 0;
-  color: #1B4332;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.filterOptions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.filterChip {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: #F7FDF9;
-  padding: 6px 12px;
-  border-radius: 30px;
-  border: 1px solid #CBECE0;
-  transition: all 0.3s ease;
-}
-
-.filterChip:hover {
-  border-color: #74C69D;
-  background-color: #EFFDF5;
-}
-
-.filterChip input[type="checkbox"] {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #95D5B2;
-  border-radius: 4px;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.filterChip input[type="checkbox"]:checked {
-  background-color: #2D6A4F;
-  border-color: #2D6A4F;
-}
-
-.filterChip input[type="checkbox"]:checked::after {
-  content: '✓';
-  position: absolute;
-  color: white;
-  font-size: 12px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.filterChip label {
-  font-size: 14px;
-  color: #2D6A4F;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.friendsConnectionsBanner {
-  display: flex;
-  align-items: center;
-  padding: 20px 25px;
-  background: linear-gradient(120deg, rgba(45, 106, 79, 0.08), rgba(116, 198, 157, 0.08));
-  border-radius: 15px;
-  margin-bottom: 35px;
-  position: relative;
-  overflow: hidden;
-}
-
-.banner-graphic {
-  position: absolute;
-  width: 120px;
-  height: 120px;
-  opacity: 0.15;
-}
-
-.banner-graphic.left {
-  left: -30px;
-  top: -30px;
-  background: radial-gradient(circle, #2D6A4F 0%, transparent 70%);
-}
-
-.banner-graphic.right {
-  right: -30px;
-  bottom: -30px;
-  background: radial-gradient(circle, #74C69D 0%, transparent 70%);
-}
-
-.banner-content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  z-index: 1;
-}
-
-.connectionIcon {
-  color: #2D6A4F;
-  font-size: 28px !important;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
-}
-
-.friendsConnectionsBanner p {
   margin: 0;
-  color: #1B4332;
-  font-size: 16px;
-  line-height: 1.5;
-  font-weight: 500;
-}
-
-.friendsGrid {
-  position: relative;
-  padding: 10px;
-}
-
-.community-decoration {
-  position: absolute;
-  width: 150px;
-  height: 150px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0.1;
-  pointer-events: none;
-}
-
-.community-decoration.top-right {
-  top: -20px;
-  right: -20px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232D6A4F'%3E%3Cpath d='M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z'/%3E%3C/svg%3E");
-  transform: rotate(15deg);
-}
-
-.community-decoration.bottom-left {
-  bottom: -20px;
-  left: -20px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2374C69D'%3E%3Cpath d='M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z'/%3E%3C/svg%3E");
-  transform: rotate(-15deg);
-}
-
-.friends-grid-layout {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 35px;
-  padding: 35px 15px 15px;
-  width: 100%;
-  margin-top: 20px;
-  position: relative;
-}
-
-.friends-grid-layout > div {
-  transition: all 0.4s ease;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(45, 106, 79, 0.08);
-  position: relative;
-  height: 100%;
-  margin-top: 0 !important;
-}
-
-.friends-grid-layout > div:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(45, 106, 79, 0.15);
-}
-
-/* Remove the staggered positioning that causes overlapping */
-.friends-grid-layout > div:nth-child(10n+1),
-.friends-grid-layout > div:nth-child(10n+6) {
-  grid-column: span 1;
-}
-
-.friends-grid-layout > div:nth-child(10n+2),
-.friends-grid-layout > div:nth-child(10n+7) {
-  grid-column: span 1;
-}
-
-.friends-grid-layout > div:nth-child(10n+3),
-.friends-grid-layout > div:nth-child(10n+8) {
-  grid-column: span 1;
-}
-
-.friends-grid-layout > div:nth-child(10n+4),
-.friends-grid-layout > div:nth-child(10n+9) {
-  grid-column: span 1;
-}
-
-.friends-grid-layout > div:nth-child(10n+5),
-.friends-grid-layout > div:nth-child(10n+10) {
-  grid-column: span 1;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .friends-grid-layout {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-  }
-}
-
-@media (max-width: 900px) {
-  .friends-grid-layout {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
-  }
-}
-
-@media (max-width: 600px) {
-  .friends-grid-layout {
-    grid-template-columns: repeat(1, 1fr);
-    gap: 35px;
-  }
-}
-
-.noFriendsResult {
-  background-color: #F7FDF9;
-  border-radius: 15px;
-  padding: 30px;
-  text-align: center;
-  margin: 30px auto;
-  max-width: 400px;
-  border: 1px dashed #95D5B2;
-}
-
-.noFriendsResult p {
-  color: #2D6A4F;
-  font-size: 16px;
-  margin: 0;
-  font-weight: 500;
+  color: #333;
 }
 
 .friendsStats {
   display: flex;
-  gap: 15px;
-  margin-left: 20px;
+  gap: 0.75rem;
+  margin-left: 0.75rem;
   align-items: center;
 }
 
@@ -481,11 +61,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #F7FDF9;
-  border-radius: 12px;
-  padding: 5px 12px;
-  box-shadow: 0 3px 8px rgba(45, 106, 79, 0.08);
-  border: 1px solid #E6F5EE;
+  background-color: rgba(76, 175, 80, 0.05);
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(76, 175, 80, 0.1);
 }
 
 .friendsStat.online {
@@ -494,83 +73,243 @@
 }
 
 .friendsStatNumber {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
-  color: #2D6A4F;
+  color: #4caf50;
   line-height: 1;
 }
 
-.friendsStat.online .friendsStatNumber {
-  color: #4CAF50;
-}
-
 .friendsStatLabel {
-  font-size: 12px;
-  color: #52B788;
+  font-size: 0.75rem;
+  color: #666;
   font-weight: 500;
 }
 
-.friendsStat.online .friendsStatLabel {
-  color: #388E3C;
-}
-
-@media (max-width: 768px) {
-  .friendsStats {
-    margin-left: 0;
-    margin-top: 10px;
-  }
-  
-  .friendsTitle-wrapper {
-    flex-wrap: wrap;
-  }
-}
-
-.sortControls {
+/* Controls section */
+.friendsControls {
   display: flex;
-  gap: 15px;
-  margin: -20px 0 25px 0;
-  animation: fadeIn 0.3s ease-out;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.friendsSearch {
+  position: relative;
+  flex: 1;
+  max-width: 280px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 1.25rem !important;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  border-radius: 2rem;
+  border: 1px solid #e0e0e0;
+  font-size: 0.875rem;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.searchInput::placeholder {
+  color: #aaa;
+}
+
+.sortButtons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .sortButton {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 15px;
-  border-radius: 20px;
-  background-color: #EFFDF5;
-  color: #2D6A4F;
-  border: 1px solid #95D5B2;
-  font-size: 14px;
-  font-weight: 500;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  font-size: 0.875rem;
+  color: #555;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .sortButton:hover {
-  background-color: #D8F3DC;
-  transform: translateY(-2px);
+  background-color: #f5f5f5;
+  border-color: #ccc;
 }
 
 .sortButton.active {
-  background-color: #2D6A4F;
+  background-color: #4caf50;
   color: white;
-  border-color: #1B4332;
-  box-shadow: 0 4px 10px rgba(45, 106, 79, 0.2);
+  border-color: #4caf50;
+}
+
+.sortButton.active .sortIcon {
+  color: white;
 }
 
 .sortIcon {
-  font-size: 16px !important;
+  font-size: 1rem !important;
+  color: #4caf50;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+.onlineDot {
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: #4caf50;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Friends list */
+.friendsList {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.friendsList.grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.friendsList.list {
+  grid-template-columns: 1fr;
+}
+
+.friendCard {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.friendCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Empty state */
+.noFriendsMessage {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  grid-column: 1 / -1;
+}
+
+.noFriendsIcon {
+  font-size: 3rem !important;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.noFriendsMessage h3 {
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem;
+  color: #555;
+}
+
+.noFriendsMessage p {
+  color: #888;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .friendsHeader, .friendsControls {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .friendsSearch {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .sortButtons {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .friendsList.grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  
+  .friendsStats {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .friendsWrapper {
+    padding: 1.5rem 1rem;
+  }
+  
+  .friendsList.grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sortControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.viewModeToggle {
+  display: flex;
+  background-color: #f0f0f0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.viewModeButton {
+  border: none;
+  background-color: transparent;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #888;
+}
+
+.viewModeButton.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .sortControls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .viewModeToggle {
+    align-self: flex-end;
   }
 }
