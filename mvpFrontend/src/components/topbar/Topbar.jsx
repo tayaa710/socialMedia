@@ -1,8 +1,17 @@
-import { Search, LocalFlorist, LightbulbOutlined, Person } from "@mui/icons-material"
+import { LocalFlorist, LightbulbOutlined, Person } from "@mui/icons-material"
 import './topbar.css'
 import { Link } from "react-router-dom"
+import { useState } from "react"
 
 const Topbar = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  const handleSearch = (e) => {
+    e.preventDefault();
+    console.log("Searching for:", searchQuery);
+    // Implement search functionality here
+  }
+
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
@@ -12,15 +21,18 @@ const Topbar = () => {
         </Link>
       </div>
       <div className="topbarCenter">
-        <div className="searchContainer">
-          <Search className="searchIcon" />
+        <form className="searchContainer" onSubmit={handleSearch}>
           <input 
             placeholder="Search for content..." 
             className="searchInput" 
             name="topbarSearch"
             id="topbarSearch"
+            aria-label="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
-        </div>
+          <button type="submit" className="searchButton">Search</button>
+        </form>
       </div>
       <div className="topbarRight">
         <div className="topbarIcons">

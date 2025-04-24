@@ -6,7 +6,7 @@ import Userbar from '../../components/userbar/Userbar'
 import ProfileFriends from '../../components/profileFriends/ProfileFriends'
 import './profile.css'
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import axios from 'axios'
 
 const Profile = () => {
