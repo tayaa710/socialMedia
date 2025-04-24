@@ -314,3 +314,176 @@
   }
 }
 
+/* List View Styling */
+.userContainer.listView {
+  padding: 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  min-height: 150px;
+  max-width: 100%;
+  margin: 10px 0;
+}
+
+.userHeader.listHeader {
+  flex-direction: row;
+  width: 25%;
+  margin-right: 20px;
+  margin-bottom: 0;
+  align-items: flex-start;
+}
+
+.profilePictureWrapper.listPicture {
+  width: 80px;
+  height: 80px;
+  margin: 0 15px 0 0;
+}
+
+.userNameSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.userLocation {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  font-size: 12px;
+  color: #666;
+}
+
+.locationIcon {
+  font-size: 14px !important;
+  margin-right: 4px;
+  color: #74C69D;
+}
+
+.userBio {
+  width: 100%;
+  padding: 10px 0;
+  margin-bottom: 10px;
+  flex-basis: 100%;
+  order: 3;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #555;
+  text-align: left;
+  border-top: 1px dashed #e0e0e0;
+}
+
+.userInfo.listInfo {
+  width: 40%;
+  text-align: left;
+  padding-right: 20px;
+}
+
+.userStats {
+  display: flex;
+  gap: 15px;
+  margin: 10px 0;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5f9f7;
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+.statIcon {
+  color: #2D6A4F;
+  font-size: 16px !important;
+}
+
+.statValue {
+  font-weight: bold;
+  font-size: 16px;
+  color: #1B4332;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: #74C69D;
+}
+
+.interestsContainer.listInterests {
+  justify-content: flex-start;
+}
+
+.valuesContainer {
+  margin-top: 12px;
+}
+
+.valuesTitle {
+  font-size: 14px;
+  color: #2D6A4F;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.valuesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.valueTag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #f0f7f4;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: #2D6A4F;
+  font-weight: 500;
+}
+
+.valueIcon {
+  font-size: 12px !important;
+  color: #40916C;
+}
+
+.userActions.listActions {
+  width: 20%;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Responsive adjustments for list view */
+@media (max-width: 900px) {
+  .userHeader.listHeader {
+    width: 35%;
+  }
+  
+  .userInfo.listInfo {
+    width: 65%;
+  }
+  
+  .userActions.listActions {
+    width: 100%;
+    flex-direction: row;
+    margin-top: 15px;
+  }
+  
+  .userContainer.listView {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .userHeader.listHeader {
+    width: 100%;
+    flex-direction: row;
+    margin-bottom: 15px;
+  }
+  
+  .userInfo.listInfo {
+    width: 100%;
+  }
+}
+

@@ -7,8 +7,8 @@ const { tokenExtractor, userExtractor } = require('../utils/middleware');
 
 usersRouter.get('/', async (request, response) => {
   const users = await User.find({}).select("-passwordHash").populate([
-    { path: "followers", select: "firstName lastName profilePicture" },
-    { path: "following", select: "firstName lastName profilePicture" }
+    { path: "followers", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" },
+    { path: "following", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
   ])
   response.json(users)
 })
@@ -76,14 +76,14 @@ usersRouter.delete("/:id", tokenExtractor, userExtractor, async (request, respon
 usersRouter.get("/:id", tokenExtractor, userExtractor, async (request, response) => {
   if (request.user.id === request.params.id) {
     const user = await User.findById(request.params.id).populate([
-      { path: "followers", select: "firstName lastName profilePicture" },
-      { path: "following", select: "firstName lastName profilePicture" }
+      { path: "followers", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" },
+      { path: "following", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
     ])
     response.status(200).json(user)
   } else {
     const user = await User.findById(request.params.id).select('-passwordHash -email -updatedAt').populate([
-      { path: "followers", select: "firstName lastName profilePicture" },
-      { path: "following", select: "firstName lastName profilePicture" }
+      { path: "followers", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" },
+      { path: "following", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
     ]);
     response.status(200).json(user)
   }
