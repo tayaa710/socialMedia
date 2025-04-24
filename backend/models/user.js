@@ -17,9 +17,6 @@ const userSchema = new mongoose.Schema({
   age: {
     type: Number
   },
-  location: {
-    type: String
-  },
   friends: [{
     type: Number
   }],

@@ -1,17 +1,20 @@
 import './user.css'
-import { LocalFlorist, Favorite, PersonAdd, Message, LocationOn, EmojiEvents, VerifiedUser } from '@mui/icons-material'
+import { LocalFlorist, Favorite, PersonAdd, Message, LocationOn, EmojiEvents, VerifiedUser, Cake, Today } from '@mui/icons-material'
+import { format } from 'timeago.js'
 
 const User = ({user, viewMode = 'grid'}) => {
-  // Generate a random date from the past 3 years
-  const randomMonths = Math.floor(Math.random() * 36); // Random number between 0-36 months
-  const date = new Date();
-  date.setMonth(date.getMonth() - randomMonths);
-  const friendDate = date.toLocaleDateString();
+  // Create a proper date from createdAt if available
+  const friendDate = user.createdAt ? format(new Date(user.createdAt)) : null;
   
   // Default values for now
   const mutualConnections = user.mutualConnections || Math.floor(Math.random() * 12);
   
   const isList = viewMode === 'list';
+
+  // Format full name if available
+  const fullName = user.firstName && user.lastName 
+    ? `${user.firstName} ${user.lastName}`
+    : null;
   
   return (
     <div className={`userContainer ${isList ? 'listView' : 'gridView'}`}>
@@ -23,12 +26,20 @@ const User = ({user, viewMode = 'grid'}) => {
         
         <div className="userNameSection">
           <h3 className="userName">{user.username}</h3>
+          {fullName && <span className="fullName">{fullName}</span>}
           {user.isOnline && <span className="onlineStatus">Online</span>}
           
           {isList && user.location && (
             <div className="userLocation">
               <LocationOn className="locationIcon" />
               <span>{user.location}</span>
+            </div>
+          )}
+          
+          {isList && user.age && (
+            <div className="userAge">
+              <Cake className="ageIcon" />
+              <span>{user.age} years old</span>
             </div>
           )}
         </div>
@@ -43,7 +54,8 @@ const User = ({user, viewMode = 'grid'}) => {
       <div className={`userInfo ${isList ? 'listInfo' : ''}`}>
         {friendDate && (
           <div className="friendSince">
-            <span className="friendLabel">Connected since:</span>
+            <Today className="dateIcon" />
+            <span className="friendLabel">Member since:</span>
             <span className="friendDate">{friendDate}</span>
           </div>
         )}
@@ -83,12 +95,52 @@ const User = ({user, viewMode = 'grid'}) => {
           <div className="valuesContainer">
             <h4 className="valuesTitle">Core Values</h4>
             <div className="valuesList">
-              {user.values.slice(0, 3).map((value, index) => (
+              {user.values.map((value, index) => (
                 <span key={index} className="valueTag">
                   <EmojiEvents className="valueIcon" />
                   {value}
                 </span>
               ))}
+            </div>
+          </div>
+        )}
+        
+        {isList && user.personal && Object.keys(user.personal).length > 0 && (
+          <div className="personalInfo">
+            <h4 className="personalTitle">Personal Info</h4>
+            <div className="personalDetails">
+              {user.personal.birthday && (
+                <div className="personalItem">
+                  <Cake className="personalIcon" />
+                  <span>{user.personal.birthday}</span>
+                </div>
+              )}
+              {user.personal.country && (
+                <div className="personalItem">
+                  <LocationOn className="personalIcon" />
+                  <span>{user.personal.city ? `${user.personal.city}, ${user.personal.country}` : user.personal.country}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {isList && user.relationships && Object.keys(user.relationships).length > 0 && (
+          <div className="relationshipsInfo">
+            <h4 className="relationshipsTitle">Background</h4>
+            <div className="relationshipsDetails">
+              {user.relationships.education && (
+                <div className="relationshipItem">
+                  <span className="relationshipLabel">Education:</span>
+                  <span className="relationshipValue">{user.relationships.education}</span>
+                </div>
+              )}
+              {user.relationships.status && (
+                <div className="relationshipItem">
+                  <span className="relationshipLabel">Status:</span>
+                  <span className="relationshipValue">{user.relationships.status}</span>
+                </div>
+              )}
             </div>
           </div>
         )}
