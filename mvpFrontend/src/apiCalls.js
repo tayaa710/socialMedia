@@ -23,6 +23,5 @@ export const initializeAuth = () => {
   const token = localStorage.getItem("auth-token")
   if (token) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
-    // You may want to validate the token or fetch user data here
   }
 }
