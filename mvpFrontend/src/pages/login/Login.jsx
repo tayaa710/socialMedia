@@ -1,15 +1,19 @@
 import './login.css'
-import { useState, useRef } from 'react'
+import { useState, useRef, useContext } from 'react'
 import { LocalFlorist } from '@mui/icons-material'
+import { CircularProgress } from '@mui/material'
 import ReCAPTCHA from 'react-google-recaptcha'
+import { loginCall } from '../../apiCalls'
+import { AuthContext } from '../../context/AuthContext.jsx'
 
 const Login = () => {
     const [captchaValue, setCaptchaValue] = useState(null)
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
 
     const recaptchaRef = useRef(null)
-
+    const emailRef = useRef()
+    const passwordRef = useRef()
+    // eslint-disable-next-line no-unused-vars
+    const { user, isFetching, error, dispatch } = useContext(AuthContext)
 
     const handleCaptchaChange = (value) => {
         console.log("Captcha value:", value)
@@ -18,10 +22,17 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log("Form submitted", { email, password, captchaValue })
+        
+        // Check if CAPTCHA is completed
+        if (!captchaValue) {
+            alert("Please complete the CAPTCHA verification")
+            return
+        }
+        
+        loginCall({ email:emailRef.current.value, password:passwordRef.current.value }, dispatch)
         // Add your login logic here
     }
-
+    console.log(user)
     return (
         <div className='login'>
             <div className="loginWrapper">
@@ -46,26 +57,27 @@ const Login = () => {
                         <h2 className="formTitle">Welcome Back</h2>
                         <div className="inputGroup">
                             <label htmlFor="email">Email</label>
-                            <input 
-                                id="email" 
-                                type="email" 
-                                placeholder="Your email address" 
-                                className="loginInput" 
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="Your email address"
+                                className="loginInput"
+                                defaultValue=""
                                 required
+                                ref={emailRef}
                             />
                         </div>
                         <div className="inputGroup">
                             <label htmlFor="password">Password</label>
-                            <input 
-                                id="password" 
-                                type="password" 
-                                placeholder="Your password" 
-                                className="loginInput" 
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="Your password"
+                                className="loginInput"
+                                defaultValue=""
                                 required
+                                ref={passwordRef}
+                                minLength={8}
                             />
                         </div>
                         <ReCAPTCHA
@@ -73,8 +85,8 @@ const Login = () => {
                             sitekey="6LeghB0rAAAAAMlalrzzGgaJc-C_vf4PRKkNEuze"
                             onChange={handleCaptchaChange}
                         />
-                        <button type="submit" className='loginButton' disabled={!captchaValue}>
-                            <span>Sign In</span>
+                        <button type="submit" className='loginButton'>
+                            <span>{isFetching ? <CircularProgress size={20} /> : "Sign In"}</span>
                         </button>
                         <span className="loginForgot">Forgot Password?</span>
                         <div className="divider">

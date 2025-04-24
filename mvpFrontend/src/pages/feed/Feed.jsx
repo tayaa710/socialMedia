@@ -10,14 +10,16 @@ import axios from 'axios'
 
 const Feed = () => {
     const [posts, setPosts] = useState([])
+    const [excludedTags, setExcludedTags] = useState(['Adult'])
+    const [filterSettings, setFilterSettings] = useState({})
 
     useEffect(() => {
         const fetchPosts = async () => {
-            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFhcm9udGF5bG9yMjQiLCJpZCI6IjY4MDg2MzlkMTU4ZDQyZTQ5ZGJlMmY0MSIsImlhdCI6MTc0NTM4MjQ3NiwiZXhwIjoxNzQ1OTg3Mjc2fQ.AdjUi4yHqdsWjq5WZC76R93GZQibBTTNlKW3fL2ySiE'
+            const token = localStorage.getItem("auth-token")
             const response = await axios.get('/api/timeline/6808639d158d42e49dbe2f41', {
-                headers: {
+                headers: token ? {
                     'Authorization': `Bearer ${token}`
-                }
+                } : {}
             })
             setPosts(response.data)
             console.log(response.data)
@@ -26,12 +28,12 @@ const Feed = () => {
         
     }, [])
 
-    const [excludedTags, setExcludedTags] = useState(['Adult'])
-    const [filterSettings, setFilterSettings] = useState({})
-
     const handleFilterChange = ({ excludedTags, settings }) => {
         setExcludedTags(excludedTags)
         setFilterSettings(settings)
+        
+        // Apply filters to posts if needed
+        console.log("Filter settings updated:", settings)
     }
 
     return (
@@ -51,6 +53,7 @@ const Feed = () => {
                         
                         <PostCreate />
                         {posts.map((post) => {
+                            // Can use filterSettings here to filter posts if needed
                             return (
                                 <Post 
                                     key={post.id}

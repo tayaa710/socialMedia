@@ -14,11 +14,11 @@ const Post = ({ post }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFhcm9udGF5bG9yMjQiLCJpZCI6IjY4MDg2MzlkMTU4ZDQyZTQ5ZGJlMmY0MSIsImlhdCI6MTc0NTM4MjQ3NiwiZXhwIjoxNzQ1OTg3Mjc2fQ.AdjUi4yHqdsWjq5WZC76R93GZQibBTTNlKW3fL2ySiE'
+        const token = localStorage.getItem("auth-token")
         const response = await axios.get(`/api/users/${post.user}`, {
-          headers: {
+          headers: token ? {
             'Authorization': `Bearer ${token}`
-          }
+          } : {}
         });
         setUser(response.data)
       } catch (error) {
