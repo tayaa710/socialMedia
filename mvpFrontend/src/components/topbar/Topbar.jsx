@@ -2,8 +2,11 @@ import { LocalFlorist, LightbulbOutlined, Person } from "@mui/icons-material"
 import './topbar.css'
 import { Link } from "react-router-dom"
 import { useState } from "react"
+import { AuthContext } from "../../context/AuthContext"
+import { useContext } from "react"
 
 const Topbar = () => {
+  const { user } = useContext(AuthContext)
   const [searchQuery, setSearchQuery] = useState("");
   
   const handleSearch = (e) => {
@@ -43,7 +46,15 @@ const Topbar = () => {
             <Person />
           </div>
           <div className="topbarIconItem">
-            <img src="../../assets/person/profile.jpeg" alt="" className="topbarImg" />
+            {user ? (
+              <Link to={`/profile/${user.id}`}>
+                <img src={user.profilePicture} alt="" className="topbarImg" />
+              </Link>
+            ) : (
+              <Link to="/login">
+                <Person className="topbarImg" />
+              </Link>
+            )}
           </div>
         </div>
       </div>

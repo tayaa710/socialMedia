@@ -5,18 +5,20 @@ import Rightbar from '../../components/rightbar/Rightbar'
 import FeedFilters from '../../components/feedFilters/FeedFilters'
 import Post from '../../components/post/Post'
 import PostCreate from '../../components/postCreate/PostCreate'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
+import { AuthContext } from '../../context/AuthContext'
 
 const Feed = () => {
     const [posts, setPosts] = useState([])
     const [excludedTags, setExcludedTags] = useState(['Adult'])
     const [filterSettings, setFilterSettings] = useState({})
+    const { user } = useContext(AuthContext)
 
     useEffect(() => {
         const fetchPosts = async () => {
             const token = localStorage.getItem("auth-token")
-            const response = await axios.get('/api/timeline/6808639d158d42e49dbe2f41', {
+            const response = await axios.get(`/api/timeline/${user.id}`, {
                 headers: token ? {
                     'Authorization': `Bearer ${token}`
                 } : {}

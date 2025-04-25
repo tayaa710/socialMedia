@@ -1,5 +1,5 @@
 import './login.css'
-import { useState, useRef, useContext } from 'react'
+import { useState, useRef, useContext, useEffect } from 'react'
 import { LocalFlorist } from '@mui/icons-material'
 import { CircularProgress } from '@mui/material'
 import ReCAPTCHA from 'react-google-recaptcha'
@@ -15,6 +15,12 @@ const Login = () => {
     // eslint-disable-next-line no-unused-vars
     const { user, isFetching, error, dispatch } = useContext(AuthContext)
 
+    useEffect(() => {
+        if (user) {
+            console.log("User in context after login:", user)
+        }
+    }, [user])
+
     const handleCaptchaChange = (value) => {
         console.log("Captcha value:", value)
         setCaptchaValue(value)
@@ -29,10 +35,14 @@ const Login = () => {
             return
         }
         
-        loginCall({ email:emailRef.current.value, password:passwordRef.current.value }, dispatch)
-        // Add your login logic here
+        const credentials = { 
+            email: emailRef.current.value, 
+            password: passwordRef.current.value 
+        }
+        console.log("Submitting login with email:", credentials.email)
+        loginCall(credentials, dispatch)
     }
-    console.log(user)
+    
     return (
         <div className='login'>
             <div className="loginWrapper">

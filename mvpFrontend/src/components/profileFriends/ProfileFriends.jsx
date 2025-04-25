@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import User from "../user/User";
 import "./profileFriends.css";
 import { Person, SortByAlpha, AccessTime, Search, LocalFlorist, ViewModule, ViewList } from "@mui/icons-material";
+import { AuthContext } from "../../context/AuthContext";
+
 const ProfileFriends = ({ user }) => {
+  const { user: currentUser } = useContext(AuthContext);
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
   const [sortMethod, setSortMethod] = useState("default");
@@ -11,9 +14,9 @@ const ProfileFriends = ({ user }) => {
   const [activeTab, setActiveTab] = useState("following");
 
   useEffect(() => {
-    setFollowers(user.followers)
-    setFollowing(user.following)
-  }, [user])
+    setFollowers(user ? user.followers : currentUser.followers)
+    setFollowing(user ? user.following : currentUser.following)
+  }, [user, currentUser])
 
   const filteredFriends = () => {
     let result = activeTab === "followers" ? [...followers] : [...following];

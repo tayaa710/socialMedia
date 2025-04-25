@@ -139,6 +139,23 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-height: 500px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #74C69D transparent;
+}
+
+.registerBox::-webkit-scrollbar {
+  width: 6px;
+}
+
+.registerBox::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.registerBox::-webkit-scrollbar-thumb {
+  background-color: #74C69D;
+  border-radius: 6px;
 }
 
 .inputGroup {
@@ -168,6 +185,14 @@
   outline: none;
   border-color: #40916C;
   box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.2);
+}
+
+.textArea {
+  height: auto;
+  min-height: 100px;
+  padding: 15px 20px;
+  resize: vertical;
+  font-family: inherit;
 }
 
 .registerButton, 
@@ -254,6 +279,16 @@
   opacity: 0.7;
   position: relative;
   z-index: 1;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2D6A4F;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #B7E4C7;
 }
 
 @media (max-width: 900px) {

@@ -1,10 +1,13 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import "./profilePosts.css";
 import { LocalFlorist, AccessTime, Favorite, Grid3x3 } from "@mui/icons-material";
 import Post from "../post/Post";
 import axios from "axios";
+import { AuthContext } from "../../context/AuthContext";
+
 const ProfilePosts = ({user}) => {
+  const { user: currentUser } = useContext(AuthContext);
   const [posts, setPosts] = useState([]);
   const [sortMethod, setSortMethod] = useState("recent");
   const [viewMode, setViewMode] = useState("grid");
@@ -12,7 +15,7 @@ const ProfilePosts = ({user}) => {
  useEffect(() => {
   const fetchPosts = async () => {
     try {
-      const response = await axios.get(`/api/posts/user/${user.id}`);
+      const response = await axios.get(`/api/posts/user/${user ? user.id : currentUser.id}`);
       setPosts(response.data);
     } catch (error) {
       console.error("Failed to fetch posts:", error);
@@ -20,7 +23,7 @@ const ProfilePosts = ({user}) => {
   };
 
   fetchPosts();
-}, [user.id]);
+}, [user, currentUser.id]);
   
 
   const sortedPosts = () => {
@@ -37,7 +40,7 @@ const ProfilePosts = ({user}) => {
       <div className="profilePostsHeader">
         <div className="postsTitle-wrapper">
           <LocalFlorist className="postsTitle-icon" />
-          <h2 className="postsTitle">{user.firstName} {user.lastName}&apos;s Posts</h2>
+          <h2 className="postsTitle">{user ? user.firstName : currentUser.firstName} {user ? user.lastName : currentUser.lastName}&apos;s Posts</h2>
           <span className="postCount">{posts.length} posts</span>
         </div>
         
@@ -90,7 +93,7 @@ const ProfilePosts = ({user}) => {
         <div className="emptyPostsMessage">
           <LocalFlorist className="emptyIcon" />
           <h3>No posts yet</h3>
-          <p>{user.username} hasn&apos;t shared any posts yet.</p>
+          <p>{user ? user.username : currentUser.username} hasn&apos;t shared any posts yet.</p>
         </div>
       )}
     </div>

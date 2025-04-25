@@ -1,8 +1,11 @@
 import './user.css'
 import { LocalFlorist, Favorite, PersonAdd, Message, LocationOn, EmojiEvents, VerifiedUser, Cake, Today } from '@mui/icons-material'
 import { format } from 'timeago.js'
+import { AuthContext } from '../../context/AuthContext'
+import { useContext } from 'react'
 
-const User = ({user, viewMode = 'grid'}) => {
+const User = ({ viewMode = 'grid'}) => {
+  const { user } = useContext(AuthContext)
   // Create a proper date from createdAt if available
   const friendDate = user.createdAt ? format(new Date(user.createdAt)) : null;
   

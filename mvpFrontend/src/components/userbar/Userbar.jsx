@@ -1,8 +1,11 @@
 import Button from '../button/Button'
 import './userbar.css'
 import { VerifiedUser, LocationOn, Cake, LocalFlorist } from '@mui/icons-material'
+import { AuthContext } from '../../context/AuthContext'
+import { useContext } from 'react'
 
-const Userbar = ({ user }) => {
+const Userbar = () => {
+  const { user } = useContext(AuthContext)
 
   return (
     <div className="userbarContainer">

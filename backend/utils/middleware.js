@@ -21,18 +21,26 @@ const tokenExtractor = (request, response, next) => {
 }
 
 const userExtractor = async (request, response, next) => {
-  console.log("Maded it")
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  console.log("Maded it")
-  console.log(decodedToken)
+  console.log("Starting userExtractor middleware")
+  try {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    console.log("Decoded token:", decodedToken)
+    
     if (!decodedToken.id) {
+      console.log("Token missing ID field")
       return response.status(401).json({ error: "token invalid" })
     }
+    
+    console.log("Looking up user by ID:", decodedToken.id)
     const user = await User.findById(decodedToken.id)
-    console.log(user)
+    console.log("User found by ID:", user ? user.email : "No user found")
+    
     request.user = user
-  
-  next()
+    next()
+  } catch (error) {
+    console.log("Error in userExtractor:", error.message)
+    return response.status(401).json({ error: "token invalid" })
+  }
 }
 
 const unknownEndpoint = (request, response) => {
@@ -46,12 +54,13 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
-  } else if (error.name === 'MongoServerError' && error.code === 11000) {
-    const field = Object.keys(error.keyValue)[0]
-    return response.status(400).json({ error: `expected \`${field}\` to be unique` })
-  }else if (error.name === 'JsonWebTokenError') {
+  } else if (error.name === 'JsonWebTokenError') {
     return response.status(401).json({
       error: 'invalid token'
+    })
+  } else if (error.name === 'TokenExpiredError') {
+    return response.status(401).json({
+      error: 'token expired'
     })
   }
 
