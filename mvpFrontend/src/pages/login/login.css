@@ -271,6 +271,12 @@
   z-index: 1;
 }
 
+.loginButton:disabled {
+  background-color: #B7E4C7;
+  color: #2D6A4F;
+  cursor: not-allowed;
+}
+
 @media (max-width: 900px) {
   .loginWrapper {
     flex-direction: column;

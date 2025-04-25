@@ -85,7 +85,7 @@ const Login = () => {
                             sitekey="6LeghB0rAAAAAMlalrzzGgaJc-C_vf4PRKkNEuze"
                             onChange={handleCaptchaChange}
                         />
-                        <button type="submit" className='loginButton'>
+                        <button type="submit" className='loginButton' disabled={isFetching}>
                             <span>{isFetching ? <CircularProgress size={20} /> : "Sign In"}</span>
                         </button>
                         <span className="loginForgot">Forgot Password?</span>
