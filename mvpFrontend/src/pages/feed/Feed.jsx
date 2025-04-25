@@ -12,6 +12,7 @@ import { AuthContext } from '../../context/AuthContext'
 const Feed = () => {
     const [posts, setPosts] = useState([])
     const [excludedTags, setExcludedTags] = useState(['Adult'])
+    // eslint-disable-next-line no-unused-vars
     const [filterSettings, setFilterSettings] = useState({})
     const { user } = useContext(AuthContext)
 
