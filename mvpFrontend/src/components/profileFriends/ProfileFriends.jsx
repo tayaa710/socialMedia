@@ -3,20 +3,42 @@ import User from "../user/User";
 import "./profileFriends.css";
 import { Person, SortByAlpha, AccessTime, Search, LocalFlorist, ViewModule, ViewList } from "@mui/icons-material";
 import { AuthContext } from "../../context/AuthContext";
+import axios from "axios";
 
-const ProfileFriends = ({ user }) => {
-  const { user: currentUser } = useContext(AuthContext);
+const ProfileFriends = () => {
+  const { user: contextUser } = useContext(AuthContext);
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
   const [sortMethod, setSortMethod] = useState("default");
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("grid");
   const [activeTab, setActiveTab] = useState("following");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setFollowers(user ? user.followers : currentUser.followers)
-    setFollowing(user ? user.following : currentUser.following)
-  }, [user, currentUser])
+    const fetchUserData = async () => {
+      if (!contextUser?.id) return;
+      
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("auth-token");
+        const response = await axios.get(`/api/users/${contextUser.id}`, {
+          headers: token ? {
+            'Authorization': `Bearer ${token}`
+          } : {}
+        });
+        
+        setFollowers(response.data.followers || []);
+        setFollowing(response.data.following || []);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchUserData();
+  }, [contextUser]);
 
   const filteredFriends = () => {
     let result = activeTab === "followers" ? [...followers] : [...following];
@@ -24,15 +46,15 @@ const ProfileFriends = ({ user }) => {
     // Apply search filter
     if (searchTerm.trim() !== "") {
       result = result.filter(friend =>
-        friend.username.toLowerCase().includes(searchTerm.toLowerCase())
+        friend.username?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Apply sorting
     if (sortMethod === "alphabetical") {
-      result.sort((a, b) => a.username.localeCompare(b.username));
+      result.sort((a, b) => (a.username || "").localeCompare(b.username || ""));
     } else if (sortMethod === "recent") {
-      result.sort((a, b) => b.friendedDate - a.friendedDate);
+      result.sort((a, b) => (b.friendedDate || 0) - (a.friendedDate || 0));
     } else if (sortMethod === "online") {
       result.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
     }
@@ -43,6 +65,17 @@ const ProfileFriends = ({ user }) => {
   const getDisplayUsers = () => {
     return filteredFriends();
   };
+
+  if (loading) {
+    return (
+      <div className="friendsWrapper">
+        <div className="loadingIndicator">
+          <LocalFlorist className="loadingIcon" />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="friendsWrapper">
@@ -84,7 +117,6 @@ const ProfileFriends = ({ user }) => {
         >
           Followers
         </button>
-
       </div>
 
       <div className="friendsControls">
@@ -152,9 +184,9 @@ const ProfileFriends = ({ user }) => {
 
       <div className={`friendsList ${viewMode}`}>
         {getDisplayUsers().length > 0 ? (
-          getDisplayUsers().map(user => (
-            <div className="friendCard" key={user._id || user.id}>
-              <User user={user} viewMode={viewMode} />
+          getDisplayUsers().map(friend => (
+            <div className="friendCard" key={friend._id || friend.id}>
+              <User user={friend} viewMode={viewMode} />
             </div>
           ))
         ) : (

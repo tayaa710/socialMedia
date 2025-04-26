@@ -1,45 +1,42 @@
 import './user.css'
 import { LocalFlorist, Favorite, PersonAdd, Message, LocationOn, EmojiEvents, VerifiedUser, Cake, Today } from '@mui/icons-material'
 import { format } from 'timeago.js'
-import { AuthContext } from '../../context/AuthContext'
-import { useContext } from 'react'
 
-const User = ({ viewMode = 'grid'}) => {
-  const { user } = useContext(AuthContext)
+const User = ({ user, viewMode = 'grid'}) => {
   // Create a proper date from createdAt if available
-  const friendDate = user.createdAt ? format(new Date(user.createdAt)) : null;
+  const friendDate = user?.createdAt ? format(new Date(user.createdAt)) : null;
   
   // Default values for now
-  const mutualConnections = user.mutualConnections || Math.floor(Math.random() * 12);
+  const mutualConnections = user?.mutualConnections || Math.floor(Math.random() * 12);
   
   const isList = viewMode === 'list';
 
   // Format full name if available
-  const fullName = user.firstName && user.lastName 
+  const fullName = user?.firstName && user?.lastName 
     ? `${user.firstName} ${user.lastName}`
     : null;
   
   return (
     <div className={`userContainer ${isList ? 'listView' : 'gridView'}`}>
       <div className={`userHeader ${isList ? 'listHeader' : ''}`}>
-        <div className={`profilePictureWrapper ${user.isOnline ? 'online' : ''} ${isList ? 'listPicture' : ''}`}>
-          <img src={user.profilePicture} alt={`${user.username}'s Profile`} className="profilePicture" />
-          {user.isOnline && <div className="onlineIndicator"></div>}
+        <div className={`profilePictureWrapper ${user?.isOnline ? 'online' : ''} ${isList ? 'listPicture' : ''}`}>
+          <img src={user?.profilePicture} alt={`${user?.username}'s Profile`} className="profilePicture" />
+          {user?.isOnline && <div className="onlineIndicator"></div>}
         </div>
         
         <div className="userNameSection">
-          <h3 className="userName">{user.username}</h3>
+          <h3 className="userName">{user?.username}</h3>
           {fullName && <span className="fullName">{fullName}</span>}
-          {user.isOnline && <span className="onlineStatus">Online</span>}
+          {user?.isOnline && <span className="onlineStatus">Online</span>}
           
-          {isList && user.location && (
+          {isList && user?.location && (
             <div className="userLocation">
               <LocationOn className="locationIcon" />
               <span>{user.location}</span>
             </div>
           )}
           
-          {isList && user.age && (
+          {isList && user?.age && (
             <div className="userAge">
               <Cake className="ageIcon" />
               <span>{user.age} years old</span>
@@ -48,7 +45,7 @@ const User = ({ viewMode = 'grid'}) => {
         </div>
       </div>
 
-      {isList && user.bio && (
+      {isList && user?.bio && (
         <div className="userBio">
           <p>{user.bio}</p>
         </div>
@@ -65,7 +62,7 @@ const User = ({ viewMode = 'grid'}) => {
         
         {isList && (
           <div className="userStats">
-            {user.impactPoints !== undefined && (
+            {user?.impactPoints !== undefined && (
               <div className="statItem">
                 <LocalFlorist className="statIcon" />
                 <span className="statValue">{user.impactPoints}</span>
@@ -73,7 +70,7 @@ const User = ({ viewMode = 'grid'}) => {
               </div>
             )}
             
-            {user.trustRating !== undefined && (
+            {user?.trustRating !== undefined && (
               <div className="statItem">
                 <VerifiedUser className="statIcon" />
                 <span className="statValue">{user.trustRating}</span>
@@ -83,7 +80,7 @@ const User = ({ viewMode = 'grid'}) => {
           </div>
         )}
         
-        {user.interests && user.interests.length > 0 && (
+        {user?.interests && user.interests.length > 0 && (
           <div className={`interestsContainer ${isList ? 'listInterests' : ''}`}>
             {(isList ? user.interests : user.interests.slice(0, 2)).map((interest, index) => (
               <span key={index} className="interestTag">
@@ -94,7 +91,7 @@ const User = ({ viewMode = 'grid'}) => {
           </div>
         )}
         
-        {isList && user.values && user.values.length > 0 && (
+        {isList && user?.values && user.values.length > 0 && (
           <div className="valuesContainer">
             <h4 className="valuesTitle">Core Values</h4>
             <div className="valuesList">
@@ -108,7 +105,7 @@ const User = ({ viewMode = 'grid'}) => {
           </div>
         )}
         
-        {isList && user.personal && Object.keys(user.personal).length > 0 && (
+        {isList && user?.personal && Object.keys(user.personal).length > 0 && (
           <div className="personalInfo">
             <h4 className="personalTitle">Personal Info</h4>
             <div className="personalDetails">
@@ -128,7 +125,7 @@ const User = ({ viewMode = 'grid'}) => {
           </div>
         )}
 
-        {isList && user.relationships && Object.keys(user.relationships).length > 0 && (
+        {isList && user?.relationships && Object.keys(user.relationships).length > 0 && (
           <div className="relationshipsInfo">
             <h4 className="relationshipsTitle">Background</h4>
             <div className="relationshipsDetails">
