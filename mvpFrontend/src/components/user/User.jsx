@@ -3,14 +3,26 @@ import './user.css'
 import { LocalFlorist, Favorite, PersonAdd, Message, LocationOn, EmojiEvents, VerifiedUser, Cake, Today } from '@mui/icons-material'
 import { format } from 'timeago.js'
 import { Link } from 'react-router-dom'
+import { AuthContext } from '../../context/AuthContext'
+import { useContext } from 'react'
 
 const User = ({ user, viewMode = 'grid'}) => {
+  const { user: currentUser } = useContext(AuthContext);
   // Create a proper date from createdAt if available
   const friendDate = user?.createdAt ? format(new Date(user.createdAt)) : null;
+  console.log(currentUser);
+  console.log(user);
 
-  
-  // Default values for now
-  const mutualConnections = user?.mutualConnections || Math.floor(Math.random() * 12);
+  const mutualFriendsCount = () => {
+    let count = 0;
+    for (const friend of currentUser.friends) {
+      if (user.friends.includes(friend)) {
+        count++;
+      }
+    }
+    return count;
+  }
+  const mutualConnections = mutualFriendsCount();
   
   const isList = viewMode === 'list';
 

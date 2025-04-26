@@ -75,12 +75,12 @@ usersRouter.delete("/:id", tokenExtractor, userExtractor, async (request, respon
 usersRouter.get("/:id", tokenExtractor, userExtractor, async (request, response) => {
   if (request.user.id === request.params.id) {
     const user = await User.findById(request.params.id).populate([
-      { path: "friends", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
+      { path: "friends", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests friends" }
     ])
     response.status(200).json(user)
   } else {
     const user = await User.findById(request.params.id).select('-passwordHash -email -updatedAt').populate([
-      { path: "friends", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
+      { path: "friends", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests friends" }
     ]);
     response.status(200).json(user)
   }
