@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState, useContext } from "react";
 import User from "../user/User";
 import "./profileFriends.css";
@@ -5,8 +6,8 @@ import { Person, SortByAlpha, AccessTime, Search, LocalFlorist, ViewModule, View
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 
-const ProfileFriends = () => {
-  const { user: contextUser } = useContext(AuthContext);
+const ProfileFriends = ({ user: profileUser }) => {
+  const { user: currentUser } = useContext(AuthContext);
   const [friends, setFriends] = useState([]);
   const [sortMethod, setSortMethod] = useState("default");
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,14 +15,17 @@ const ProfileFriends = () => {
   const [activeTab, setActiveTab] = useState("friends");
   const [loading, setLoading] = useState(true);
 
+  // Use profileUser if provided, otherwise fallback to currentUser
+  const user = profileUser || currentUser;
+
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!contextUser?.id) return;
+      if (!user?.id) return;
       
       try {
         setLoading(true);
         const token = localStorage.getItem("auth-token");
-        const response = await axios.get(`/api/users/${contextUser.id}`, {
+        const response = await axios.get(`/api/users/${user.id}`, {
           headers: token ? {
             'Authorization': `Bearer ${token}`
           } : {}
@@ -36,7 +40,7 @@ const ProfileFriends = () => {
     };
     
     fetchUserData();
-  }, [contextUser]);
+  }, [user]);
 
   const filteredFriends = () => {
     let result = [...friends];
@@ -85,7 +89,7 @@ const ProfileFriends = () => {
         <div className="friendsTitle-wrapper">
           <Person className="friendsTitle-icon" />
           <h2 className="friendsTitle">
-            {activeTab === "friends" ? "Friends" : activeTab === "pages" ? "Pages" : "Groups"}
+            {user.firstName}&apos;s {activeTab === "friends" ? "Friends" : activeTab === "pages" ? "Pages" : "Groups"}
           </h2>
           <div className="friendsStats">
             <div className="friendsStat">

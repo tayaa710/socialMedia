@@ -41,6 +41,19 @@
   gap: 6px;
 }
 
+.userProfileLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.userProfileLink:hover {
+  opacity: 0.8;
+}
+
 .userIcon {
   color: #5271ff;
   background-color: #f0f4ff;

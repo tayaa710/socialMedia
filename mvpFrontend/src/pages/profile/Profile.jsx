@@ -65,7 +65,7 @@ const Profile = () => {
     <div className='pageContainer'>
       <div className="heading">
         <Topbar />
-        <Userbar />
+        <Userbar profileUser={user} />
         <SelectionBar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
       </div>
       

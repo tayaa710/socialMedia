@@ -487,3 +487,16 @@
   }
 }
 
+.userLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 100%;
+  height: calc(100% - 60px); /* Adjust based on action button area height */
+  transition: none;
+}
+
+.userLink:hover {
+  transform: none; /* Remove transform from link since it's now on the container */
+}
+

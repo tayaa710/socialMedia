@@ -5,6 +5,7 @@ import { Favorite, Share, Comment, HelpOutline, InfoOutlined } from '@mui/icons-
 import axios from 'axios'
 import {format} from "timeago.js"
 import { AuthContext } from '../../context/AuthContext'
+import { Link } from 'react-router-dom'
 
 const Post = ({ post }) => {
   const [showReason, setShowReason] = useState(false)
@@ -62,13 +63,15 @@ const Post = ({ post }) => {
       <div className="postHeader">
         <div className="headerLeft">
           <div className="userInfoArea">
-            <img 
-              src={user.profilePicture} 
-              alt="Profile" 
-              className="userProfilePic"
-            />
-            <span className="postUsername">{user.firstName} {user.lastName}</span>
-            <span className="postDate">{format(post.createdAt)}</span>
+            <Link to={`/profile/${user.id}`} style={{ textDecoration: 'none', color: 'inherit', outline: 'none' }} className="userProfileLink">
+              <img 
+                src={user.profilePicture} 
+                alt="Profile" 
+                className="userProfilePic"
+              />
+              <span className="postUsername">{user.firstName} {user.lastName}</span>
+              <span className="postDate">{format(post.createdAt)}</span>
+            </Link>
           </div>
         </div>
         <div className="headerRight">

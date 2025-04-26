@@ -1,11 +1,14 @@
+/* eslint-disable react/prop-types */
 import Button from '../button/Button'
 import './userbar.css'
 import { VerifiedUser, LocationOn, Cake, LocalFlorist } from '@mui/icons-material'
 import { AuthContext } from '../../context/AuthContext'
 import { useContext } from 'react'
 
-const Userbar = () => {
-  const { user } = useContext(AuthContext)
+const Userbar = ({ profileUser }) => {
+  const { user: currentUser } = useContext(AuthContext)
+  // If profileUser is passed, use it; otherwise, fall back to the current logged-in user
+  const user = profileUser || currentUser
 
   return (
     <div className="userbarContainer">
@@ -51,8 +54,12 @@ const Userbar = () => {
 
       <div className="userbarRight">
         <div className="actionButtons">
-          <Button message="Connect" className="primaryBtn" />
-          <Button message="Message" className="secondaryBtn" />
+          {profileUser && profileUser.id !== currentUser.id && (
+            <>
+              <Button message="Connect" className="primaryBtn" />
+              <Button message="Message" className="secondaryBtn" />
+            </>
+          )}
         </div>
       </div>
     </div>

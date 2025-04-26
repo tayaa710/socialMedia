@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test node --test",
-    "test:only":"NODE_ENV=test node --test --only=true",
+    "test:only": "NODE_ENV=test node --test --only=true",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
@@ -25,6 +25,7 @@
     "supertest": "^7.0.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.7.0",
     "nodemon": "^3.1.9"
   }
 }
