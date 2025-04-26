@@ -18,8 +18,14 @@ const AuthReducer = (state, action) => {
         isFetching: false,
         error: action.payload,
       }
+    case "UPDATE_USER":
+      return {
+        ...state,
+        user: action.payload,
+      }
     default:
       return state
   }
 }
+
 export default AuthReducer

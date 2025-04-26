@@ -6,6 +6,9 @@ import { Person, SortByAlpha, AccessTime, Search, LocalFlorist, ViewModule, View
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 
+// Custom event name for friend updates
+const FRIEND_UPDATE_EVENT = 'friendStatusUpdated';
+
 const ProfileFriends = ({ user: profileUser }) => {
   const { user: currentUser } = useContext(AuthContext);
   const [friends, setFriends] = useState([]);
@@ -18,28 +21,49 @@ const ProfileFriends = ({ user: profileUser }) => {
   // Use profileUser if provided, otherwise fallback to currentUser
   const user = profileUser || currentUser;
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!user?.id) return;
+  const fetchUserData = async () => {
+    if (!user?.id) return;
+    
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("auth-token");
+      const response = await axios.get(`/api/users/${user.id}`, {
+        headers: token ? {
+          'Authorization': `Bearer ${token}`
+        } : {}
+      });
       
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("auth-token");
-        const response = await axios.get(`/api/users/${user.id}`, {
-          headers: token ? {
-            'Authorization': `Bearer ${token}`
-          } : {}
-        });
-        
-        setFriends(response.data.friends || []);
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
-      } finally {
-        setLoading(false);
+      setFriends(response.data.friends || []);
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial data fetch
+  useEffect(() => {
+    fetchUserData();
+  }, [user]);
+
+  // Listen for friend update events
+  useEffect(() => {
+    // Create event handler function
+    const handleFriendUpdate = (event) => {
+      // Check if this update is relevant to the current user
+      if (event.detail?.userId === user?.id) {
+        console.log("Friend update detected, refreshing friend list");
+        fetchUserData();
       }
     };
-    
-    fetchUserData();
+
+    // Add event listener
+    window.addEventListener(FRIEND_UPDATE_EVENT, handleFriendUpdate);
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener(FRIEND_UPDATE_EVENT, handleFriendUpdate);
+    };
   }, [user]);
 
   const filteredFriends = () => {
@@ -89,7 +113,7 @@ const ProfileFriends = ({ user: profileUser }) => {
         <div className="friendsTitle-wrapper">
           <Person className="friendsTitle-icon" />
           <h2 className="friendsTitle">
-            {user.firstName}&apos;s {activeTab === "friends" ? "Friends" : activeTab === "pages" ? "Pages" : "Groups"}
+            {user.firstName || user.username}&apos;s {activeTab === "friends" ? "Friends" : activeTab === "pages" ? "Pages" : "Groups"}
           </h2>
           <div className="friendsStats">
             <div className="friendsStat">
@@ -217,4 +241,6 @@ const ProfileFriends = ({ user: profileUser }) => {
   );
 };
 
+// Export the event name for other components to use
+export { FRIEND_UPDATE_EVENT };
 export default ProfileFriends;

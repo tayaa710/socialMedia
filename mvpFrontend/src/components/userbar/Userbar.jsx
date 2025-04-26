@@ -3,12 +3,164 @@ import Button from '../button/Button'
 import './userbar.css'
 import { VerifiedUser, LocationOn, Cake, LocalFlorist } from '@mui/icons-material'
 import { AuthContext } from '../../context/AuthContext'
-import { useContext } from 'react'
+import { useContext, useState, useEffect } from 'react'
+import axios from 'axios'
+import { FRIEND_UPDATE_EVENT } from '../profileFriends/ProfileFriends'
 
 const Userbar = ({ profileUser }) => {
-  const { user: currentUser } = useContext(AuthContext)
-  // If profileUser is passed, use it; otherwise, fall back to the current logged-in user
+  const token = localStorage.getItem("auth-token");
+  const { user: currentUser, dispatch } = useContext(AuthContext)
   const user = profileUser || currentUser
+  const [localUser, setLocalUser] = useState(user)
+  // Add a separate state for tracking friend status
+  const [isFriend, setIsFriend] = useState(false)
+  
+  // Update localUser when profileUser changes
+  useEffect(() => {
+    if (profileUser || currentUser) {
+      const currentUserToShow = profileUser || currentUser
+      setLocalUser(currentUserToShow)
+    }
+  }, [profileUser, currentUser])
+  
+  // Determine friend status when users change
+  useEffect(() => {
+    if (profileUser && currentUser && localUser.friends) {
+      const friendStatus = localUser.friends.some(friend => 
+        friend.id === currentUser.id || 
+        (typeof friend === 'string' && friend === currentUser.id)
+      )
+      setIsFriend(friendStatus)
+    }
+  }, [profileUser, currentUser, localUser])
+
+  const editProfile = () => {
+    console.log('Edit profile clicked')
+  }
+
+  // Dispatch friend update event
+  const notifyFriendUpdate = (userId) => {
+    const event = new CustomEvent(FRIEND_UPDATE_EVENT, {
+      detail: { userId }
+    })
+    window.dispatchEvent(event)
+  }
+
+  const addFriend = async (userId) => {
+    try {
+      const response = await axios.put(`/api/users/${userId}/friend`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (response.status === 200 || response.status === 201) {
+        // Immediately update friend status in UI
+        setIsFriend(true)
+        
+        // Update local state for immediate UI feedback
+        const updatedUser = { 
+          ...localUser,
+          friends: [...(localUser.friends || []), { id: userId }]
+        }
+        setLocalUser(updatedUser)
+        
+        // If this is for the current user, update the global auth context
+        if (!profileUser) {
+          dispatch({ 
+            type: "UPDATE_USER", 
+            payload: updatedUser
+          })
+        }
+        
+        // Fetch updated user data to ensure consistency
+        fetchUpdatedUserData(profileUser ? profileUser.id : currentUser.id)
+        
+        // Notify other components about the friend update
+        notifyFriendUpdate(userId)
+        notifyFriendUpdate(currentUser.id)
+      }
+    } catch (error) {
+      console.error("Failed to add friend:", error)
+    }
+  }
+
+  const unfriend = async (userId) => {
+    try {
+      const response = await axios.put(`/api/users/${userId}/unfriend`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (response.status === 200 || response.status === 201) {
+        // Immediately update friend status in UI
+        setIsFriend(false)
+        
+        // Update local state for immediate UI feedback
+        const updatedUser = {
+          ...localUser,
+          friends: (localUser.friends || []).filter(friend => 
+            (friend.id && friend.id !== userId) || 
+            (typeof friend === 'string' && friend !== userId)
+          )
+        }
+        setLocalUser(updatedUser)
+        
+        // If this is for the current user, update the global auth context
+        if (!profileUser) {
+          dispatch({
+            type: "UPDATE_USER",
+            payload: updatedUser
+          })
+        }
+        
+        // Fetch updated user data to ensure consistency
+        fetchUpdatedUserData(profileUser ? profileUser.id : currentUser.id)
+        
+        // Notify other components about the friend update
+        notifyFriendUpdate(userId)
+        notifyFriendUpdate(currentUser.id)
+      }
+    } catch (error) {
+      console.error("Failed to remove friend:", error)
+      // Handle 409 conflict - users might not be friends
+      if (error.response && error.response.status === 409) {
+        console.log("Users are not friends or already unfriended")
+        setIsFriend(false)
+      }
+    }
+  }
+  
+  // Function to fetch updated user data after friend actions
+  const fetchUpdatedUserData = async (userId) => {
+    try {
+      const response = await axios.get(`/api/users/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (response.status === 200) {
+        const userData = response.data
+        
+        if (userId === currentUser.id) {
+          // Update global context if it's the current user
+          dispatch({ 
+            type: "UPDATE_USER", 
+            payload: userData
+          })
+        }
+        
+        // If this is the profile we're viewing, update local state
+        if (profileUser && profileUser.id === userId) {
+          setLocalUser(userData)
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch updated user data:", error)
+    }
+  }
 
   return (
     <div className="userbarContainer">
@@ -16,12 +168,12 @@ const Userbar = ({ profileUser }) => {
         <div className="statsContainer">
           <div className="statItem">
             <LocalFlorist className="statIcon" />
-            <span className="statCount">{user.impactPoints}</span>
+            <span className="statCount">{localUser.impactPoints}</span>
             <span className="statLabel">Impact Points</span>
           </div>
           <div className="statItem">
             <LocalFlorist className="statIcon" />
-            <span className="statCount">{user.trustRating}</span>
+            <span className="statCount">{localUser.trustRating}</span>
             <span className="statLabel">Trust Rating</span>
           </div>
         </div>
@@ -29,24 +181,24 @@ const Userbar = ({ profileUser }) => {
 
       <div className="userbarCenter">
         <div className="profileImageContainer">
-          <img src={user.profilePicture} alt={`${user.username}'s profile picture`} className="profileImage" />
+          <img src={localUser.profilePicture} alt={`${localUser.username}'s profile picture`} className="profileImage" />
         </div>
         <div className="profileInfo">
           <div className="nameContainer">
-            <h1 className="profileName">{user.username}</h1>
+            <h1 className="profileName">{localUser.username}</h1>
             <VerifiedUser className="verifiedIcon" titleAccess="Verified User" />
           </div>
           <div className="bioSection">
-            <p className="bioText">{user.bio}</p>
+            <p className="bioText">{localUser.bio}</p>
           </div>
           <div className="userDetails">
             <div className="detailItem">
               <Cake className="detailIcon" />
-              <p className='subInfo'>{user.age} Years Old</p>
+              <p className='subInfo'>{localUser.age} Years Old</p>
             </div>
             <div className="detailItem">
               <LocationOn className="detailIcon" />
-              <p className='subInfo'>{user.location}</p>
+              <p className='subInfo'>{localUser.location}</p>
             </div>
           </div>
         </div>
@@ -54,10 +206,20 @@ const Userbar = ({ profileUser }) => {
 
       <div className="userbarRight">
         <div className="actionButtons">
-          {profileUser && profileUser.id !== currentUser.id && (
+          {profileUser && (
             <>
-              <Button message="Connect" className="primaryBtn" />
-              <Button message="Message" className="secondaryBtn" />
+              {currentUser.id === profileUser.id ? (
+                <Button message="Edit Profile" className="primaryBtn" onClick={editProfile} />
+              ) : (
+                <Button 
+                  message={isFriend ? "Remove Friend" : "Add Friend"} 
+                  className="primaryBtn" 
+                  onClick={() => isFriend ? unfriend(profileUser.id) : addFriend(profileUser.id)} 
+                />
+              )}
+              {currentUser.id !== profileUser.id && (
+                <Button message="Message" className="secondaryBtn" />
+              )}
             </>
           )}
         </div>
