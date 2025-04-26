@@ -16,20 +16,24 @@ const Feed = () => {
     const [filterSettings, setFilterSettings] = useState({})
     const { user } = useContext(AuthContext)
 
+    const fetchPosts = async () => {
+        const token = localStorage.getItem("auth-token")
+        const response = await axios.get(`/api/timeline/${user.id}`, {
+            headers: token ? {
+                'Authorization': `Bearer ${token}`
+            } : {}
+        })
+        setPosts(response.data)
+        console.log(response.data)
+    }
+    
     useEffect(() => {
-        const fetchPosts = async () => {
-            const token = localStorage.getItem("auth-token")
-            const response = await axios.get(`/api/timeline/${user.id}`, {
-                headers: token ? {
-                    'Authorization': `Bearer ${token}`
-                } : {}
-            })
-            setPosts(response.data)
-            console.log(response.data)
-        }
         fetchPosts()
-        
-    }, [])
+    }, [user.id])
+
+    const handleNewPost = () => {
+        fetchPosts() // Refresh posts when a new post is created
+    }
 
     const handleFilterChange = ({ excludedTags, settings }) => {
         setExcludedTags(excludedTags)
@@ -54,7 +58,7 @@ const Feed = () => {
                             initialExcludedTags={excludedTags}
                         />
                         
-                        <PostCreate />
+                        <PostCreate onPostCreated={handleNewPost} />
                         {posts.map((post) => {
                             // Can use filterSettings here to filter posts if needed
                             return (

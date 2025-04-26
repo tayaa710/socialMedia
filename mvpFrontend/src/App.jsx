@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { useEffect, useContext } from "react"
 import { initializeAuth } from "./apiCalls"
 import { AuthContext } from "./context/AuthContext"
+import { CloudinaryProvider } from "./context/CloudinaryContext"
 
 function App() {
   const { user, dispatch } = useContext(AuthContext)
@@ -16,14 +17,16 @@ function App() {
   }, [dispatch])
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={user ? <Home /> : <Login />} />
-        <Route path="/profile/:id" element={<Profile />} />
-        <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-        <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-      </Routes>
-    </Router>
+    <CloudinaryProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={user ? <Home /> : <Login />} />
+          <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+          <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
+        </Routes>
+      </Router>
+    </CloudinaryProvider>
   )
 }
 
