@@ -1,34 +1,66 @@
 const postsRouter = require('express').Router()
 const User = require('../models/user')
 const Post = require('../models/post')
-const { tokenExtractor, userExtractor } = require('../utils/middleware');
+const { tokenExtractor, userExtractor } = require('../utils/middleware')
+const multer = require('multer')
+const { uploadImage } = require('../utils/cloudinary')
+
+// Configure multer for memory storage (no disk writing)
+const storage = multer.memoryStorage()
+const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept only image files
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true)
+    } else {
+      cb(new Error('Only image files are allowed!'), false)
+    }
+  }
+})
 
 postsRouter.get('/', async (request, response) => {
   const posts = await Post.find({}).populate("user", { username: 1 })
   response.json(posts)
 })
 
-//Create a post
-postsRouter.post('/', tokenExtractor, userExtractor, async (req, res) => {
-  const { description, photo, ...rest } = req.body
-  const newPost = new Post({
-    user: req.user.id,
-    description,
-    photo,
-    ...rest
-  })
-  const post = await newPost.save()
-  const postId = post._id
-  const user = await User.findById(req.user.id)
-  user.posts = user.posts.concat(postId)
-  await User.findByIdAndUpdate(user._id, user)
+// Create a post with image upload
+postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), async (req, res) => {
+  try {
+    let photo = null
+    
+    // If there's an image file, upload it to Cloudinary
+    if (req.file) {
+      photo = await uploadImage(req.file.buffer)
+    }
+    
+    // Get description from form data
+    const description = req.body.description
+    
+    // Create the post
+    const newPost = new Post({
+      user: req.user.id,
+      description,
+      photo,
+    })
+    
+    const post = await newPost.save()
+    const postId = post._id
+    const user = await User.findById(req.user.id)
+    user.posts = user.posts.concat(postId)
+    await User.findByIdAndUpdate(user._id, user)
 
-  res.status(201).json(post)
+    res.status(201).json(post)
+  } catch (error) {
+    console.error('Error creating post:', error)
+    res.status(500).json({ error: 'Failed to create post' })
+  }
 })
 
-
 //update a post
-
 postsRouter.put('/:id', tokenExtractor, userExtractor, async (req, res) => {
   const postToEdit = await Post.findById(req.params.id);
   if (postToEdit.user.toString() === req.user.id.toString()) {
@@ -54,7 +86,6 @@ postsRouter.delete('/:id', tokenExtractor, userExtractor, async (req, res) => {
 })
 
 //like a post
-
 postsRouter.patch('/:id/like', tokenExtractor, userExtractor, async (req, res) => {
   const postToLike = await Post.findById(req.params.id)
   if (!postToLike) {
@@ -69,7 +100,6 @@ postsRouter.patch('/:id/like', tokenExtractor, userExtractor, async (req, res) =
   }
   await Post.findByIdAndUpdate(postToLike._id, postToLike, { new: true })
   res.status(200).json(postToLike)
-
 })
 
 //get a post

@@ -2,12 +2,10 @@ import { useState, useContext, useRef } from 'react'
 import { AddPhotoAlternate, Mood, EmojiObjects, Send } from '@mui/icons-material'
 import './postCreate.css'
 import { AuthContext } from '../../context/AuthContext'
-import { useCloudinary } from '../../context/CloudinaryContext'
 import axios from 'axios'
 
 const PostCreate = ({ onPostCreated }) => {
   const { user } = useContext(AuthContext)
-  const { uploadImage } = useCloudinary()
 
   const [file, setFile] = useState(null)
   const [isUploading, setIsUploading] = useState(false)
@@ -42,25 +40,19 @@ const PostCreate = ({ onPostCreated }) => {
     setIsUploading(true);
     
     try {
-      // Upload image to Cloudinary if a file is selected
-      let imageUrl = null;
+      // Create FormData to send the file and post details
+      const formData = new FormData();
+      formData.append('description', description.current.value);
+      
       if (file) {
-        imageUrl = await uploadImage(file);
-        if (!imageUrl) {
-          throw new Error('Image upload failed');
-        }
+        formData.append('image', file);
       }
       
-      // Create post object
-      const newPost = {
-        description: description.current.value,
-        photo: imageUrl,
-      };
-      
-      // Send post to server
-      const response = await axios.post('/api/posts', newPost, {
+      // Send post data with image to server
+      const response = await axios.post('/api/posts', formData, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
         }
       });
       

@@ -100,11 +100,13 @@ const Post = ({ post }) => {
 
 
       <div className="imageWrapper">
-        <img
-          src={post.photo}
-          alt={`Post by ${user.firstName} ${user.lastName}`}
-          className="postImage"
-        />
+        {post.photo && (
+          <img
+            src={post.photo}
+            alt={`Post by ${user.firstName} ${user.lastName}`}
+            className="postImage"
+          />
+        )}
         <div className="hoverOverlay">
           <div className="overlayContent">
             <span>{post.description}</span>
