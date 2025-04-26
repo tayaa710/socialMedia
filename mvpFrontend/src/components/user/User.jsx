@@ -5,6 +5,7 @@ import { format } from 'timeago.js'
 const User = ({ user, viewMode = 'grid'}) => {
   // Create a proper date from createdAt if available
   const friendDate = user?.createdAt ? format(new Date(user.createdAt)) : null;
+
   
   // Default values for now
   const mutualConnections = user?.mutualConnections || Math.floor(Math.random() * 12);

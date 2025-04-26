@@ -18,7 +18,9 @@ const userSchema = new mongoose.Schema({
     type: Number
   },
   friends: [{
-    type: Number
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
   }],
   impactPoints: {
     type: Number,
@@ -81,14 +83,14 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String
   },
-  followers: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
-  following: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
+  // followers: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'User'
+  // }],
+  // following: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'User'
+  // }],
   posts: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post'

@@ -16,7 +16,8 @@ const ProfilePosts = ({user}) => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(`/api/posts/user/${user ? user.id : currentUser.id}`);
-      setPosts(response.data);
+      const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setPosts(sortedPosts);
     } catch (error) {
       console.error("Failed to fetch posts:", error);
     }

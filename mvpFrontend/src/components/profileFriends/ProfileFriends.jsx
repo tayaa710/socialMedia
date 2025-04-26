@@ -7,12 +7,11 @@ import axios from "axios";
 
 const ProfileFriends = () => {
   const { user: contextUser } = useContext(AuthContext);
-  const [followers, setFollowers] = useState([]);
-  const [following, setFollowing] = useState([]);
+  const [friends, setFriends] = useState([]);
   const [sortMethod, setSortMethod] = useState("default");
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("grid");
-  const [activeTab, setActiveTab] = useState("following");
+  const [activeTab, setActiveTab] = useState("friends");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,8 +27,7 @@ const ProfileFriends = () => {
           } : {}
         });
         
-        setFollowers(response.data.followers || []);
-        setFollowing(response.data.following || []);
+        setFriends(response.data.friends || []);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       } finally {
@@ -41,7 +39,7 @@ const ProfileFriends = () => {
   }, [contextUser]);
 
   const filteredFriends = () => {
-    let result = activeTab === "followers" ? [...followers] : [...following];
+    let result = [...friends];
 
     // Apply search filter
     if (searchTerm.trim() !== "") {
@@ -63,7 +61,11 @@ const ProfileFriends = () => {
   };
 
   const getDisplayUsers = () => {
-    return filteredFriends();
+    if (activeTab === "friends") {
+      return filteredFriends();
+    }
+    // Pages and Groups will be implemented later
+    return [];
   };
 
   if (loading) {
@@ -83,20 +85,18 @@ const ProfileFriends = () => {
         <div className="friendsTitle-wrapper">
           <Person className="friendsTitle-icon" />
           <h2 className="friendsTitle">
-            {activeTab === "followers" ? "Followers" : "Following"}
+            {activeTab === "friends" ? "Friends" : activeTab === "pages" ? "Pages" : "Groups"}
           </h2>
           <div className="friendsStats">
             <div className="friendsStat">
               <span className="friendsStatNumber">
-                {activeTab === "followers" ? followers.length : following.length}
+                {activeTab === "friends" ? friends.length : 0}
               </span>
               <span className="friendsStatLabel">Total</span>
             </div>
             <div className="friendsStat online">
               <span className="friendsStatNumber">
-                {activeTab === "followers"
-                  ? followers.filter(f => f.isOnline).length
-                  : following.filter(f => f.isOnline).length}
+                {activeTab === "friends" ? friends.filter(f => f.isOnline).length : 0}
               </span>
               <span className="friendsStatLabel">Online</span>
             </div>
@@ -106,16 +106,22 @@ const ProfileFriends = () => {
 
       <div className="friendsTabs">
         <button
-          className={`friendsTab ${activeTab === "following" ? "active" : ""}`}
-          onClick={() => setActiveTab("following")}
+          className={`friendsTab ${activeTab === "friends" ? "active" : ""}`}
+          onClick={() => setActiveTab("friends")}
         >
-          Following
+          Friends
         </button>
         <button
-          className={`friendsTab ${activeTab === "followers" ? "active" : ""}`}
-          onClick={() => setActiveTab("followers")}
+          className={`friendsTab ${activeTab === "pages" ? "active" : ""}`}
+          onClick={() => setActiveTab("pages")}
         >
-          Followers
+          Pages
+        </button>
+        <button
+          className={`friendsTab ${activeTab === "groups" ? "active" : ""}`}
+          onClick={() => setActiveTab("groups")}
+        >
+          Groups
         </button>
       </div>
 
@@ -183,7 +189,13 @@ const ProfileFriends = () => {
       </div>
 
       <div className={`friendsList ${viewMode}`}>
-        {getDisplayUsers().length > 0 ? (
+        {activeTab !== "friends" ? (
+          <div className="comingSoonMessage">
+            <LocalFlorist className="comingSoonIcon" />
+            <h3>{activeTab === "pages" ? "Pages" : "Groups"} Coming Soon</h3>
+            <p>This feature is currently under development</p>
+          </div>
+        ) : getDisplayUsers().length > 0 ? (
           getDisplayUsers().map(friend => (
             <div className="friendCard" key={friend._id || friend.id}>
               <User user={friend} viewMode={viewMode} />
@@ -192,7 +204,7 @@ const ProfileFriends = () => {
         ) : (
           <div className="noFriendsMessage">
             <LocalFlorist className="noFriendsIcon" />
-            <h3>No {activeTab} found</h3>
+            <h3>No friends found</h3>
             <p>Try adjusting your search or filters</p>
           </div>
         )}

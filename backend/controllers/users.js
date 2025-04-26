@@ -5,13 +5,12 @@ const { tokenExtractor, userExtractor } = require('../utils/middleware');
 
 
 
-usersRouter.get('/', async (request, response) => {
-  const users = await User.find({}).select("-passwordHash").populate([
-    { path: "followers", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" },
-    { path: "following", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
-  ])
-  response.json(users)
-})
+// usersRouter.get('/', async (request, response) => {
+//   const users = await User.find({}).select("-passwordHash").populate([
+//     { path: "friends", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
+//   ])
+//   response.json(users)
+// })
 //Create new user
 
 usersRouter.post("/register", async (request, response) => {
@@ -56,7 +55,7 @@ usersRouter.put("/:id", tokenExtractor, userExtractor, async (request, response)
     })
   }
 })
-//Delet your user account
+//Delete your user account
 usersRouter.delete("/:id", tokenExtractor, userExtractor, async (request, response) => {
   let updatedData = { ...request.body }
   if (request.user.id === request.params.id) {
@@ -76,48 +75,46 @@ usersRouter.delete("/:id", tokenExtractor, userExtractor, async (request, respon
 usersRouter.get("/:id", tokenExtractor, userExtractor, async (request, response) => {
   if (request.user.id === request.params.id) {
     const user = await User.findById(request.params.id).populate([
-      { path: "followers", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" },
-      { path: "following", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
+      { path: "friends", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
     ])
     response.status(200).json(user)
   } else {
     const user = await User.findById(request.params.id).select('-passwordHash -email -updatedAt').populate([
-      { path: "followers", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" },
-      { path: "following", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
+      { path: "friends", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
     ]);
     response.status(200).json(user)
   }
 })
 
-//Follow a user
-usersRouter.put("/:id/follow", tokenExtractor, userExtractor, async (request, response) => {
+//Friend a user
+usersRouter.put("/:id/friend", tokenExtractor, userExtractor, async (request, response) => {
   const user = request.user
-  const userBeingFollowed = await User.findById(request.params.id)
-  if (userBeingFollowed.followers.filter(id => id.toString() === user.id.toString()).length > 0){
-    response.status(409).json({"error" : "Already following"})
-  }else if (userBeingFollowed._id.toString() === user.id.toString()){
-    response.status(409).json({"error" : "Can't follow yourself"})
+  const userBeingFriended = await User.findById(request.params.id)
+  if (userBeingFriended.friends.filter(id => id.toString() === user.id.toString()).length > 0){
+    response.status(409).json({"error" : "Already friends"})
+  }else if (userBeingFriended._id.toString() === user.id.toString()){
+    response.status(409).json({"error" : "Can't friend yourself"})
   }else{  
-    userBeingFollowed.followers = userBeingFollowed.followers.concat(user.id)
-    const newFollowedUser = await User.findByIdAndUpdate(userBeingFollowed._id, userBeingFollowed,{ new: true })
-    user.following = user.following.concat(request.params.id)
+    userBeingFriended.friends = userBeingFriended.friends.concat(user.id)
+    const newFriendedUser = await User.findByIdAndUpdate(userBeingFriended._id, userBeingFriended,{ new: true })
+    user.friends = user.friends.concat(request.params.id)
     const newFollowingUser = await User.findByIdAndUpdate(user.id, user,{ new: true })
-    response.status(201).json(newFollowedUser)
+    response.status(201).json(newFriendedUser)
   }
 })
-//Unfollow a user
-usersRouter.put("/:id/unfollow", tokenExtractor, userExtractor, async (request, response) => {
+//Unfriend a user
+usersRouter.put("/:id/unfriend", tokenExtractor, userExtractor, async (request, response) => {
   const user = request.user
-  const userBeingUnfollowed = await User.findById(request.params.id)
-  if (userBeingUnfollowed.followers.filter(id => id.toString() === user.id.toString()).length === 0){
-    response.status(409).json({"error" : "Not following"})
+  const userBeingUnfriended = await User.findById(request.params.id)
+  if (userBeingUnfriended.friends.filter(id => id.toString() === user.id.toString()).length === 0){
+    response.status(409).json({"error" : "Not friends"})
   }else{  
-    userBeingUnfollowed.followers = userBeingUnfollowed.followers.filter(id => id.toString() !== user.id.toString())
-    const newFollowedUser = await User.findByIdAndUpdate(userBeingUnfollowed._id, userBeingUnfollowed,{ new: true })
-    user.following = user.following.filter(id => id.toString() !== request.params.id)
+    userBeingUnfriended.friends = userBeingUnfriended.friends.filter(id => id.toString() !== user.id.toString())
+    const newFriendedUser = await User.findByIdAndUpdate(userBeingUnfriended._id, userBeingUnfriended,{ new: true })
+    user.friends = user.friends.filter(id => id.toString() !== request.params.id)
     await User.findByIdAndUpdate(user.id, user,{ new: true })
-    response.status(201).json(newFollowedUser)
-  }
+    response.status(201).json(newFriendedUser)
+  } 
 })
 
 module.exports = usersRouter
