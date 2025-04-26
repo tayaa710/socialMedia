@@ -23,7 +23,7 @@ const Feed = () => {
                 'Authorization': `Bearer ${token}`
             } : {}
         })
-        setPosts(response.data)
+        setPosts(response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
         console.log(response.data)
     }
     
