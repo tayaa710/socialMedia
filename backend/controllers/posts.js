@@ -55,7 +55,7 @@ postsRouter.delete('/:id', tokenExtractor, userExtractor, async (req, res) => {
 
 //like a post
 
-postsRouter.put('/:id/like', tokenExtractor, userExtractor, async (req, res) => {
+postsRouter.patch('/:id/like', tokenExtractor, userExtractor, async (req, res) => {
   const postToLike = await Post.findById(req.params.id)
   if (!postToLike) {
     return res.status(404).json({ error: "Post not found" });
@@ -67,10 +67,11 @@ postsRouter.put('/:id/like', tokenExtractor, userExtractor, async (req, res) => 
   } else {
     postToLike.likes = postToLike.likes.concat(userId)
   }
-  await Post.findByIdAndUpdate(postToLike._id, postToLike, {new: true})
+  await Post.findByIdAndUpdate(postToLike._id, postToLike, { new: true })
   res.status(200).json(postToLike)
 
 })
+
 //get a post
 postsRouter.get('/:id',async (request, response) => {
   const post = await Post.findById(request.params.id).populate("user", { firstName: 1 })

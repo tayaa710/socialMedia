@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 import './post.css'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 import { Favorite, Share, Comment, HelpOutline, InfoOutlined } from '@mui/icons-material'
 import axios from 'axios'
 import {format} from "timeago.js"
+import { AuthContext } from '../../context/AuthContext'
 
 const Post = ({ post }) => {
   const [showReason, setShowReason] = useState(false)
@@ -11,27 +12,43 @@ const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false)
   const [user, setUser] = useState(null)
 
+  const {user:currentUser} = useContext(AuthContext)
+
+  const token = localStorage.getItem("auth-token");
+  const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("auth-token")
         const response = await axios.get(`/api/users/${post.user}`, {
-          headers: token ? {
-            'Authorization': `Bearer ${token}`
-          } : {}
+          headers: authHeader
         });
+        if (post.likes.includes(currentUser.id)){
+          setIsLiked(true)
+        }
         setUser(response.data)
       } catch (error) {
         console.error("Failed to fetch user data:", error);
-      }
+      } 
     };
     
     fetchUser();
   }, [post.user]);
 
-  const likeHandler = () => {
+  const likeHandler = async () => {
     setIsLiked(!isLiked)
     setLikes(isLiked ? likes - 1 : likes + 1)
+    try{
+      console.log('liking post')
+      await axios.patch(`/api/posts/${post.id}/like`, {}, {
+        headers: authHeader
+      })
+    }catch(err){
+      setIsLiked(!isLiked)
+      setLikes(isLiked ? likes - 1 : likes + 1)
+      console.error("Failed to like post:", err);
+    }
+    
   }
 
   if (!user) return null; // Don't render until user data is loaded

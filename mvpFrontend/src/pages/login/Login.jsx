@@ -7,9 +7,9 @@ import { loginCall } from '../../apiCalls'
 import { AuthContext } from '../../context/AuthContext.jsx'
 
 const Login = () => {
-    const [captchaValue, setCaptchaValue] = useState(null)
+    // const [captchaValue, setCaptchaValue] = useState(null)
 
-    const recaptchaRef = useRef(null)
+    // const recaptchaRef = useRef(null)
     const emailRef = useRef()
     const passwordRef = useRef()
     // eslint-disable-next-line no-unused-vars
@@ -30,10 +30,10 @@ const Login = () => {
         e.preventDefault()
         
         // Check if CAPTCHA is completed
-        if (!captchaValue) {
-            alert("Please complete the CAPTCHA verification")
-            return
-        }
+        // if (!captchaValue) {
+        //     alert("Please complete the CAPTCHA verification")
+        //     return
+        // }
         
         const credentials = { 
             email: emailRef.current.value, 
@@ -90,11 +90,11 @@ const Login = () => {
                                 minLength={8}
                             />
                         </div>
-                        <ReCAPTCHA
+                        {/* <ReCAPTCHA
                             ref={recaptchaRef}
                             sitekey="6LeghB0rAAAAAMlalrzzGgaJc-C_vf4PRKkNEuze"
                             onChange={handleCaptchaChange}
-                        />
+                        /> */}
                         <button type="submit" className='loginButton' disabled={isFetching}>
                             <span>{isFetching ? <CircularProgress size={20} /> : "Sign In"}</span>
                         </button>
