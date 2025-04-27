@@ -4,6 +4,7 @@ const Post = require('../models/post')
 const { tokenExtractor, userExtractor } = require('../utils/middleware')
 const multer = require('multer')
 const { uploadImage } = require('../utils/cloudinary')
+const { checkImage } = require('../utils/sightengine')
 
 // Configure multer for memory storage (no disk writing)
 const storage = multer.memoryStorage()
@@ -30,11 +31,14 @@ postsRouter.get('/', async (request, response) => {
 // Create a post with image upload
 postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), async (req, res) => {
   try {
-    console.log('Request body:', req.body)
-    console.log('Request file:', req.file)
-    console.log('Request headers:', req.headers)
+    // console.log('Request body:', req.body)
+    // console.log('Request file:', req.file)
+    // console.log('Request headers:', req.headers)
     
     let photo = null
+
+    const imageCheck = await checkImage(req.file.buffer)
+    console.log('Image check:', imageCheck)
     
     // If there's an image file, upload it to Cloudinary
     if (req.file) {
