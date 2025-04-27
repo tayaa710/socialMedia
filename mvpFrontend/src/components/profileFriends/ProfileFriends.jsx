@@ -4,7 +4,7 @@ import User from "../user/User";
 import "./profileFriends.css";
 import { Person, SortByAlpha, AccessTime, Search, LocalFlorist, ViewModule, ViewList } from "@mui/icons-material";
 import { AuthContext } from "../../context/AuthContext";
-import axios from "axios";
+import { userAPI } from "../../services/api";
 
 // Custom event name for friend updates
 const FRIEND_UPDATE_EVENT = 'friendStatusUpdated';
@@ -26,14 +26,8 @@ const ProfileFriends = ({ user: profileUser }) => {
     
     try {
       setLoading(true);
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.get(`/api/users/${user.id}`, {
-        headers: token ? {
-          'Authorization': `Bearer ${token}`
-        } : {}
-      });
-      
-      setFriends(response.data.friends || []);
+      const userData = await userAPI.getUser(user.id);
+      setFriends(userData.friends || []);
     } catch (error) {
       console.error("Failed to fetch user data:", error);
     } finally {

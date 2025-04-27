@@ -2,7 +2,7 @@ import { useState, useContext, useRef } from 'react'
 import { AddPhotoAlternate, Mood, EmojiObjects, Send } from '@mui/icons-material'
 import './postCreate.css'
 import { AuthContext } from '../../context/AuthContext'
-import axios from 'axios'
+import { postAPI } from '../../services/api'
 
 const PostCreate = ({ onPostCreated }) => {
   const { user } = useContext(AuthContext)
@@ -12,8 +12,6 @@ const PostCreate = ({ onPostCreated }) => {
   const [previewUrl, setPreviewUrl] = useState(null)
 
   const description = useRef('')
-
-  const token = localStorage.getItem("auth-token");
 
   // Handle file selection
   const handleFileChange = (e) => {
@@ -49,14 +47,9 @@ const PostCreate = ({ onPostCreated }) => {
       }
       
       // Send post data with image to server
-      const response = await axios.post('/api/posts', formData, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const postData = await postAPI.createPost(formData);
       
-      console.log('Post created:', response.data);
+      console.log('Post created:', postData);
       
       // Reset form
       description.current.value = '';

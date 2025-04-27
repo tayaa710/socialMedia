@@ -6,8 +6,8 @@ import FeedFilters from '../../components/feedFilters/FeedFilters'
 import Post from '../../components/post/Post'
 import PostCreate from '../../components/postCreate/PostCreate'
 import { useState, useEffect, useContext } from 'react'
-import axios from 'axios'
 import { AuthContext } from '../../context/AuthContext'
+import { postAPI } from '../../services/api'
 
 const Feed = () => {
     const [posts, setPosts] = useState([])
@@ -17,14 +17,13 @@ const Feed = () => {
     const { user } = useContext(AuthContext)
 
     const fetchPosts = async () => {
-        const token = localStorage.getItem("auth-token")
-        const response = await axios.get(`/api/timeline/${user.id}`, {
-            headers: token ? {
-                'Authorization': `Bearer ${token}`
-            } : {}
-        })
-        setPosts(response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
-        console.log(response.data)
+        try {
+            const postsData = await postAPI.getPosts(user.id);
+            setPosts(postsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
+            console.log(postsData)
+        } catch (error) {
+            console.error("Failed to fetch posts:", error);
+        }
     }
     
     useEffect(() => {

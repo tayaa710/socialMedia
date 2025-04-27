@@ -7,7 +7,7 @@ import ProfileFriends from '../../components/profileFriends/ProfileFriends'
 import './profile.css'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
-import axios from 'axios'
+import { userAPI } from '../../services/api'
 
 const Profile = () => {
   const id = useParams().id
@@ -16,13 +16,8 @@ const Profile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("auth-token")
-        const response = await axios.get(`/api/users/${id}`, {
-          headers: token ? {
-            'Authorization': `Bearer ${token}`
-          } : {}
-        });
-        setUser(response.data)
+        const userData = await userAPI.getUser(id);
+        setUser(userData)
       } catch (error) {
         console.error("Failed to fetch user data:", error)
       }

@@ -4,11 +4,10 @@ import './userbar.css'
 import { VerifiedUser, LocationOn, Cake, LocalFlorist } from '@mui/icons-material'
 import { AuthContext } from '../../context/AuthContext'
 import { useContext, useState, useEffect } from 'react'
-import axios from 'axios'
+import { userAPI } from '../../services/api'
 import { FRIEND_UPDATE_EVENT } from '../profileFriends/ProfileFriends'
 
 const Userbar = ({ profileUser }) => {
-  const token = localStorage.getItem("auth-token");
   const { user: currentUser, dispatch } = useContext(AuthContext)
   const user = profileUser || currentUser
   const [localUser, setLocalUser] = useState(user)
@@ -48,38 +47,32 @@ const Userbar = ({ profileUser }) => {
 
   const addFriend = async (userId) => {
     try {
-      const response = await axios.put(`/api/users/${userId}/friend`, {}, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+      await userAPI.addFriend(userId);
       
-      if (response.status === 200 || response.status === 201) {
-        // Immediately update friend status in UI
-        setIsFriend(true)
-        
-        // Update local state for immediate UI feedback
-        const updatedUser = { 
-          ...localUser,
-          friends: [...(localUser.friends || []), { id: userId }]
-        }
-        setLocalUser(updatedUser)
-        
-        // If this is for the current user, update the global auth context
-        if (!profileUser) {
-          dispatch({ 
-            type: "UPDATE_USER", 
-            payload: updatedUser
-          })
-        }
-        
-        // Fetch updated user data to ensure consistency
-        fetchUpdatedUserData(profileUser ? profileUser.id : currentUser.id)
-        
-        // Notify other components about the friend update
-        notifyFriendUpdate(userId)
-        notifyFriendUpdate(currentUser.id)
+      // Immediately update friend status in UI
+      setIsFriend(true)
+      
+      // Update local state for immediate UI feedback
+      const updatedUser = { 
+        ...localUser,
+        friends: [...(localUser.friends || []), { id: userId }]
       }
+      setLocalUser(updatedUser)
+      
+      // If this is for the current user, update the global auth context
+      if (!profileUser) {
+        dispatch({ 
+          type: "UPDATE_USER", 
+          payload: updatedUser
+        })
+      }
+      
+      // Fetch updated user data to ensure consistency
+      fetchUpdatedUserData(profileUser ? profileUser.id : currentUser.id)
+      
+      // Notify other components about the friend update
+      notifyFriendUpdate(userId)
+      notifyFriendUpdate(currentUser.id)
     } catch (error) {
       console.error("Failed to add friend:", error)
     }
@@ -87,41 +80,35 @@ const Userbar = ({ profileUser }) => {
 
   const unfriend = async (userId) => {
     try {
-      const response = await axios.put(`/api/users/${userId}/unfriend`, {}, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+      await userAPI.removeFriend(userId);
       
-      if (response.status === 200 || response.status === 201) {
-        // Immediately update friend status in UI
-        setIsFriend(false)
-        
-        // Update local state for immediate UI feedback
-        const updatedUser = {
-          ...localUser,
-          friends: (localUser.friends || []).filter(friend => 
-            (friend.id && friend.id !== userId) || 
-            (typeof friend === 'string' && friend !== userId)
-          )
-        }
-        setLocalUser(updatedUser)
-        
-        // If this is for the current user, update the global auth context
-        if (!profileUser) {
-          dispatch({
-            type: "UPDATE_USER",
-            payload: updatedUser
-          })
-        }
-        
-        // Fetch updated user data to ensure consistency
-        fetchUpdatedUserData(profileUser ? profileUser.id : currentUser.id)
-        
-        // Notify other components about the friend update
-        notifyFriendUpdate(userId)
-        notifyFriendUpdate(currentUser.id)
+      // Immediately update friend status in UI
+      setIsFriend(false)
+      
+      // Update local state for immediate UI feedback
+      const updatedUser = {
+        ...localUser,
+        friends: (localUser.friends || []).filter(friend => 
+          (friend.id && friend.id !== userId) || 
+          (typeof friend === 'string' && friend !== userId)
+        )
       }
+      setLocalUser(updatedUser)
+      
+      // If this is for the current user, update the global auth context
+      if (!profileUser) {
+        dispatch({
+          type: "UPDATE_USER",
+          payload: updatedUser
+        })
+      }
+      
+      // Fetch updated user data to ensure consistency
+      fetchUpdatedUserData(profileUser ? profileUser.id : currentUser.id)
+      
+      // Notify other components about the friend update
+      notifyFriendUpdate(userId)
+      notifyFriendUpdate(currentUser.id)
     } catch (error) {
       console.error("Failed to remove friend:", error)
       // Handle 409 conflict - users might not be friends
@@ -135,27 +122,19 @@ const Userbar = ({ profileUser }) => {
   // Function to fetch updated user data after friend actions
   const fetchUpdatedUserData = async (userId) => {
     try {
-      const response = await axios.get(`/api/users/${userId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+      const userData = await userAPI.getUser(userId);
       
-      if (response.status === 200) {
-        const userData = response.data
-        
-        if (userId === currentUser.id) {
-          // Update global context if it's the current user
-          dispatch({ 
-            type: "UPDATE_USER", 
-            payload: userData
-          })
-        }
-        
-        // If this is the profile we're viewing, update local state
-        if (profileUser && profileUser.id === userId) {
-          setLocalUser(userData)
-        }
+      if (userId === currentUser.id) {
+        // Update global context if it's the current user
+        dispatch({ 
+          type: "UPDATE_USER", 
+          payload: userData
+        })
+      }
+      
+      // If this is the profile we're viewing, update local state
+      if (profileUser && profileUser.id === userId) {
+        setLocalUser(userData)
       }
     } catch (error) {
       console.error("Failed to fetch updated user data:", error)

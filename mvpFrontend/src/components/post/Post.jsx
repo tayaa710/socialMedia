@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import './post.css'
-import { useState, useEffect, useContext, useMemo } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Favorite, Share, Comment, HelpOutline, InfoOutlined } from '@mui/icons-material'
-import axios from 'axios'
 import {format} from "timeago.js"
 import { AuthContext } from '../../context/AuthContext'
 import { Link } from 'react-router-dom'
+import { userAPI, postAPI } from '../../services/api'
 
 const Post = ({ post }) => {
   const [showReason, setShowReason] = useState(false)
@@ -15,12 +15,6 @@ const Post = ({ post }) => {
 
   const {user:currentUser} = useContext(AuthContext)
 
-  const token = localStorage.getItem("auth-token");
-  const authHeader = useMemo(() => 
-    token ? { Authorization: `Bearer ${token}` } : {},
-    [token]
-  );
-
   useEffect(() => {
     setIsLiked(post.likes.includes(currentUser.id))
   }, [post.likes, currentUser.id])
@@ -28,26 +22,22 @@ const Post = ({ post }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`/api/users/${post.user}`, {
-          headers: authHeader
-        });
-        setUser(response.data)
+        const userData = await userAPI.getUser(post.user);
+        setUser(userData);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       } 
     };
     
     fetchUser();
-  }, [post.user,authHeader]);
+  }, [post.user]);
 
   const likeHandler = async () => {
     setIsLiked(!isLiked)
     setLikes(isLiked ? likes - 1 : likes + 1)
     try{
       console.log('liking post')
-      await axios.patch(`/api/posts/${post.id}/like`, {}, {
-        headers: authHeader
-      })
+      await postAPI.likePost(post.id)
     }catch(err){
       setIsLiked(!isLiked)
       setLikes(isLiked ? likes - 1 : likes + 1)
