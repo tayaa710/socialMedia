@@ -3,18 +3,22 @@ import axios from 'axios';
 // Create axios instance with default config
 const api = axios.create({
   baseURL: '/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // Remove the default Content-Type header to allow proper file uploads
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token and content type
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('auth-token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Only set Content-Type for non-FormData requests
+    if (!(config.data instanceof FormData)) {
+      config.headers['Content-Type'] = 'application/json';
+    }
+    
     return config;
   },
   (error) => Promise.reject(error)
@@ -91,6 +95,11 @@ export const postAPI = {
     return response.data;
   },
   
+  getTimeline: async (userId) => {
+    const response = await api.get(`/timeline/${userId}`);
+    return response.data;
+  },
+  
   createPost: async (postData) => {
     const response = await api.post('/posts', postData);
     return response.data;
@@ -107,7 +116,7 @@ export const postAPI = {
   },
   
   likePost: async (postId) => {
-    const response = await api.put(`/posts/${postId}/like`);
+    const response = await api.patch(`/posts/${postId}/like`);
     return response.data;
   }
 };

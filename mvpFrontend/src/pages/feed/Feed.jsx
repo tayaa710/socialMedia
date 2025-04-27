@@ -18,7 +18,8 @@ const Feed = () => {
 
     const fetchPosts = async () => {
         try {
-            const postsData = await postAPI.getPosts(user.id);
+            // Use the timeline endpoint instead of user posts
+            const postsData = await postAPI.getTimeline(user.id);
             setPosts(postsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
             console.log(postsData)
         } catch (error) {

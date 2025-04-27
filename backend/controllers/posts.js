@@ -30,15 +30,35 @@ postsRouter.get('/', async (request, response) => {
 // Create a post with image upload
 postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), async (req, res) => {
   try {
+    console.log('Request body:', req.body)
+    console.log('Request file:', req.file)
+    console.log('Request headers:', req.headers)
+    
     let photo = null
     
     // If there's an image file, upload it to Cloudinary
     if (req.file) {
-      photo = await uploadImage(req.file.buffer)
+      console.log('File received:', {
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        buffer: req.file.buffer ? 'Buffer present' : 'No buffer'
+      });
+      
+      try {
+        photo = await uploadImage(req.file.buffer)
+        console.log('Photo uploaded successfully:', photo)
+      } catch (uploadError) {
+        console.error('Error uploading to Cloudinary:', uploadError)
+        return res.status(500).json({ error: 'Failed to upload image' })
+      }
+    } else {
+      console.log('No file received in request')
     }
     
     // Get description from form data
     const description = req.body.description
+    console.log('Creating post with description:', description)
     
     // Create the post
     const newPost = new Post({
@@ -48,6 +68,8 @@ postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), asy
     })
     
     const post = await newPost.save()
+    console.log('Post saved successfully:', post)
+    
     const postId = post._id
     const user = await User.findById(req.user.id)
     user.posts = user.posts.concat(postId)
