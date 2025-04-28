@@ -1,22 +1,45 @@
-import { useState, useContext, useRef } from 'react'
-import { AddPhotoAlternate, Mood, EmojiObjects, Send } from '@mui/icons-material'
+import { useState, useContext, useRef, useEffect } from 'react'
 import './postCreate.css'
 import { AuthContext } from '../../context/AuthContext'
 import { postAPI } from '../../services/api'
+import ImagePreview from './ImagePreview'
+import ValidationError from './ValidationError'
+import PostActions from './PostActions'
 
 const PostCreate = ({ onPostCreated }) => {
   const { user } = useContext(AuthContext)
 
   const [file, setFile] = useState(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [previewUrl, setPreviewUrl] = useState(null)
+  const [error, setError] = useState(null)
+  const [validationErrors, setValidationErrors] = useState([])
 
   const description = useRef('')
+  const fileInputRef = useRef(null)
 
+  // Listen for image analysis status events
+  useEffect(() => {
+    const handleAnalysisStatus = (event) => {
+      setIsAnalyzing(event.detail.isAnalyzing);
+    };
+    
+    window.addEventListener('imageAnalysisStatus', handleAnalysisStatus);
+    
+    return () => {
+      window.removeEventListener('imageAnalysisStatus', handleAnalysisStatus);
+    };
+  }, []);
+  
   // Handle file selection
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
+      // Clear previous errors when selecting a new file
+      setError(null);
+      setValidationErrors([]);
+
       setFile(selectedFile);
       
       // Create a preview URL
@@ -34,6 +57,10 @@ const PostCreate = ({ onPostCreated }) => {
     if (!description.current.value && !file) {
       return; // Don't submit empty posts
     }
+
+    // Clear previous errors
+    setError(null);
+    setValidationErrors([]);
     
     setIsUploading(true);
     
@@ -56,15 +83,55 @@ const PostCreate = ({ onPostCreated }) => {
       setFile(null);
       setPreviewUrl(null);
       
+      // Reset the file input element value
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      
       // Notify parent component that a post was created
       if (onPostCreated) {
         onPostCreated();
       }
     } catch (error) {
       console.error('Error creating post:', error);
+      
+      // Handle validation errors
+      if (error.response && error.response.data) {
+        const { error: errorMessage, reasons } = error.response.data;
+        setError(errorMessage || 'Failed to create post');
+        setValidationErrors(reasons || []);
+      } else {
+        setError('Failed to create post. Please try again.');
+      }
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const resetForm = () => {
+    setFile(null);
+    setPreviewUrl(null);
+    setError(null);
+    setValidationErrors([]);
+    description.current.value = '';
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleImageRemove = () => {
+    setFile(null);
+    setPreviewUrl(null);
+    setError(null);
+    setValidationErrors([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleDismissError = () => {
+    setError(null);
+    setValidationErrors([]);
   };
 
   return (
@@ -82,52 +149,29 @@ const PostCreate = ({ onPostCreated }) => {
         />
         
         {previewUrl && (
-          <div className="imagePreviewContainer">
-            <img src={previewUrl} alt="Preview" className="imagePreview" />
-            <button 
-              type="button" 
-              className="removeImageBtn"
-              onClick={() => {
-                setFile(null);
-                setPreviewUrl(null);
-              }}
-            >
-              ✕
-            </button>
-          </div>
+          <ImagePreview 
+            previewUrl={previewUrl} 
+            isAnalyzing={isAnalyzing} 
+            onRemove={handleImageRemove} 
+          />
+        )}
+
+        {/* Display validation errors */}
+        {error && (
+          <ValidationError 
+            error={error} 
+            validationErrors={validationErrors} 
+            onDismiss={handleDismissError} 
+            onReset={resetForm} 
+          />
         )}
         
-        <div className="postCreateActions">
-          <div className="postCreateButtons">
-            <label htmlFor="file" className="postCreateButton">
-              <AddPhotoAlternate />
-              <span>Photo</span>
-            </label>
-            <input
-              type="file"
-              id="file"
-              accept=".png,.jpeg,.jpg"
-              onChange={handleFileChange}
-              style={{ display: 'none' }}
-            />
-            <button type="button" className="postCreateButton">
-              <Mood />
-              <span>Feeling</span>
-            </button>
-            <button type="button" className="postCreateButton">
-              <EmojiObjects />
-              <span>Idea</span>
-            </button>
-          </div>
-          <button
-            type="submit"
-            className="postCreateSubmit"
-            disabled={isUploading}
-          >
-            <Send />
-            <span>{isUploading ? 'Posting...' : 'Share'}</span>
-          </button>
-        </div>
+        <PostActions 
+          onFileChange={handleFileChange}
+          isUploading={isUploading}
+          isAnalyzing={isAnalyzing}
+          fileInputRef={fileInputRef}
+        />
       </form>
     </div>
   )

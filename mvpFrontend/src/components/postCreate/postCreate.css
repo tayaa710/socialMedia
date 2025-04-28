@@ -164,8 +164,145 @@
   transform: scale(1.1);
 }
 
+.imageAnalysisOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.analysisIndicator {
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.analysisIndicator p {
+  margin: 0;
+  color: #2D6A4F;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(45, 106, 79, 0.2);
+  border-top: 3px solid #2D6A4F;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @media (max-width: 768px) {
   .postCreateButtons {
     flex-wrap: wrap;
   }
+}
+
+/* Add validation error styles to the existing CSS file */
+
+/* Validation Error Container */
+.validationErrorContainer {
+  margin: 12px 0;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fff0f0;
+  border: 1px solid #ffcfcf;
+  box-shadow: 0 2px 4px rgba(255, 0, 0, 0.1);
+}
+
+.validationErrorHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.validationErrorIcon {
+  color: #e74c3c;
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.validationErrorHeader h4 {
+  margin: 0;
+  flex-grow: 1;
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+.dismissErrorBtn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px;
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dismissErrorBtn:hover {
+  background-color: #ffcfcf;
+  color: #e74c3c;
+}
+
+.validationErrorList {
+  margin: 0;
+  padding-left: 30px;
+  color: #c0392b;
+}
+
+.validationErrorList li {
+  margin-bottom: 5px;
+}
+
+.validationErrorActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+  gap: 10px;
+}
+
+.validationErrorBtn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.validationErrorBtn:hover {
+  background-color: #f8f8f8;
+}
+
+.validationErrorBtnPrimary {
+  background-color: #e74c3c;
+  color: white;
+  border-color: #e74c3c;
+}
+
+.validationErrorBtnPrimary:hover {
+  background-color: #c0392b;
 } 

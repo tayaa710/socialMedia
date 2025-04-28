@@ -31,16 +31,10 @@ postsRouter.get('/', async (request, response) => {
 // Create a post with image upload
 postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), async (req, res) => {
   try {
-    // console.log('Request body:', req.body)
-    // console.log('Request file:', req.file)
-    // console.log('Request headers:', req.headers)
-    
     let photo = null
+    let imageAnalysis = null
 
-    const imageCheck = await checkImage(req.file.buffer)
-    console.log('Image check:', imageCheck)
-    
-    // If there's an image file, upload it to Cloudinary
+    // If there's an image file, check it first
     if (req.file) {
       console.log('File received:', {
         originalname: req.file.originalname,
@@ -49,6 +43,22 @@ postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), asy
         buffer: req.file.buffer ? 'Buffer present' : 'No buffer'
       });
       
+      // Perform content moderation check
+      const imageCheck = await checkImage(req.file.buffer)
+      console.log('Image check:', imageCheck)
+      
+      // Check if the image passes validation
+      if (imageCheck.validation && !imageCheck.validation.approved) {
+        return res.status(400).json({ 
+          error: 'Image content not allowed', 
+          reasons: imageCheck.validation.rejectionReasons 
+        });
+      }
+      
+      // Store the image analysis data
+      imageAnalysis = imageCheck
+      
+      // Upload the image to Cloudinary
       try {
         photo = await uploadImage(req.file.buffer)
         console.log('Photo uploaded successfully:', photo)
@@ -69,6 +79,7 @@ postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), asy
       user: req.user.id,
       description,
       photo,
+      imageAnalysis,
     })
     
     const post = await newPost.save()

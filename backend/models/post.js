@@ -14,6 +14,10 @@ const postSchema = new mongoose.Schema(
     photo: {
       type: String
     },
+    imageAnalysis: {
+      type: Object,
+      default: null
+    },
     likes: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: 'User',

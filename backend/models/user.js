@@ -83,14 +83,7 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String
   },
-  // followers: [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'User'
-  // }],
-  // following: [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'User'
-  // }],
+  
   posts: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post'

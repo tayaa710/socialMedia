@@ -101,8 +101,46 @@ export const postAPI = {
   },
   
   createPost: async (postData) => {
-    const response = await api.post('/posts', postData);
-    return response.data;
+    // Create a custom event we can use to track analysis progress
+    const dispatchAnalysisEvent = (isAnalyzing) => {
+      const event = new CustomEvent('imageAnalysisStatus', { 
+        detail: { isAnalyzing } 
+      });
+      window.dispatchEvent(event);
+    };
+    
+    try {
+      // When sending the request, dispatch an event indicating analysis has started
+      if (postData.has('image')) {
+        dispatchAnalysisEvent(true);
+      }
+      
+      const response = await api.post('/posts', postData);
+      
+      // When we get a response, analysis is complete
+      if (postData.has('image')) {
+        dispatchAnalysisEvent(false);
+      }
+      
+      return response.data;
+    } catch (error) {
+      // If there's an error, make sure we reset the analysis state
+      if (postData.has('image')) {
+        dispatchAnalysisEvent(false);
+      }
+      
+      // Format validation errors to be more user-friendly
+      if (error.response && 
+          error.response.status === 400 && 
+          error.response.data && 
+          error.response.data.reasons) {
+        
+        // Parse reasons if they're available
+        throw error; // Keep the original error with the response data
+      }
+      
+      throw error;
+    }
   },
   
   updatePost: async (postId, postData) => {
