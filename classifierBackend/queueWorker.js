@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Post = require('./models/post');
 const ImageQueue = require('./models/ImageQueue');
-const getBlipCaptionLocally = require('./utils/blip');
+const { processImageLocally } = require('./utils/blip');
 
 // Connect to MongoDB
 async function connectDB() {
@@ -42,12 +42,14 @@ async function processJob() {
       return;
     }
 
-    // Generate caption
-    const caption = await getBlipCaptionLocally(post.photo);
+    // Process image to get caption and categories
+    const imageResult = await processImageLocally(post.photo);
+    const { caption, categories } = imageResult;
     
     // Update the post
-    post.imageAnalysis = { caption };
+    post.imageAnalysis = { caption, categories };
     post.caption = caption;
+    post.categories = categories || [];
     post.processed = true;
     post.processingFailed = false;
     await post.save();
@@ -56,7 +58,9 @@ async function processJob() {
     job.status = 'done';
     await job.save();
     
-    console.log(`Successfully processed image ${post._id}: "${caption}"`);
+    console.log(`Successfully processed image ${post._id}:`);
+    console.log(`Caption: "${caption}"`);
+    console.log(`Categories: ${categories.join(', ')}`);
   } catch (error) {
     console.error(`Error processing job ${job._id}:`, error);
     

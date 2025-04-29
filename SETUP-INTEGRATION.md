@@ -20,8 +20,7 @@ The integration flow works as follows:
 
 Add to your `.env` file:
 ```
-MONGODB_URI=mongodb://localhost:27017/yourDatabase
-PORT=4000
+
 ```
 
 ### 2. Install Dependencies
@@ -61,7 +60,13 @@ npm start
 **Start the Main Backend:**
 ```bash
 cd backend
-npm start
+npm run dev
+```
+
+**Start the Main Frontend:**
+```bash
+cd mvpFrontend
+npm run dev
 ```
 
 ## Testing the Integration

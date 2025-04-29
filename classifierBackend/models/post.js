@@ -38,6 +38,10 @@ const postSchema = new Schema({
     type: String,
     default: null
   },
+  categories: {
+    type: [String],
+    default: []
+  },
   processed: {
     type: Boolean,
     default: false

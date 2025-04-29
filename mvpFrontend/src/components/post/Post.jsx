@@ -116,6 +116,13 @@ const Post = ({ post }) => {
         <p className="postCaption">
           <span className="captionUsername">{post.description}</span>
         </p>
+        
+        {post.caption && (
+          <div className="aiCaption">
+            <span className="aiLabel">AI Description:</span>
+            <span className="captionText">{post.caption}</span>
+          </div>
+        )}
 
         <div className="postActions">
           <button className="actionButton likeButton" onClick={likeHandler}>
