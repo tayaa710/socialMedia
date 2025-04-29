@@ -29,21 +29,27 @@ async function checkCaptionedPosts() {
       }
       
       console.log(`\nPost ID: ${post._id}`);
-      console.log(`User: ${post.user}`);
+      console.log(`User ID: ${post.user}`);
       console.log(`Photo: ${post.photo.substring(0, 60)}...`);
+      
+      // Check if the post has a caption field (added by the classifier)
+      if (post.caption) {
+        console.log(`Caption: "${post.caption}"`);
+      } else {
+        console.log('Caption: Not available');
+      }
       
       // Check if the post has been processed
       if (post.processed) {
-        console.log(`Status: PROCESSED ✅`);
-        console.log(`Caption: "${post.caption}"`);
+        console.log('Status: PROCESSED ✅');
         
         if (post.imageAnalysis) {
           console.log(`Image Analysis: ${JSON.stringify(post.imageAnalysis, null, 2)}`);
         }
       } else if (post.processingFailed) {
-        console.log(`Status: FAILED ❌`);
+        console.log('Status: FAILED ❌');
       } else {
-        console.log(`Status: NOT PROCESSED`);
+        console.log('Status: NOT PROCESSED');
       }
       
       console.log('----------------------------------------------------');
