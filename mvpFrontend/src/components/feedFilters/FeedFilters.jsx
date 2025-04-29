@@ -1,16 +1,16 @@
 import './feedFilters.css'
 import { useState } from 'react'
 import { 
-  FilterList, Close, TrendingUp, People, Pets, WbSunny, LocalFlorist, 
+  Close, TrendingUp, People, Pets, WbSunny, LocalFlorist, 
   EmojiEmotions, FactCheck, MenuBook, SentimentVerySatisfied, ExploreOutlined, 
-  SpaOutlined, SchoolOutlined, GroupOutlined, LightbulbOutlined,
-  CelebrationOutlined, SentimentVeryDissatisfiedOutlined, CasinoOutlined
+  SpaOutlined, LightbulbOutlined, SentimentVeryDissatisfiedOutlined,
+  AutorenewOutlined, MoreHorizOutlined, NavigateNextOutlined
 } from '@mui/icons-material'
 import FilterSlider from './FilterSlider'
 
-const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'] }) => {
-  const [showFilters, setShowFilters] = useState(false)
+const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'], initialLoadingMethod = 'infinite' }) => {
   const [excludedTags, setExcludedTags] = useState(initialExcludedTags)
+  const [loadingMethod, setLoadingMethod] = useState(initialLoadingMethod)
   const [filterSettings, setFilterSettings] = useState({
     friendsVsCommunities: 50, // 0: all communities, 100: all friends
     newVsFollowing: 50, // 0: all following, 100: all new users
@@ -81,14 +81,14 @@ const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'] }) => {
   const handleRemoveTag = (tag) => {
     const newExcludedTags = excludedTags.filter(t => t !== tag);
     setExcludedTags(newExcludedTags);
-    onFilterChange({ excludedTags: newExcludedTags, settings: filterSettings });
+    onFilterChange({ excludedTags: newExcludedTags, settings: filterSettings, loadingMethod });
   }
 
   const handleAddExcludedTag = (e) => {
     if (e.key === 'Enter' && e.target.value.trim() !== '') {
       const newExcludedTags = [...excludedTags, e.target.value.trim()];
       setExcludedTags(newExcludedTags);
-      onFilterChange({ excludedTags: newExcludedTags, settings: filterSettings });
+      onFilterChange({ excludedTags: newExcludedTags, settings: filterSettings, loadingMethod });
       e.target.value = '';
     }
   }
@@ -99,13 +99,18 @@ const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'] }) => {
       [setting]: value
     };
     setFilterSettings(newSettings);
-    onFilterChange({ excludedTags, settings: newSettings });
+    onFilterChange({ excludedTags, settings: newSettings, loadingMethod });
   }
 
   const applyPresetMode = (mode) => {
     const newSettings = presetModes[mode];
     setFilterSettings(newSettings);
-    onFilterChange({ excludedTags, settings: newSettings });
+    onFilterChange({ excludedTags, settings: newSettings, loadingMethod });
+  }
+
+  const handleLoadingMethodChange = (method) => {
+    setLoadingMethod(method);
+    onFilterChange({ excludedTags, settings: filterSettings, loadingMethod: method });
   }
 
   // Define sliders configuration
@@ -149,148 +154,134 @@ const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'] }) => {
 
   return (
     <div className="feedControls">
-      <button 
-        className={`filterToggle ${showFilters ? 'active' : ''}`}
-        onClick={() => setShowFilters(!showFilters)}
-      >
-        <FilterList className="greenIcon" /> Customize Feed
-      </button>
-      
-      {showFilters && (
-        <div className="filterPanel">
-          <h3>Feed Preferences</h3>
-          
-          <div className="presetModesContainer">
-            <h4>Quick Presets:</h4>
-            <div className="presetButtonsGrid">
-              <button 
-                className="presetButton zenMode" 
-                onClick={() => applyPresetMode('zen')}
-              >
-                <SpaOutlined className="presetIcon" />
-                <div className="presetInfo">
-                  <span>Zen Mode</span>
-                  <small>Max chill, no controversial, more friends</small>
-                </div>
-              </button>
-              
-              <button 
-                className="presetButton exploreMode" 
-                onClick={() => applyPresetMode('explore')}
-              >
-                <ExploreOutlined className="presetIcon" />
-                <div className="presetInfo">
-                  <span>Explore Mode</span>
-                  <small>Boost new users, more communities, allow controversial</small>
-                </div>
-              </button>
+      <div className="filterPanel">
+        <h3>Feed Preferences</h3>
+        
+        <div className="presetModesContainer">
+          <h4>Quick Presets:</h4>
+          <div className="presetButtonsGrid">
+            <button 
+              className="presetButton zenMode" 
+              onClick={() => applyPresetMode('zen')}
+            >
+              <SpaOutlined className="presetIcon" />
+              <div className="presetInfo">
+                <span>Zen Mode</span>
+                <small>Max chill, no controversial, more friends</small>
+              </div>
+            </button>
+            
+            <button 
+              className="presetButton exploreMode" 
+              onClick={() => applyPresetMode('explore')}
+            >
+              <ExploreOutlined className="presetIcon" />
+              <div className="presetInfo">
+                <span>Explore Mode</span>
+                <small>Boost new users, communities, controversial</small>
+              </div>
+            </button>
 
-              <button 
-                className="presetButton focusMode" 
-                onClick={() => applyPresetMode('focus')}
-              >
-                <LightbulbOutlined className="presetIcon" />
-                <div className="presetInfo">
-                  <span>Focus Mode</span>
-                  <small>Highly factual, serious content, limit distractions</small>
-                </div>
-              </button>
+            <button 
+              className="presetButton focusMode" 
+              onClick={() => applyPresetMode('focus')}
+            >
+              <LightbulbOutlined className="presetIcon" />
+              <div className="presetInfo">
+                <span>Focus Mode</span>
+                <small>Factual, serious, educational content</small>
+              </div>
+            </button>
 
-              <button 
-                className="presetButton socialMode" 
-                onClick={() => applyPresetMode('social')}
-              >
-                <GroupOutlined className="presetIcon" />
-                <div className="presetInfo">
-                  <span>Social Mode</span>
-                  <small>Friends content, lighthearted and fun</small>
-                </div>
-              </button>
-
-              <button 
-                className="presetButton educationalMode" 
-                onClick={() => applyPresetMode('educational')}
-              >
-                <SchoolOutlined className="presetIcon" />
-                <div className="presetInfo">
-                  <span>Educational Mode</span>
-                  <small>Learning-focused, factual content from diverse sources</small>
-                </div>
-              </button>
-
-              <button 
-                className="presetButton memeMode" 
-                onClick={() => applyPresetMode('meme')}
-              >
-                <SentimentVeryDissatisfiedOutlined className="presetIcon" />
-                <div className="presetInfo">
-                  <span>Meme Mode</span>
-                  <small>Pure entertainment, lighthearted content, and lots of memes</small>
-                </div>
-              </button>
-
-              <button 
-                className="presetButton partyMode" 
-                onClick={() => applyPresetMode('party')}
-              >
-                <CelebrationOutlined className="presetIcon" />
-                <div className="presetInfo">
-                  <span>Party Mode</span>
-                  <small>Upbeat content, fun vibes, entertainment focused</small>
-                </div>
-              </button>
-
-              <button 
-                className="presetButton surpriseMode" 
-                onClick={() => applyPresetMode('surprise')}
-              >
-                <CasinoOutlined className="presetIcon" />
-                <div className="presetInfo">
-                  <span>Surprise Me</span>
-                  <small>Content from users you've never seen before - discover!</small>
-                </div>
-              </button>
-            </div>
-          </div>
-          
-          <div className="slidersWrapper">
-            {sliders.map((slider) => (
-              <FilterSlider 
-                key={slider.setting}
-                setting={slider.setting}
-                value={filterSettings[slider.setting]}
-                onChange={handleSliderChange}
-                leftIcon={slider.leftIcon}
-                rightIcon={slider.rightIcon}
-                leftLabel={slider.leftLabel}
-                rightLabel={slider.rightLabel}
-              />
-            ))}
-          </div>
-          
-          <div className="excludeFilters">
-            <h4>Hide posts with these tags:</h4>
-            <div className="excludedTags">
-              {excludedTags.map(tag => (
-                <div key={tag} className="excludedTag">
-                  <span>#{tag}</span>
-                  <button onClick={() => handleRemoveTag(tag)}>
-                    <Close fontSize="small" className="greenIcon" />
-                  </button>
-                </div>
-              ))}
-            </div>
-            <input 
-              type="text" 
-              className="excludeInput"
-              placeholder="Add tag to exclude... (press Enter)" 
-              onKeyDown={handleAddExcludedTag}
-              name="excludeTag"
-              id="excludeTag"
-            />
+            <button 
+              className="presetButton memeMode" 
+              onClick={() => applyPresetMode('meme')}
+            >
+              <SentimentVeryDissatisfiedOutlined className="presetIcon" />
+              <div className="presetInfo">
+                <span>Meme Mode</span>
+                <small>Entertainment and lighthearted content</small>
+              </div>
+            </button>
           </div>
         </div>
-      )}
+        
+        <div className="loadingOptionsContainer">
+          <h4>Feed Loading Method:</h4>
+          <div className="loadingButtons">
+            <button 
+              className={`loadingButton ${loadingMethod === 'infinite' ? 'active' : ''}`}
+              onClick={() => handleLoadingMethodChange('infinite')}
+            >
+              <AutorenewOutlined className="loadingIcon" />
+              <div className="loadingInfo">
+                <span>Infinite Scroll</span>
+                <small>Posts load as you scroll down</small>
+              </div>
+            </button>
+            
+            <button 
+              className={`loadingButton ${loadingMethod === 'loadmore' ? 'active' : ''}`}
+              onClick={() => handleLoadingMethodChange('loadmore')}
+            >
+              <MoreHorizOutlined className="loadingIcon" />
+              <div className="loadingInfo">
+                <span>Load More</span>
+                <small>Click a button to load more posts</small>
+              </div>
+            </button>
+            
+            <button 
+              className={`loadingButton ${loadingMethod === 'pagination' ? 'active' : ''}`}
+              onClick={() => handleLoadingMethodChange('pagination')}
+            >
+              <NavigateNextOutlined className="loadingIcon" />
+              <div className="loadingInfo">
+                <span>Pagination</span>
+                <small>Navigate between pages of posts</small>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div className="slidersWrapper">
+          <h4>Fine-Tune Your Feed:</h4>
+          {sliders.map((slider) => (
+            <FilterSlider 
+              key={slider.setting}
+              setting={slider.setting}
+              value={filterSettings[slider.setting]}
+              onChange={handleSliderChange}
+              leftIcon={slider.leftIcon}
+              rightIcon={slider.rightIcon}
+              leftLabel={slider.leftLabel}
+              rightLabel={slider.rightLabel}
+            />
+          ))}
+        </div>
+        
+        <div className="excludeFilters">
+          <h4>Hide posts with these tags:</h4>
+          <div className="excludedTags">
+            {excludedTags.map(tag => (
+              <div key={tag} className="excludedTag">
+                <span>#{tag}</span>
+                <button onClick={() => handleRemoveTag(tag)}>
+                  <Close fontSize="small" className="greenIcon" />
+                </button>
+              </div>
+            ))}
+          </div>
+          <input 
+            type="text" 
+            className="excludeInput"
+            placeholder="Add tag to exclude... (press Enter)" 
+            onKeyDown={handleAddExcludedTag}
+            name="excludeTag"
+            id="excludeTag"
+          />
+        </div>
+      </div>
     </div>
   )
 }

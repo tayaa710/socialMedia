@@ -95,8 +95,24 @@ export const postAPI = {
     return response.data;
   },
   
-  getTimeline: async (userId, page = 1, limit = 4) => {
-    const response = await api.get(`/timeline/${userId}?page=${page}&limit=${limit}`);
+  getTimeline: async (userId, page = 1, options = {}) => {
+    let url = `/timeline/${userId}?page=${page}`;
+    
+    // Extract limit from options or use default
+    const limit = options.limit || 4;
+    url += `&limit=${limit}`;
+    
+    // Add filter settings if provided
+    if (options.filterSettings) {
+      url += `&filterSettings=${encodeURIComponent(JSON.stringify(options.filterSettings))}`;
+    }
+    
+    // Add excluded tags if provided
+    if (options.excludedTags && options.excludedTags.length > 0) {
+      url += `&excludedTags=${encodeURIComponent(JSON.stringify(options.excludedTags))}`;
+    }
+    
+    const response = await api.get(url);
     return response.data;
   },
   

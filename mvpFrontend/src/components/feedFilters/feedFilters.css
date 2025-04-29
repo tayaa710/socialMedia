@@ -1,49 +1,31 @@
 .feedControls {
-  margin-bottom: 20px;
   width: 100%;
-  max-width: 650px;
 }
 
 .filterToggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: white;
-  border: none;
-  padding: 12px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.filterToggle:hover, .filterToggle.active {
-  background-color: #E9F6F0; /* Light green hover */
-  color: #2D6A4F; /* Dark green text */
+  display: none; /* Hide the toggle button as it's not needed */
 }
 
 .filterPanel {
-  margin-top: 15px;
   background-color: white;
   border-radius: 12px;
-  padding: 25px;
+  padding: 20px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 .filterPanel h3 {
   margin-top: 0;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   color: #2D6A4F;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
   text-align: center;
 }
 
 .filterPanel h4 {
-  margin-top: 25px;
-  margin-bottom: 15px;
-  font-size: 16px;
+  margin-top: 20px;
+  margin-bottom: 12px;
+  font-size: 15px;
   color: #40916C;
   font-weight: 600;
 }
@@ -54,8 +36,8 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 15px;
-  padding: 0 10px;
+  gap: 12px;
+  padding: 0;
 }
 
 /* Tag exclusion section */
@@ -117,9 +99,9 @@
 
 /* Preset Modes Container */
 .presetModesContainer {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   border-bottom: 1px solid rgba(216, 243, 220, 0.6);
-  padding-bottom: 25px;
+  padding-bottom: 20px;
 }
 
 .presetButtons {
@@ -130,7 +112,7 @@
 
 .presetButtonsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 12px;
   margin-top: 15px;
 }
@@ -143,7 +125,7 @@
   background-color: #E9F6F0;
   border: none;
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: 12px 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -249,5 +231,71 @@
 @media (max-width: 600px) {
   .presetButtonsGrid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Loading Options Container */
+.loadingOptionsContainer {
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(216, 243, 220, 0.6);
+  padding-bottom: 20px;
+}
+
+.loadingButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.loadingButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #E9F6F0;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.loadingButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loadingButton.active {
+  background-color: #D8F3DC;
+  border-left: 4px solid #2D6A4F;
+}
+
+.loadingIcon {
+  color: #40916C !important;
+  font-size: 24px !important;
+}
+
+.loadingInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.loadingInfo span {
+  font-weight: 600;
+  font-size: 15px;
+  color: #2D6A4F;
+}
+
+.loadingInfo small {
+  font-size: 12px;
+  color: #52B788;
+  margin-top: 2px;
+}
+
+@media (max-width: 600px) {
+  .loadingButtons {
+    flex-direction: column;
   }
 } 

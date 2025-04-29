@@ -4,22 +4,28 @@
   min-height: calc(100vh - 72px);
   background-color: #E6F5EE; /* Lighter green background */
   margin-top: 72px;
+  position: relative; /* For absolute positioning of the filter panel */
+  overflow-x: hidden; /* Prevent horizontal scrolling when panel slides */
 }
 
 /* Left sidebar container */
 .feedSidebar {
-  flex: 2.5;
-  height: calc(100vh - 72px);
-  overflow-y: auto;
+  flex: 2;  /* Reduced from 2.5 to give more space to feed */
   position: sticky;
   top: 72px;
   padding: 20px;
+  height: fit-content;
 }
 
 /* Center feed container */
 .feedCenter {
-  flex: 5;
+  flex: 10; /* Increased from 9.5 */
   padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.feedCenter.filtersPanelOpen {
+  flex: 8; /* Increased from 7 */
 }
 
 .feedWrapper {
@@ -28,28 +34,185 @@
   gap: 20px;
   align-items: center;
   width: 100%;
-  max-width: 650px;
+  max-width: 1000px;
   margin: 0 auto;
+  transition: max-width 0.3s ease;
 }
 
-/* Right sidebar container */
-.feedRight {
-  flex: 2.5;
-  height: calc(100vh - 72px);
-  overflow-y: auto;
-  position: sticky;
+.filtersPanelOpen .feedWrapper {
+  max-width: 850px;
+}
+
+/* Filters toggle button */
+.filterToggleBtn {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #40916C;
+  color: white;
+  border: none;
+  width: 80px; /* Increased further from 60px */
+  height: 80px; /* Increased further from 70px */
+  border-radius: 12px 0 0 12px; /* Increased border radius */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  box-shadow: -3px 0 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+  transition: all 0.3s ease;
+  z-index: 100;
+  font-size: 12px; /* Increased from 10px */
+  font-weight: 600;
+  padding: 10px 5px;
+}
+
+.filterToggleBtn svg {
+  font-size: 28px; /* Make the icon larger */
+  margin-bottom: 5px;
+}
+
+.filterToggleBtn.active {
+  right: 320px;
+  background-color: #2D6A4F;
+}
+
+.filterToggleBtn:hover {
+  background-color: #2D6A4F;
+  width: 90px; /* Expands on hover */
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Filters panel */
+.filtersPanel {
+  position: fixed;
+  right: -350px;
   top: 72px;
+  width: 320px;
+  height: calc(100vh - 72px);
+  background-color: #E6F5EE;
   padding: 20px;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  z-index: 99;
+}
+
+.filtersPanel.open {
+  right: 0;
+}
+
+/* Loading states */
+.loadingSpinner {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Load More Button */
+.loadMoreButton {
+  background-color: #40916C;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  margin: 20px 0;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.loadMoreButton:hover {
+  background-color: #2D6A4F;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.loadMoreButton:disabled {
+  background-color: #B7E4C7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Pagination Controls */
+.paginationControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 15px;
+}
+
+.pageButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #40916C;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pageButton:hover:not(:disabled) {
+  background-color: #2D6A4F;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pageButton:disabled {
+  background-color: #B7E4C7;
+  cursor: not-allowed;
+}
+
+.pageIndicator {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #2D6A4F;
+  font-weight: 500;
+}
+
+.currentPage {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.pageDivider {
+  margin: 0 5px;
+  color: #95D5B2;
+}
+
+.noPostsMessage {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  width: 100%;
 }
 
 /* Responsive adjustments */
 @media (max-width: 992px) {
-  .feedRight {
-    display: none;
-  }
-
   .feedCenter {
-    flex: 7;
+    flex: 1;
+  }
+  
+  .feedCenter.filtersPanelOpen {
+    flex: 1;
+  }
+  
+  .feedWrapper {
+    max-width: 90%;
   }
 }
 
@@ -58,18 +221,44 @@
     display: none;
   }
 
-  .feedCenter {
-    flex: 1;
-  }
-  
   .feedWrapper {
     max-width: 100%;
   }
+  
+  .filterToggleBtn.active {
+    right: 320px;
+  }
 }
 
-.loadingSpinner {
-    text-align: center;
-    padding: 20px;
-    color: #666;
-    font-size: 14px;
+/* Filter applied feedback notification */
+.filterAppliedFeedback {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #40916C;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  font-weight: 500;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  animation: slideUp 0.3s ease;
+}
+
+.filterAppliedFeedback.fadeOut {
+  opacity: 0;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translate(-50%, 20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
 }
