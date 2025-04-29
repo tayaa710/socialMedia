@@ -1,0 +1,28 @@
+{
+  "name": "classifierbackend",
+  "version": "1.0.0",
+  "description": "Asynchronous image classification service using BLIP",
+  "main": "queueWorker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon queueWorker.js",
+    "start": "node queueWorker.js"
+  },
+  "keywords": [
+    "image",
+    "classification",
+    "blip",
+    "queue"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "mongoose": "^8.14.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
