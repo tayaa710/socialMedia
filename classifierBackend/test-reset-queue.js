@@ -3,71 +3,76 @@ const mongoose = require('mongoose');
 const ImageQueue = require('./models/ImageQueue');
 const Post = require('./models/post');
 
-async function resetFailedJobs() {
+async function resetQueueItems() {
   try {
     // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB');
     
-    // Find all failed jobs
-    const failedJobs = await ImageQueue.find({ status: 'failed' });
-    console.log(`Found ${failedJobs.length} failed jobs`);
+    const mode = process.argv[2] || 'all';
     
-    // Reset their status to 'queued'
-    if (failedJobs.length > 0) {
-      const result = await ImageQueue.updateMany(
-        { status: 'failed' },
-        { status: 'queued' }
-      );
-      
-      console.log(`Reset ${result.modifiedCount} jobs to 'queued'`);
-      
-      // Also reset the posts' processingFailed flag
-      for (const job of failedJobs) {
-        await Post.findByIdAndUpdate(job.imageId, {
-          processingFailed: false
-        });
+    let query = {};
+    
+    // Handle different reset modes
+    if (mode === 'failed') {
+      query = { status: 'failed' };
+    } else if (mode === 'stuck') {
+      // Find jobs that got stuck in 'processing' state (stuck for more than 30 minutes)
+      query = { 
+        status: 'processing', 
+        updatedAt: { $lt: new Date(Date.now() - 30 * 60 * 1000) } 
+      };
+    } else if (mode === 'all') {
+      // Reset all non-done jobs
+      query = { status: { $ne: 'done' } };
+    } else {
+      console.error('Invalid mode. Use: failed, stuck, or all');
+      process.exit(1);
+    }
+    
+    // Count jobs before reset
+    const count = await ImageQueue.countDocuments(query);
+    console.log(`Found ${count} jobs to reset (mode: ${mode})`);
+    
+    if (count === 0) {
+      console.log('No jobs to reset');
+      return;
+    }
+    
+    // Reset jobs
+    const result = await ImageQueue.updateMany(
+      query,
+      { 
+        status: 'queued',
+        $unset: { error: "" },
+        // Don't reset retries count if in 'stuck' mode
+        ...(mode !== 'stuck' ? { retries: 0 } : {})
       }
-      
-      console.log('All failed posts have been reset and are ready for reprocessing');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  } finally {
-    // Close the database connection
-    await mongoose.connection.close();
-    console.log('Database connection closed');
-  }
-}
-
-async function resetStuckJobs() {
-  try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('Connected to MongoDB');
+    );
     
-    // Find jobs that have been in 'processing' state for too long (more than 5 minutes)
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    console.log(`Reset ${result.modifiedCount} jobs to 'queued' status`);
     
-    const stuckJobs = await ImageQueue.find({
-      status: 'processing',
-      updatedAt: { $lt: fiveMinutesAgo }
-    });
-    
-    console.log(`Found ${stuckJobs.length} stuck jobs in 'processing' state`);
-    
-    // Reset their status to 'queued'
-    if (stuckJobs.length > 0) {
-      const result = await ImageQueue.updateMany(
-        { 
-          status: 'processing',
-          updatedAt: { $lt: fiveMinutesAgo }
-        },
-        { status: 'queued' }
+    // Also reset posts that were marked as failed
+    if (mode === 'failed' || mode === 'all') {
+      const postResult = await Post.updateMany(
+        { processingFailed: true },
+        { processingFailed: false, processed: false }
       );
       
-      console.log(`Reset ${result.modifiedCount} stuck jobs to 'queued'`);
+      console.log(`Reset ${postResult.modifiedCount} posts from 'failed' to 'unprocessed'`);
     }
+    
+    // Print some stats
+    const stats = {
+      queued: await ImageQueue.countDocuments({ status: 'queued' }),
+      processing: await ImageQueue.countDocuments({ status: 'processing' }),
+      done: await ImageQueue.countDocuments({ status: 'done' }),
+      failed: await ImageQueue.countDocuments({ status: 'failed' })
+    };
+    
+    console.log('\nQueue status after reset:');
+    console.table(stats);
+    
   } catch (error) {
     console.error('Error:', error);
   } finally {
@@ -77,15 +82,4 @@ async function resetStuckJobs() {
   }
 }
 
-// Choose which reset function to run
-const args = process.argv.slice(2);
-
-if (args[0] === 'stuck') {
-  resetStuckJobs();
-} else if (args[0] === 'failed') {
-  resetFailedJobs();
-} else {
-  console.log('Usage: node test-reset-queue.js [stuck|failed]');
-  console.log('  - stuck: Reset processing jobs that have been stuck');
-  console.log('  - failed: Reset failed jobs to queued state');
-} 
+resetQueueItems(); 

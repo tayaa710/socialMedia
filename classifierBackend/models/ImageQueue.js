@@ -12,6 +12,14 @@ const imageQueueSchema = new Schema({
     enum: ['queued', 'processing', 'done', 'failed'],
     default: 'queued'
   },
+  retries: {
+    type: Number,
+    default: 0
+  },
+  error: {
+    type: String,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now,

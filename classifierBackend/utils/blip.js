@@ -3,18 +3,61 @@ const path = require('path');
 const axios = require('axios');
 const { spawn } = require('child_process');
 const http = require('http');
+const fs = require('fs');
 
 // Server configuration
 const SERVER_PORT = 8000;
 const SERVER_URL = `http://localhost:${SERVER_PORT}`;
 let serverProcess = null;
 let serverStarting = false;
+const MODEL_LOAD_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+
+/**
+ * Polls the server status until the model is ready or an error occurs
+ * @returns {Promise} Resolves when model is ready, rejects on timeout or error
+ */
+async function waitForModelReady() {
+  console.log('Waiting for BLIP model to be fully loaded...');
+  const startTime = Date.now();
+  
+  // Check status every 10 seconds
+  while (Date.now() - startTime < MODEL_LOAD_TIMEOUT) {
+    try {
+      const response = await axios.get(`${SERVER_URL}/status`, { timeout: 5000 });
+      const status = response.data;
+      
+      if (status.status === 'loaded') {
+        console.log('BLIP model is now ready!');
+        return true;
+      } else if (status.status === 'error') {
+        throw new Error(`Model failed to load: ${status.error}`);
+      }
+      
+      // If still loading, log progress
+      if (status.status === 'loading') {
+        console.log(`Model loading progress: ${status.progress}%`);
+      }
+      
+      // Wait before checking again
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } catch (error) {
+      if (error.code === 'ECONNREFUSED') {
+        console.log('Server not responding yet, will retry...');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      } else {
+        throw error;
+      }
+    }
+  }
+  
+  throw new Error('Timed out waiting for model to load');
+}
 
 /**
  * Ensure the Python server is running
  * @returns {Promise} Resolves when server is ready
  */
-function ensureServerRunning() {
+async function ensureServerRunning() {
   return new Promise((resolve, reject) => {
     // If server already running, return immediately
     if (serverProcess && !serverProcess.killed) {
@@ -35,14 +78,24 @@ function ensureServerRunning() {
     console.log('Starting Python image classification server...');
     serverStarting = true;
     
-    // Start the Python server
+    // Make sure the virtual environment exists
+    const venvPath = path.join(__dirname, '..', 'venv');
+    const venvPythonPath = path.join(venvPath, 'bin', 'python');
     const scriptPath = path.join(__dirname, '..', 'classify.py');
-    const venvPythonPath = path.join(__dirname, '..', 'venv', 'bin', 'python');
     
-    serverProcess = spawn(venvPythonPath, [scriptPath], {
-      detached: false,
-      stdio: ['ignore', 'pipe', 'pipe']
-    });
+    if (!fs.existsSync(venvPythonPath)) {
+      console.log('Python virtual environment not found, using system Python');
+      // Use system Python as fallback
+      serverProcess = spawn('python3', [scriptPath], {
+        detached: false,
+        stdio: ['ignore', 'pipe', 'pipe']
+      });
+    } else {
+      serverProcess = spawn(venvPythonPath, [scriptPath], {
+        detached: false,
+        stdio: ['ignore', 'pipe', 'pipe']
+      });
+    }
     
     // Log output from the server
     serverProcess.stdout.on('data', (data) => {
@@ -84,18 +137,49 @@ function ensureServerRunning() {
 /**
  * Process an image using our AI model to get caption and categories
  * @param {string} source - URL or file path to the image
+ * @param {boolean} waitForModel - Whether to wait for model to load if not ready
  * @returns {Promise<Object>} - Object containing caption and categories
  */
-async function processImageLocally(source) {
+async function processImageLocally(source, waitForModel = true) {
   try {
     // Ensure server is running
     await ensureServerRunning();
     
-    // Make API request to local server
+    // Check model status
+    let modelReady = false;
+    
+    try {
+      const statusResponse = await axios.get(`${SERVER_URL}/status`, { timeout: 5000 });
+      if (statusResponse.data.status === 'loaded') {
+        modelReady = true;
+      } else if (waitForModel && statusResponse.data.status === 'loading') {
+        // If we should wait for the model, do so
+        await waitForModelReady();
+        modelReady = true;
+      }
+    } catch (error) {
+      console.error(`Error checking model status: ${error.message}`);
+    }
+    
+    if (!modelReady && !waitForModel) {
+      return {
+        error: "Model is not ready yet, and wait flag was not set",
+        caption: null,
+        categories: []
+      };
+    }
+    
+    // Attempt to process the image
     const encodedSource = encodeURIComponent(source);
-    const response = await axios.get(`${SERVER_URL}/classify?image=${encodedSource}`, {
-      timeout: 120000 // 2 minute timeout
-    });
+    const response = await axios.get(
+      `${SERVER_URL}/classify?image=${encodedSource}`, 
+      { timeout: 180000 } // 3 minute timeout for image processing
+    );
+    
+    if (response.data.error) {
+      console.error(`Error from server: ${response.data.error}`);
+      return response.data;
+    }
     
     return response.data;
   } catch (error) {
@@ -107,7 +191,11 @@ async function processImageLocally(source) {
       return processImageWithDirectExecution(source);
     }
     
-    throw error;
+    return {
+      error: `Failed to process image: ${error.message}`,
+      caption: null,
+      categories: []
+    };
   }
 }
 
@@ -121,10 +209,19 @@ function processImageWithDirectExecution(source) {
     const scriptPath = path.join(__dirname, '..', 'classify.py');
     const venvPythonPath = path.join(__dirname, '..', 'venv', 'bin', 'python');
     
-    exec(`${venvPythonPath} ${scriptPath} "${source}"`, (error, stdout, stderr) => {
+    // Check if venv exists, use system Python if not
+    const pythonCmd = fs.existsSync(venvPythonPath) ? venvPythonPath : 'python3';
+    
+    console.log(`Running direct execution with: ${pythonCmd} ${scriptPath} "${source}"`);
+    
+    exec(`${pythonCmd} ${scriptPath} "${source}"`, (error, stdout, stderr) => {
       if (error) {
         console.error(`Image Processing Error: ${error.message}`);
-        return reject(error);
+        return resolve({
+          error: error.message,
+          caption: null,
+          categories: []
+        });
       }
       if (stderr) {
         console.error(`Image Processing stderr: ${stderr}`);
@@ -157,7 +254,7 @@ function processImageWithDirectExecution(source) {
  */
 function getBlipCaptionLocally(source) {
   return processImageLocally(source)
-    .then(result => result.caption);
+    .then(result => result.caption || null);
 }
 
 // Clean up server on process exit
@@ -169,5 +266,6 @@ process.on('exit', () => {
 
 module.exports = {
   getBlipCaptionLocally,
-  processImageLocally
+  processImageLocally,
+  waitForModelReady
 };

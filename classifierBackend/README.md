@@ -7,8 +7,9 @@ A standalone Node.js service that processes social media images asynchronously w
 - MongoDB + Mongoose for database operations
 - Queue-based image processing
 - BLIP image captioning model integration 
-- Asynchronous processing with status tracking
-- REST API for queue management
+- Asynchronous processing with retry logic and status tracking
+- RESTful API for queue management
+- Improved error handling and model loading
 
 ## Setup
 
@@ -21,7 +22,12 @@ npm install
 2. Install Python dependencies:
 
 ```bash
-pip install transformers pillow requests torch torchvision
+# Create a virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install transformers pillow requests torch torchvision tqdm
 ```
 
 3. Create a `.env` file in the root directory with your MongoDB connection string:
@@ -31,34 +37,65 @@ MONGODB_URI=mongodb://localhost:27017/yourDatabase
 PORT=4000  # API server port
 ```
 
-## Usage
+## Starting the Services
 
-### Start the Queue Worker
+Start both services:
 
 ```bash
+# Terminal 1 - Start the API server
+npm run server
+
+# Terminal 2 - Start the queue worker
 npm start
 ```
 
-### Start the API Server
-
-```bash
-npm run server
-```
-
-For development (with auto-restart):
-
-```bash
-npm run dev           # Queue worker with nodemon
-npm run dev:server    # API server with nodemon
-```
+The first time you run the worker, the BLIP model will be downloaded and loaded, which can take several minutes. The system is designed to handle this gracefully - any image processing requests will be queued and processed once the model is fully loaded.
 
 ## How it works
 
-1. Posts are created in the main backend application 
-2. Post IDs are sent to this classifier backend via the local API
-3. The classifier API adds the post ID to the ImageQueue collection with status "queued"
-4. The queueWorker service processes images every 10 seconds
-5. Once processed, captions are saved to the original post
+1. Posts are created in the main backend application
+2. Post IDs are sent to this classifier backend via the API (`/api/queue`)
+3. The queue worker processes images in order using the BLIP model
+4. The worker includes retry logic for temporary failures
+5. Once processed, captions and categories are saved to the original post
+
+## Troubleshooting
+
+If images are not being processed correctly, check the following:
+
+1. **Queue Worker Logs**: Look for errors in the queue worker logs 
+2. **Model Loading**: Check if the BLIP model loaded correctly
+3. **Retry Status**: Check if jobs are being retried due to model loading issues
+4. **MongoDB Connection**: Ensure your MongoDB connection is working 
+5. **Image URLs**: Verify that image URLs are publicly accessible
+
+## Debugging
+
+You can check the current queue status:
+
+```bash
+# Get current queue status
+curl http://localhost:4000/api/queue/status
+```
+
+To reset failed jobs (they will be automatically retried):
+
+```bash
+# Run the reset script
+node test-reset-queue.js
+```
+
+## Testing with CLI
+
+You can also test the BLIP model directly:
+
+```bash
+# From classifierBackend directory
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+python classify.py https://example.com/path/to/image.jpg
+```
+
+This will output the caption and categories for the specified image.
 
 ## API Endpoints
 
