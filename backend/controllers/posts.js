@@ -5,6 +5,7 @@ const { tokenExtractor, userExtractor } = require('../utils/middleware')
 const multer = require('multer')
 const { uploadImage } = require('../utils/cloudinary')
 const { checkImage } = require('../utils/sightengine')
+const axios = require('axios') // Add axios for HTTP requests
 
 // Configure multer for memory storage (no disk writing)
 const storage = multer.memoryStorage()
@@ -89,6 +90,16 @@ postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), asy
     const user = await User.findById(req.user.id)
     user.posts = user.posts.concat(postId)
     await User.findByIdAndUpdate(user._id, user)
+
+    // Send the post ID to the classifier backend
+    try {
+      const classifierUrl = 'http://localhost:4000/api/queue';
+      const classifierResponse = await axios.post(classifierUrl, { postId: post._id.toString() });
+      console.log('Classifier response:', classifierResponse.data);
+    } catch (classifierError) {
+      // We don't want to fail the post creation if the classifier fails
+      console.error('Error sending to classifier:', classifierError.message);
+    }
 
     res.status(201).json(post)
   } catch (error) {

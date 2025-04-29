@@ -8,6 +8,7 @@ A standalone Node.js service that processes social media images asynchronously w
 - Queue-based image processing
 - BLIP image captioning model integration 
 - Asynchronous processing with status tracking
+- REST API for queue management
 
 ## Setup
 
@@ -27,28 +28,60 @@ pip install transformers pillow requests torch torchvision
 
 ```
 MONGODB_URI=mongodb://localhost:27017/yourDatabase
+PORT=4000  # API server port
 ```
 
 ## Usage
 
-Start the service:
+### Start the Queue Worker
 
 ```bash
 npm start
 ```
 
+### Start the API Server
+
+```bash
+npm run server
+```
+
 For development (with auto-restart):
 
 ```bash
-npm run dev
+npm run dev           # Queue worker with nodemon
+npm run dev:server    # API server with nodemon
 ```
 
 ## How it works
 
-1. Add new posts to the database
-2. Add image IDs to the ImageQueue collection with status "queued"
-3. The queueWorker service processes images every 10 seconds
-4. Once processed, captions are saved to the original post
+1. Posts are created in the main backend application 
+2. Post IDs are sent to this classifier backend via the local API
+3. The classifier API adds the post ID to the ImageQueue collection with status "queued"
+4. The queueWorker service processes images every 10 seconds
+5. Once processed, captions are saved to the original post
+
+## API Endpoints
+
+### Add Post to Queue
+- **POST /api/queue**
+- Body: `{ "postId": "postIdString" }`
+- Response: `{ "message": "Added to classification queue", "queueId": "queueItemId" }`
+
+### Get Queue Status
+- **GET /api/queue/status**
+- Response: `{ "queued": 5, "processing": 1, "done": 10, "failed": 2 }`
+
+## Integration with Main Backend
+
+The main backend application communicates with this service via the local API endpoint.
+
+In the main backend, when a post is created, a request is sent to add it to the classification queue:
+
+```javascript
+// After saving a post
+const postId = savedPost._id.toString();
+await axios.post('http://localhost:4000/api/queue', { postId });
+```
 
 ## Testing with Existing Posts
 

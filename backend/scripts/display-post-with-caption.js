@@ -12,8 +12,8 @@ async function displayPostWithCaption() {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB');
     
-    // Find the post
-    const post = await Post.findById(postId).populate('user', { username: 1, firstName: 1, lastName: 1 });
+    // Find the post without populating user
+    const post = await Post.findById(postId);
     
     if (!post) {
       console.log(`Post ${postId} not found`);
@@ -27,11 +27,7 @@ async function displayPostWithCaption() {
     // Create a clean representation of the post
     const cleanPost = {
       id: post._id,
-      user: post.user ? {
-        id: post.user._id,
-        username: post.user.username,
-        name: post.user.firstName ? `${post.user.firstName} ${post.user.lastName || ''}` : 'Unknown'
-      } : 'Unknown',
+      userId: post.user,
       description: post.description || '',
       photo: post.photo,
       caption: post.caption || 'No caption available',
@@ -39,7 +35,6 @@ async function displayPostWithCaption() {
       processingFailed: post.processingFailed || false,
       imageAnalysis: post.imageAnalysis || null,
       likes: post.likes ? post.likes.length : 0,
-      comments: post.comments || [],
       createdAt: post.createdAt,
       updatedAt: post.updatedAt
     };
