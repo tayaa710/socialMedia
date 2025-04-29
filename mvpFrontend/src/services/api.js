@@ -95,8 +95,8 @@ export const postAPI = {
     return response.data;
   },
   
-  getTimeline: async (userId) => {
-    const response = await api.get(`/timeline/${userId}`);
+  getTimeline: async (userId, page = 1, limit = 4) => {
+    const response = await api.get(`/timeline/${userId}?page=${page}&limit=${limit}`);
     return response.data;
   },
   

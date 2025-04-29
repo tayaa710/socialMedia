@@ -11,15 +11,15 @@ const imageThresholds = {
     sexual_activity: 0.2,    // Block actual sexual activity
     sexual_display: 0.2,     // Block explicit genital exposure
     erotica: 0.4,            // Higher threshold for erotica (allow more)
-    very_suggestive: 0.7,    // Much higher threshold for suggestive content
-    suggestive: 0.95,        // Almost never block for just being "suggestive"
+    very_suggestive: 1.0,    // Allow all very suggestive content including lingerie modeling
+    suggestive: 1.0,        // Never block for just being "suggestive"
     mildly_suggestive: 1.0,  // Never block for mildly suggestive content
     none: 1,
     suggestive_classes: {
       // Allow all these suggestive classes with very high thresholds
       bikini: 1.0,
       cleavage: 1.0,
-      lingerie: 0.95,
+      lingerie: 1.0,          // Allow all lingerie content
       sextoy: 0.6,           // Still moderately strict with sex toys
       suggestive_focus: 0.8,
       suggestive_pose: 0.9,
@@ -69,9 +69,9 @@ const imageThresholds = {
   // Type detection thresholds - STRICT on AI content
   type: {
     // AI-generated content threshold (genai model) - Very strict!
-    ai_generated: 0.2,     // Block most AI-generated content
+    ai_generated: 0.3,     // Block most AI-generated content
     // Deepfake detection threshold - Very strict!
-    deepfake: 0.3
+    deepfake: 0.8
   },
   
   // Self-harm content threshold - still moderate strictness

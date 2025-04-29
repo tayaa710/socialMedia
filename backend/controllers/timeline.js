@@ -3,22 +3,34 @@ const User = require('../models/user')
 const Post = require('../models/post')
 const { tokenExtractor, userExtractor } = require('../utils/middleware');
 
-
-//get all posts of the user's friends (timeline)
+//get paginated posts of the user's friends (timeline)
 timelineRouter.get('/:userId', tokenExtractor, userExtractor, async (request, response) => {
   try {
+    const page = parseInt(request.query.page) || 1
+    const limit = parseInt(request.query.limit) || 10
+    const skip = (page - 1) * limit
+    
     const user = await User.findById(request.params.userId)
-    const userPosts = await Post.find({user: user._id})
     
-    // Get posts from friends instead of following
-    const friendPosts = await Promise.all(
-      user.friends.map(friendId => {
-        return Post.find({user: friendId})
-      })
-    )
+    // Get all friend IDs including the user's own ID
+    const friendIds = [...user.friends, user._id]
     
-    const timeline = userPosts.concat(...friendPosts)
-    response.status(200).json(timeline)
+    // Get paginated posts from user and friends
+    const timeline = await Post.find({ user: { $in: friendIds } })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('user', 'username profilePicture firstName lastName')
+    
+    // Get total count for pagination
+    const total = await Post.countDocuments({ user: { $in: friendIds } })
+    
+    response.status(200).json({
+      posts: timeline,
+      page,
+      totalPages: Math.ceil(total / limit),
+      hasMore: skip + timeline.length < total
+    })
   } catch (error) {
     console.error("Timeline error:", error)
     response.status(500).json({ error: "Failed to fetch timeline" })

@@ -26,7 +26,9 @@ const ProfileFriends = ({ user: profileUser }) => {
     
     try {
       setLoading(true);
-      const userData = await userAPI.getUser(user.id);
+      // Make sure we're passing a string ID, not an object
+      const userId = typeof user.id === 'object' ? user.id._id || user.id.id : user.id;
+      const userData = await userAPI.getUser(userId);
       setFriends(userData.friends || []);
     } catch (error) {
       console.error("Failed to fetch user data:", error);

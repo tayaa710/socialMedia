@@ -122,7 +122,9 @@ const Userbar = ({ profileUser }) => {
   // Function to fetch updated user data after friend actions
   const fetchUpdatedUserData = async (userId) => {
     try {
-      const userData = await userAPI.getUser(userId);
+      // Make sure we're passing a string ID, not an object
+      const id = typeof userId === 'object' ? userId._id || userId.id : userId;
+      const userData = await userAPI.getUser(id);
       
       if (userId === currentUser.id) {
         // Update global context if it's the current user

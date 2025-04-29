@@ -22,8 +22,15 @@ const Post = ({ post }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userData = await userAPI.getUser(post.user);
-        setUser(userData);
+        // If post.user is already populated and has all the data we need, use it directly
+        if (typeof post.user === 'object' && post.user !== null && post.user.firstName) {
+          setUser(post.user);
+        } else {
+          // Otherwise fetch the user data using the user ID
+          const userId = typeof post.user === 'object' ? post.user._id : post.user;
+          const userData = await userAPI.getUser(userId);
+          setUser(userData);
+        }
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       } 
