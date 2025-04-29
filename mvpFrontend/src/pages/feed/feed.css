@@ -8,20 +8,46 @@
   overflow-x: hidden; /* Prevent horizontal scrolling when panel slides */
 }
 
+/* Hide scrollbar for the entire page */
+body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+  display: none;
+}
+
 /* Left sidebar container */
 .feedSidebar {
   flex: 2;  /* Reduced from 2.5 to give more space to feed */
-  position: sticky;
+  position: fixed;
   top: 72px;
   padding: 20px;
-  height: fit-content;
+  height: calc(100vh - 72px);
+  overflow-y: auto;
+  width: 16.67%; /* ~2/12 of the screen width to match the flex: 2 */
+  z-index: 10;
 }
 
-/* Center feed container */
+/* Hide scrollbar for sidebar */
+.feedSidebar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.feedSidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Center feed container - with left margin to account for fixed sidebar */
 .feedCenter {
   flex: 10; /* Increased from 9.5 */
   padding: 20px;
   transition: all 0.3s ease;
+  margin-left: 16.67%; /* Same as sidebar width */
+  width: 83.33%; /* Remaining width */
 }
 
 .feedCenter.filtersPanelOpen {
@@ -205,6 +231,12 @@
 @media (max-width: 992px) {
   .feedCenter {
     flex: 1;
+    margin-left: 20%; /* Slightly adjust margin for medium screens */
+    width: 80%;
+  }
+  
+  .feedSidebar {
+    width: 20%; /* Slightly wider sidebar on medium screens */
   }
   
   .feedCenter.filtersPanelOpen {
@@ -221,6 +253,11 @@
     display: none;
   }
 
+  .feedCenter {
+    margin-left: 0;
+    width: 100%;
+  }
+  
   .feedWrapper {
     max-width: 100%;
   }

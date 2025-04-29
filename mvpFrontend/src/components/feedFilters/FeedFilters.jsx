@@ -4,13 +4,19 @@ import {
   Close, TrendingUp, People, Pets, WbSunny, LocalFlorist, 
   EmojiEmotions, FactCheck, MenuBook, SentimentVerySatisfied, ExploreOutlined, 
   SpaOutlined, LightbulbOutlined, SentimentVeryDissatisfiedOutlined,
-  AutorenewOutlined, MoreHorizOutlined, NavigateNextOutlined
+  AutorenewOutlined, MoreHorizOutlined, NavigateNextOutlined, FormatListNumberedOutlined
 } from '@mui/icons-material'
 import FilterSlider from './FilterSlider'
 
-const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'], initialLoadingMethod = 'infinite' }) => {
+const FeedFilters = ({ 
+  onFilterChange, 
+  initialExcludedTags = ['Crypto'], 
+  initialLoadingMethod = 'infinite',
+  initialPostsPerPage = 15
+}) => {
   const [excludedTags, setExcludedTags] = useState(initialExcludedTags)
   const [loadingMethod, setLoadingMethod] = useState(initialLoadingMethod)
+  const [postsPerPage, setPostsPerPage] = useState(initialPostsPerPage)
   const [filterSettings, setFilterSettings] = useState({
     friendsVsCommunities: 50, // 0: all communities, 100: all friends
     newVsFollowing: 50, // 0: all following, 100: all new users
@@ -18,6 +24,16 @@ const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'], initial
     factualVsEntertainment: 60, // 0: all entertainment, 100: all factual
     seriousVsLighthearted: 40 // 0: serious/in-depth, 100: lighthearted/fun
   })
+
+  // Options for posts per page
+  const postsPerPageOptions = [
+    { value: 5, label: '5 posts' },
+    { value: 10, label: '10 posts' },
+    { value: 15, label: '15 posts' },
+    { value: 20, label: '20 posts' },
+    { value: 30, label: '30 posts' },
+    { value: 50, label: '50 posts' }
+  ]
 
   const presetModes = {
     zen: {
@@ -81,14 +97,24 @@ const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'], initial
   const handleRemoveTag = (tag) => {
     const newExcludedTags = excludedTags.filter(t => t !== tag);
     setExcludedTags(newExcludedTags);
-    onFilterChange({ excludedTags: newExcludedTags, settings: filterSettings, loadingMethod });
+    onFilterChange({ 
+      excludedTags: newExcludedTags, 
+      settings: filterSettings, 
+      loadingMethod,
+      postsPerPage 
+    });
   }
 
   const handleAddExcludedTag = (e) => {
     if (e.key === 'Enter' && e.target.value.trim() !== '') {
       const newExcludedTags = [...excludedTags, e.target.value.trim()];
       setExcludedTags(newExcludedTags);
-      onFilterChange({ excludedTags: newExcludedTags, settings: filterSettings, loadingMethod });
+      onFilterChange({ 
+        excludedTags: newExcludedTags, 
+        settings: filterSettings, 
+        loadingMethod,
+        postsPerPage 
+      });
       e.target.value = '';
     }
   }
@@ -99,18 +125,60 @@ const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'], initial
       [setting]: value
     };
     setFilterSettings(newSettings);
-    onFilterChange({ excludedTags, settings: newSettings, loadingMethod });
+    onFilterChange({ 
+      excludedTags, 
+      settings: newSettings, 
+      loadingMethod,
+      postsPerPage 
+    });
   }
 
   const applyPresetMode = (mode) => {
     const newSettings = presetModes[mode];
     setFilterSettings(newSettings);
-    onFilterChange({ excludedTags, settings: newSettings, loadingMethod });
+    onFilterChange({ 
+      excludedTags, 
+      settings: newSettings, 
+      loadingMethod,
+      postsPerPage 
+    });
   }
 
   const handleLoadingMethodChange = (method) => {
+    // Set posts per page based on the loading method
+    let newPostsPerPage = postsPerPage;
+    
+    if (method === 'infinite') {
+      // Always use 15 for infinite scroll
+      newPostsPerPage = 15;
+    } else if (loadingMethod === 'infinite') {
+      // When switching from infinite to another method, use default 20
+      newPostsPerPage = 20;
+    } else {
+      // When switching between pagination and loadmore, keep current setting
+      newPostsPerPage = postsPerPage;
+    }
+    
     setLoadingMethod(method);
-    onFilterChange({ excludedTags, settings: filterSettings, loadingMethod: method });
+    setPostsPerPage(newPostsPerPage);
+    
+    onFilterChange({ 
+      excludedTags, 
+      settings: filterSettings, 
+      loadingMethod: method,
+      postsPerPage: newPostsPerPage 
+    });
+  }
+  
+  const handlePostsPerPageChange = (e) => {
+    const newValue = parseInt(e.target.value, 10);
+    setPostsPerPage(newValue);
+    onFilterChange({ 
+      excludedTags, 
+      settings: filterSettings, 
+      loadingMethod,
+      postsPerPage: newValue 
+    });
   }
 
   // Define sliders configuration
@@ -242,6 +310,29 @@ const FeedFilters = ({ onFilterChange, initialExcludedTags = ['Crypto'], initial
               </div>
             </button>
           </div>
+          
+          {loadingMethod !== 'infinite' && (
+            <div className="postsPerPageContainer">
+              <div className="postsPerPageHeader">
+                <FormatListNumberedOutlined className="postsPerPageIcon" />
+                <h4>Posts Per Page:</h4>
+              </div>
+              <select 
+                value={postsPerPage} 
+                onChange={handlePostsPerPageChange}
+                className="postsPerPageSelect"
+              >
+                {postsPerPageOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <div className="postsPerPageHint">
+                Default: 20 posts per page
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="slidersWrapper">

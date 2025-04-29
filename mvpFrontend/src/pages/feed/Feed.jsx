@@ -17,6 +17,7 @@ const Feed = () => {
     const [excludedTags, setExcludedTags] = useState(['Adult'])
     const [filterSettings, setFilterSettings] = useState({})
     const [loadingMethod, setLoadingMethod] = useState('infinite')
+    const [postsPerPage, setPostsPerPage] = useState(15) // Default for infinite scroll
     const [totalPages, setTotalPages] = useState(1)
     const [filtersOpen, setFiltersOpen] = useState(false)
     const { user } = useContext(AuthContext)
@@ -47,36 +48,41 @@ const Feed = () => {
         }
     }, [loading, hasMore, page, loadingMethod])
 
-    const fetchPosts = async (pageNum = 1) => {
+    const fetchPosts = async (pageNum = 1, requestedPostsPerPage = null) => {
         try {
-            console.log(`📊 Fetching posts page ${pageNum}`)
-            setLoading(true)
-            const response = await postAPI.getTimeline(user.id, pageNum, { filterSettings, excludedTags });
+            const limit = requestedPostsPerPage || postsPerPage;
+            console.log(`📊 Fetching posts page ${pageNum} with ${limit} posts per page`);
+            setLoading(true);
+            const response = await postAPI.getTimeline(user.id, pageNum, { 
+                filterSettings, 
+                excludedTags,
+                limit
+            });
             
-            console.log(`✅ Fetched ${response.posts.length} posts for page ${pageNum}`)
-            console.log(`📈 Has more posts: ${response.hasMore}`)
+            console.log(`✅ Fetched ${response.posts.length} posts for page ${pageNum}`);
+            console.log(`📈 Has more posts: ${response.hasMore}`);
             
             if (pageNum === 1 || loadingMethod === 'pagination') {
-                setPosts(response.posts)
-                console.log('🔄 Reset posts list with new data')
+                setPosts(response.posts);
+                console.log('🔄 Reset posts list with new data');
             } else {
                 setPosts(prev => {
-                    console.log(`🔄 Adding ${response.posts.length} new posts to existing ${prev.length} posts`)
-                    return [...prev, ...response.posts]
-                })
+                    console.log(`🔄 Adding ${response.posts.length} new posts to existing ${prev.length} posts`);
+                    return [...prev, ...response.posts];
+                });
             }
             
-            setHasMore(response.hasMore)
+            setHasMore(response.hasMore);
             if (response.totalPages) {
-                setTotalPages(response.totalPages)
+                setTotalPages(response.totalPages);
             }
         } catch (error) {
             console.error("❌ Failed to fetch posts:", error);
         } finally {
-            setLoading(false)
-            console.log('⏳ Loading state set to false')
+            setLoading(false);
+            console.log('⏳ Loading state set to false');
         }
-    }
+    };
     
     useEffect(() => {
         console.log('👤 User changed, fetching initial posts')
@@ -104,16 +110,39 @@ const Feed = () => {
         fetchPosts(1) // Refresh posts when a new post is created
     }
 
-    const handleFilterChange = ({ excludedTags, settings, loadingMethod: newLoadingMethod }) => {
+    const handleFilterChange = ({ excludedTags, settings, loadingMethod: newLoadingMethod, postsPerPage: newPostsPerPage }) => {
         console.log('🔍 Filters changed, refreshing feed with new filters')
         console.log('🏷️ Excluded tags:', excludedTags)
         console.log('⚙️ Filter settings:', settings)
         console.log('📱 Loading method:', newLoadingMethod)
+        console.log('📊 Posts per page:', newPostsPerPage)
+        
         setExcludedTags(excludedTags)
         setFilterSettings(settings)
         setLoadingMethod(newLoadingMethod)
+        
+        // Update posts per page
+        let updatedPostsPerPage;
+        
+        if (newLoadingMethod === 'infinite') {
+            // Always use 15 for infinite scroll
+            updatedPostsPerPage = 15;
+        } else if (newPostsPerPage) {
+            // Use user selection for other modes
+            updatedPostsPerPage = newPostsPerPage;
+        } else if (loadingMethod === 'infinite' && newLoadingMethod !== 'infinite') {
+            // Switching from infinite to another method, use default 20
+            updatedPostsPerPage = 20;
+        } else {
+            // Keep current setting for other cases
+            updatedPostsPerPage = postsPerPage;
+        }
+        
+        setPostsPerPage(updatedPostsPerPage);
         setPage(1)
-        fetchPosts(1)
+        
+        // Call the API with updated state
+        fetchPosts(1, updatedPostsPerPage)
         
         // Optional: Close the panel after settings are applied
         setFiltersOpen(false)
@@ -238,6 +267,7 @@ const Feed = () => {
                         onFilterChange={handleFilterChange}
                         initialExcludedTags={excludedTags}
                         initialLoadingMethod={loadingMethod}
+                        initialPostsPerPage={postsPerPage}
                     />
                 </div>
             </div>
