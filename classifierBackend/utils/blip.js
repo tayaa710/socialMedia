@@ -10,7 +10,9 @@ const SERVER_PORT = 8000;
 const SERVER_URL = `http://localhost:${SERVER_PORT}`;
 let serverProcess = null;
 let serverStarting = false;
-const MODEL_LOAD_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+const MODEL_LOAD_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+const STATUS_CHECK_TIMEOUT = 30000; // 30 seconds
+const SERVER_START_TIMEOUT = 120000; // 2 minutes
 
 /**
  * Polls the server status until the model is ready or an error occurs
@@ -18,12 +20,15 @@ const MODEL_LOAD_TIMEOUT = 10 * 60 * 1000; // 10 minutes
  */
 async function waitForModelReady() {
   console.log('Waiting for BLIP model to be fully loaded...');
-  const startTime = Date.now();
   
-  // Check status every 10 seconds
-  while (Date.now() - startTime < MODEL_LOAD_TIMEOUT) {
+  // Add an initial delay to give the server time to start
+  console.log('Waiting for server to start...');
+  await new Promise(resolve => setTimeout(resolve, 30000)); // 30 second initial delay
+  
+  // Check status until model is ready
+  while (true) {
     try {
-      const response = await axios.get(`${SERVER_URL}/status`, { timeout: 5000 });
+      const response = await axios.get(`${SERVER_URL}/status`);
       const status = response.data;
       
       if (status.status === 'loaded') {
@@ -39,18 +44,16 @@ async function waitForModelReady() {
       }
       
       // Wait before checking again
-      await new Promise(resolve => setTimeout(resolve, 10000));
+      await new Promise(resolve => setTimeout(resolve, 30000));
     } catch (error) {
       if (error.code === 'ECONNREFUSED') {
         console.log('Server not responding yet, will retry...');
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise(resolve => setTimeout(resolve, 10000));
       } else {
         throw error;
       }
     }
   }
-  
-  throw new Error('Timed out waiting for model to load');
 }
 
 /**
@@ -100,12 +103,6 @@ async function ensureServerRunning() {
     // Log output from the server
     serverProcess.stdout.on('data', (data) => {
       console.log(`Python server: ${data.toString().trim()}`);
-      
-      // Detect when server is ready
-      if (data.toString().includes('Starting image classifier server')) {
-        serverStarting = false;
-        resolve();
-      }
     });
     
     serverProcess.stderr.on('data', (data) => {
@@ -124,13 +121,34 @@ async function ensureServerRunning() {
       }
     });
     
-    // If server doesn't start within 60 seconds, consider it failed
+    // Wait a few seconds, then start checking if the server is responding
     setTimeout(() => {
-      if (serverStarting) {
-        serverStarting = false;
-        reject(new Error('Server startup timed out'));
-      }
-    }, 60000);
+      // Set up an interval to check if the server is responding
+      const checkServerInterval = setInterval(async () => {
+        try {
+          // Try to connect to the server
+          await axios.get(`${SERVER_URL}/status`, { timeout: 2000 });
+          
+          // If we get here, the server is responding
+          clearInterval(checkServerInterval);
+          serverStarting = false;
+          console.log('Python server is now responding to requests');
+          resolve();
+        } catch (error) {
+          // Server not responding yet, will retry
+          console.log('Waiting for Python server to start...');
+        }
+      }, 2000);
+      
+      // If server doesn't respond within 2 minutes, consider it failed
+      setTimeout(() => {
+        clearInterval(checkServerInterval);
+        if (serverStarting) {
+          serverStarting = false;
+          reject(new Error('Server startup timed out'));
+        }
+      }, SERVER_START_TIMEOUT);
+    }, 5000); // Wait 5 seconds before starting to check
   });
 }
 
@@ -149,7 +167,7 @@ async function processImageLocally(source, waitForModel = true) {
     let modelReady = false;
     
     try {
-      const statusResponse = await axios.get(`${SERVER_URL}/status`, { timeout: 5000 });
+      const statusResponse = await axios.get(`${SERVER_URL}/status`);
       if (statusResponse.data.status === 'loaded') {
         modelReady = true;
       } else if (waitForModel && statusResponse.data.status === 'loading') {
@@ -172,8 +190,7 @@ async function processImageLocally(source, waitForModel = true) {
     // Attempt to process the image
     const encodedSource = encodeURIComponent(source);
     const response = await axios.get(
-      `${SERVER_URL}/classify?image=${encodedSource}`, 
-      { timeout: 180000 } // 3 minute timeout for image processing
+      `${SERVER_URL}/classify?image=${encodedSource}`
     );
     
     if (response.data.error) {

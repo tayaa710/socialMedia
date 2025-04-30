@@ -37,7 +37,7 @@ async function processJob() {
     },
     { 
       status: 'processing',
-      retries: { $inc: 1 }
+      $inc: { retries: 1 }
     },
     { new: true }
   );

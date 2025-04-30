@@ -79,8 +79,6 @@ def load_model():
         model = Blip2ForConditionalGeneration.from_pretrained(
             "Salesforce/blip2-flan-t5-xl",
             low_cpu_mem_usage=True,
-            offload_folder="offload_folder",  # Temporary folder for offloading
-            offload_state_dict=True,  # Offload state dict to reduce peak memory
             torch_dtype=torch.float32,  # Use 32-bit for better compatibility
             cache_dir=cache_dir
         )
@@ -280,7 +278,7 @@ class ImageClassifierHandler(BaseHTTPRequestHandler):
             # Check model status
             model_status = get_model_status()
             if model_status["status"] == "loading":
-                logger.warning("Model is still loading, returning 503")
+                logger.info(f"Model is still loading (progress: {model_status.get('progress', 0)}%)")
                 self.send_response(503)  # Service Unavailable
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
@@ -306,7 +304,7 @@ class ImageClassifierHandler(BaseHTTPRequestHandler):
                 return
             
             if model_status["status"] != "loaded":
-                logger.warning("Model is not loaded yet, returning 503")
+                logger.warning("Model is not loaded yet")
                 self.send_response(503)  # Service Unavailable
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
@@ -343,20 +341,31 @@ class ImageClassifierHandler(BaseHTTPRequestHandler):
         else:
             self.send_error(404, 'Not Found')
 
-def run_server(port=8000):
-    """Run the HTTP server"""
-    server_address = ('', port)
-    httpd = HTTPServer(server_address, ImageClassifierHandler)
-    logger.info(f"Starting image classifier server on port {port}")
-    
-    # Start model loading in background
-    model_thread = threading.Thread(target=load_model)
-    model_thread.daemon = True
-    model_thread.start()
-    
-    # Start server immediately
-    logger.info("Server is starting, model will load in background")
-    httpd.serve_forever()
+def run_server(port=8000, max_port_attempts=5):
+    """Run the HTTP server with port conflict handling"""
+    for attempt in range(max_port_attempts):
+        try:
+            server_address = ('', port)
+            httpd = HTTPServer(server_address, ImageClassifierHandler)
+            logger.info(f"Starting image classifier server on port {port}")
+            
+            # Start model loading in background
+            model_thread = threading.Thread(target=load_model)
+            model_thread.daemon = True
+            model_thread.start()
+            
+            # Start server immediately
+            logger.info("Server is starting, model will load in background")
+            logger.info("Model loading may take several minutes. The server will be ready to accept requests while the model loads.")
+            httpd.serve_forever()
+            break
+        except OSError as e:
+            if e.errno == 48 and attempt < max_port_attempts - 1:  # Address already in use
+                port += 1
+                logger.warning(f"Port {port-1} in use, trying port {port}")
+            else:
+                logger.error(f"Failed to start server: {e}")
+                raise
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
