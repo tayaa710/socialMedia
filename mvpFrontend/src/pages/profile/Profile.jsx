@@ -4,6 +4,8 @@ import SelectionBar from '../../components/selectionBar/SelectionBar'
 import Topbar from '../../components/topbar/Topbar'
 import Userbar from '../../components/userbar/Userbar'
 import ProfileFriends from '../../components/profileFriends/ProfileFriends'
+import ImageCropper from '../../components/imageCropper/ImageCropper'
+import { createCroppedImage } from '../../utils/cropImage'
 import './profile.css'
 import { useState, useEffect, useContext, useRef } from 'react'
 import { useParams } from 'react-router'
@@ -20,6 +22,8 @@ const Profile = () => {
   const [validationErrors, setValidationErrors] = useState([])
   const { user: currentUser, dispatch } = useContext(AuthContext)
   const fileInputRef = useRef(null)
+  const [showCropper, setShowCropper] = useState(false)
+  const [imageToCrop, setImageToCrop] = useState(null)
 
   // Listen for image analysis status events
   useEffect(() => {
@@ -42,8 +46,50 @@ const Profile = () => {
       setError(null);
       setValidationErrors([]);
       
-      // Auto upload when file is selected
-      handleProfilePictureUpload(selectedFile);
+      // Create a URL for the image to display in the cropper
+      const imageUrl = URL.createObjectURL(selectedFile);
+      setImageToCrop(imageUrl);
+      
+      // Show the cropper
+      setShowCropper(true);
+    }
+  };
+  
+  // Handle crop complete and prepare to upload
+  const handleCropComplete = async (croppedAreaPixels) => {
+    if (imageToCrop && croppedAreaPixels) {
+      try {
+        // Create a cropped image file
+        const croppedImage = await createCroppedImage(imageToCrop, croppedAreaPixels);
+        
+        // Upload the cropped image
+        if (croppedImage) {
+          handleProfilePictureUpload(croppedImage);
+        }
+      } catch (error) {
+        console.error('Error creating cropped image:', error);
+        setError('Failed to crop image. Please try again.');
+      }
+    }
+  };
+  
+  // Handle cropper close without saving
+  const handleCropCancel = () => {
+    setShowCropper(false);
+    setImageToCrop(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+  
+  // Handle cropper save (close the cropper - actual upload happens in handleCropComplete)
+  const handleCropSave = () => {
+    setShowCropper(false);
+    
+    // Clean up the object URL
+    if (imageToCrop) {
+      URL.revokeObjectURL(imageToCrop);
+      setImageToCrop(null);
     }
   };
   
@@ -186,6 +232,16 @@ const Profile = () => {
             }} 
           />
         </div>
+      )}
+      
+      {/* Image Cropper */}
+      {showCropper && imageToCrop && (
+        <ImageCropper
+          image={imageToCrop}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+          onSave={handleCropSave}
+        />
       )}
       
       {/* Analysis status message */}

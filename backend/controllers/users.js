@@ -23,14 +23,6 @@ const upload = multer({
   }
 })
 
-// usersRouter.get('/', async (request, response) => {
-//   const users = await User.find({}).select("-passwordHash").populate([
-//     { path: "friends", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests" }
-//   ])
-//   response.json(users)
-// })
-//Create new user
-
 usersRouter.post("/register", async (request, response) => {
   const { password, ...body } = request.body
   if (!password) {
