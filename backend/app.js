@@ -10,6 +10,8 @@ const userRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const postsRouter = require('./controllers/posts')
 const timelineRouter = require('./controllers/timeline')
+const conversationsRouter = require('./controllers/conversations')
+const messagesRouter = require('./controllers/messages')
 const middleware = require('./utils/middleware')
 
 const logger = require('./utils/logger')
@@ -45,6 +47,8 @@ app.use('/api/users', userRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/posts', postsRouter)
 app.use('/api/timeline', timelineRouter)
+app.use('/api/conversations', conversationsRouter)
+app.use('/api/messages', messagesRouter)  
 
 
 // Error middleware
