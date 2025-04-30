@@ -11,6 +11,20 @@
   color: #2D6A4F; /* Dark green */
 }
 
+.sidebarLoadingState {
+  padding: 15px 0;
+  color: #666;
+  text-align: center;
+  font-size: 14px;
+}
+
+.sidebarNoFriends {
+  padding: 15px 0;
+  color: #666;
+  text-align: center;
+  font-size: 14px;
+}
+
 .sidebarList {
   list-style: none;
   padding: 0;
@@ -62,15 +76,17 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .sidebarFriend {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 10px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  border-radius: 5px;
+  margin-bottom: 8px;
+  border-radius: 8px;
   transition: background-color 0.3s;
 }
 
@@ -78,6 +94,84 @@
   background-color: #E9F6F0; /* Light green hover */
 }
 
+.sidebarFriendLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+}
+
+.sidebarFriendImgContainer {
+  position: relative;
+  margin-right: 10px;
+}
+
+.sidebarFriendImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+}
+
+.sidebarOnlineBadge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #4CAF50;
+  border: 2px solid white;
+}
+
 .sidebarFriendName {
   font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+}
+
+.sidebarMessageBtn {
+  border: none;
+  background-color: transparent;
+  color: #2D6A4F;
+  cursor: pointer;
+  margin-left: 5px;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.sidebarMessageBtn:hover {
+  background-color: rgba(45, 106, 79, 0.1);
+}
+
+.sidebarMessageIcon {
+  font-size: 18px !important;
+}
+
+/* Custom scrollbar for friend list */
+.sidebarFriendList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebarFriendList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.sidebarFriendList::-webkit-scrollbar-thumb {
+  background: #D8F3DC;
+  border-radius: 10px;
+}
+
+.sidebarFriendList::-webkit-scrollbar-thumb:hover {
+  background: #2D6A4F;
 } 
