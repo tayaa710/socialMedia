@@ -15,9 +15,12 @@ const User = ({ user, viewMode = 'grid'}) => {
 
   const mutualFriendsCount = () => {
     let count = 0;
-    for (const friend of currentUser.friends) {
-      if (user.friends.includes(friend)) {
-        count++;
+    // Check if both arrays exist before iterating
+    if (Array.isArray(currentUser?.friends) && Array.isArray(user?.friends)) {
+      for (const friend of currentUser.friends) {
+        if (user.friends.includes(friend)) {
+          count++;
+        }
       }
     }
     return count;
