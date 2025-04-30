@@ -11,13 +11,13 @@ html, body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-image: 
-    radial-gradient(circle at 90% 10%, rgba(149, 213, 178, 0.15) 0%, transparent 30%),
-    radial-gradient(circle at 10% 95%, rgba(45, 106, 79, 0.12) 0%, transparent 30%);
+  background-color: #f0f2f5;
 }
 
 .heading {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .heading::after {
@@ -36,12 +36,62 @@ html, body {
 
 .profileBody {
   flex: 1;
-  max-width: 1300px;
-  width: 100%;
+  padding: 20px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 25px;
-  position: relative;
-  z-index: 1;
+  width: 100%;
+}
+
+.profileErrorContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  z-index: 1000;
+}
+
+.analysisStatusContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.analysisStatus {
+  background-color: white;
+  padding: 20px 40px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.analysisStatus p {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #333;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #1B4332;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .ethicalBanner {
@@ -109,58 +159,20 @@ html, body {
 
 .ethicalFooter {
   background-color: #1B4332;
-  color: #B7E4C7;
+  color: #D8F3DC;
   text-align: center;
-  padding: 30px 20px;
-  margin-top: 60px;
-  position: relative;
-  overflow: hidden;
-}
-
-.ethicalFooter::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 10px;
-  background: linear-gradient(90deg, #95D5B2, #74C69D, #52B788, #40916C, #2D6A4F);
-}
-
-.ethicalFooter p {
-  margin: 8px 0;
-  font-size: 15px;
-  opacity: 0.9;
+  padding: 15px;
+  margin-top: auto;
 }
 
 .ethicalFooter a {
   color: #B7E4C7;
   text-decoration: none;
-  transition: all 0.3s ease;
-  margin: 0 10px;
-  position: relative;
-}
-
-.ethicalFooter a::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  bottom: -2px;
-  left: 0;
-  background-color: #B7E4C7;
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-  transform-origin: bottom right;
+  margin: 0 8px;
 }
 
 .ethicalFooter a:hover {
-  color: #D8F3DC;
-}
-
-.ethicalFooter a:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
+  text-decoration: underline;
 }
 
 /* Ethical Design Accents */

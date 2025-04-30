@@ -5,14 +5,102 @@ import Topbar from '../../components/topbar/Topbar'
 import Userbar from '../../components/userbar/Userbar'
 import ProfileFriends from '../../components/profileFriends/ProfileFriends'
 import './profile.css'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext, useRef } from 'react'
 import { useParams } from 'react-router'
 import { userAPI } from '../../services/api'
+import { AuthContext } from '../../context/AuthContext'
+import ValidationError from '../../components/postCreate/ValidationError'
 
 const Profile = () => {
   const id = useParams().id
   const [selectedOption, setSelectedOption] = useState("Posts")
   const [user, setUser] = useState(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [error, setError] = useState(null)
+  const [validationErrors, setValidationErrors] = useState([])
+  const { user: currentUser, dispatch } = useContext(AuthContext)
+  const fileInputRef = useRef(null)
+
+  // Listen for image analysis status events
+  useEffect(() => {
+    const handleAnalysisStatus = (event) => {
+      setIsAnalyzing(event.detail.isAnalyzing);
+    };
+    
+    window.addEventListener('imageAnalysisStatus', handleAnalysisStatus);
+    
+    return () => {
+      window.removeEventListener('imageAnalysisStatus', handleAnalysisStatus);
+    };
+  }, []);
+  
+  // Handle file selection
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      // Clear previous errors when selecting a new file
+      setError(null);
+      setValidationErrors([]);
+      
+      // Auto upload when file is selected
+      handleProfilePictureUpload(selectedFile);
+    }
+  };
+  
+  // Upload profile picture
+  const handleProfilePictureUpload = async (file) => {
+    if (!file) return;
+    
+    setError(null);
+    setValidationErrors([]);
+    
+    try {
+      // Upload profile picture
+      const updatedUser = await userAPI.updateProfilePicture(currentUser.id, file);
+      
+      // Update user in state
+      setUser(updatedUser);
+      
+      // Update user in context
+      dispatch({ 
+        type: "UPDATE_USER", 
+        payload: updatedUser
+      });
+      
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('Error updating profile picture:', error);
+      
+      // Handle validation errors
+      if (error.response && error.response.data) {
+        const { error: errorMessage, reasons } = error.response.data;
+        setError(errorMessage || 'Failed to update profile picture');
+        setValidationErrors(reasons || []);
+      } else {
+        setError('Failed to update profile picture. Please try again.');
+      }
+    }
+  };
+  
+  // Handle click on profile picture when viewing own profile
+  const handleProfilePictureClick = () => {
+    if (currentUser && user && currentUser.id === user.id) {
+      // Trigger file input click
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+    }
+  };
+  
+  // Handle dismiss error
+  const handleDismissError = () => {
+    setError(null);
+    setValidationErrors([]);
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -56,17 +144,59 @@ const Profile = () => {
     }
   }
 
+  const isOwnProfile = currentUser && user && currentUser.id === user.id;
+
   return (
     <div className='pageContainer'>
       <div className="heading">
         <Topbar />
-        <Userbar profileUser={user} />
+        <Userbar 
+          profileUser={user} 
+          onProfilePictureClick={handleProfilePictureClick}
+          isOwnProfile={isOwnProfile}
+        />
         <SelectionBar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
       </div>
       
       <div className="profileBody">
         {renderOption()}
       </div>
+      
+      {/* Hidden file input for profile picture upload */}
+      <input
+        type="file"
+        id="profile-picture-input"
+        accept="image/*"
+        onChange={handleFileChange}
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+      />
+      
+      {/* Display validation errors */}
+      {error && (
+        <div className="profileErrorContainer">
+          <ValidationError 
+            error={error} 
+            validationErrors={validationErrors} 
+            onDismiss={handleDismissError} 
+            onReset={() => {
+              if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+              }
+            }} 
+          />
+        </div>
+      )}
+      
+      {/* Analysis status message */}
+      {isAnalyzing && (
+        <div className="analysisStatusContainer">
+          <div className="analysisStatus">
+            <p>Analyzing image for policy compliance...</p>
+            <div className="spinner"></div>
+          </div>
+        </div>
+      )}
       
       <footer className="ethicalFooter">
         <p>Ethical Social Media • No AI-Generated Content</p>

@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import Button from '../button/Button'
 import './userbar.css'
-import { VerifiedUser, LocationOn, Cake, LocalFlorist } from '@mui/icons-material'
+import { VerifiedUser, LocationOn, Cake, LocalFlorist, CameraAlt } from '@mui/icons-material'
 import { AuthContext } from '../../context/AuthContext'
 import { useContext, useState, useEffect } from 'react'
 import { userAPI } from '../../services/api'
 import { FRIEND_UPDATE_EVENT } from '../profileFriends/ProfileFriends'
 
-const Userbar = ({ profileUser }) => {
+const Userbar = ({ profileUser, onProfilePictureClick, isOwnProfile }) => {
   const { user: currentUser, dispatch } = useContext(AuthContext)
   const user = profileUser || currentUser
   const [localUser, setLocalUser] = useState(user)
@@ -161,8 +161,16 @@ const Userbar = ({ profileUser }) => {
       </div>
 
       <div className="userbarCenter">
-        <div className="profileImageContainer">
+        <div 
+          className={`profileImageContainer ${isOwnProfile ? 'editable' : ''}`}
+          onClick={isOwnProfile ? onProfilePictureClick : undefined}
+        >
           <img src={localUser.profilePicture} alt={`${localUser.username}'s profile picture`} className="profileImage" />
+          {isOwnProfile && (
+            <div className="editOverlay">
+              <CameraAlt className="cameraIcon" />
+            </div>
+          )}
         </div>
         <div className="profileInfo">
           <div className="nameContainer">

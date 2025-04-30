@@ -69,6 +69,37 @@ export const userAPI = {
     return response.data;
   },
   
+  updateProfilePicture: async (userId, imageFile) => {
+    // Create a custom event we can use to track analysis progress
+    const dispatchAnalysisEvent = (isAnalyzing) => {
+      const event = new CustomEvent('imageAnalysisStatus', { 
+        detail: { isAnalyzing } 
+      });
+      window.dispatchEvent(event);
+    };
+    
+    try {
+      // Create FormData to send the file
+      const formData = new FormData();
+      formData.append('profileImage', imageFile);
+      
+      // When sending the request, dispatch an event indicating analysis has started
+      dispatchAnalysisEvent(true);
+      
+      const response = await api.put(`/users/${userId}/profile-picture`, formData);
+      
+      // When we get a response, analysis is complete
+      dispatchAnalysisEvent(false);
+      
+      return response.data;
+    } catch (error) {
+      // If there's an error, make sure we reset the analysis state
+      dispatchAnalysisEvent(false);
+      
+      throw error;
+    }
+  },
+  
   getFriends: async (userId) => {
     // Get user data which includes populated friends
     const response = await api.get(`/users/${userId}`);

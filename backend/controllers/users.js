@@ -2,8 +2,26 @@ const usersRouter = require("express").Router();
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 const { tokenExtractor, userExtractor } = require('../utils/middleware');
+const multer = require('multer')
+const { uploadImage } = require('../utils/cloudinary')
+const { checkImage } = require('../utils/sightengine')
 
-
+// Configure multer for memory storage (no disk writing)
+const storage = multer.memoryStorage()
+const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept only image files
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true)
+    } else {
+      cb(new Error('Only image files are allowed!'), false)
+    }
+  }
+})
 
 // usersRouter.get('/', async (request, response) => {
 //   const users = await User.find({}).select("-passwordHash").populate([
@@ -55,6 +73,56 @@ usersRouter.put("/:id", tokenExtractor, userExtractor, async (request, response)
     })
   }
 })
+//Update profile picture
+usersRouter.put("/:id/profile-picture", tokenExtractor, userExtractor, upload.single('profileImage'), async (request, response) => {
+  try {
+    // Check if the user is updating their own profile
+    if (request.user.id !== request.params.id) {
+      return response.status(403).json({
+        error: "You do not have permission to update this profile picture"
+      });
+    }
+
+    // Check if there's an image file
+    if (!request.file) {
+      return response.status(400).json({
+        error: "No image file provided"
+      });
+    }
+
+    // Perform content moderation check
+    const imageCheck = await checkImage(request.file.buffer);
+    console.log('Image check:', imageCheck);
+    
+    // Check if the image passes validation
+    if (imageCheck.validation && !imageCheck.validation.approved) {
+      return response.status(400).json({ 
+        error: 'Image content not allowed', 
+        reasons: imageCheck.validation.rejectionReasons 
+      });
+    }
+    
+    // Upload the image to Cloudinary
+    const profilePictureUrl = await uploadImage(request.file.buffer);
+    
+    // Update the user's profile picture
+    const updatedUser = await User.findByIdAndUpdate(
+      request.params.id,
+      { $set: { profilePicture: profilePictureUrl } },
+      { new: true }
+    ).populate([
+      { path: "friends", select: "username firstName lastName profilePicture isOnline impactPoints trustRating values interests friends" }
+    ]);
+    
+    response.status(200).json(updatedUser);
+    
+  } catch (error) {
+    console.error('Error updating profile picture:', error);
+    response.status(500).json({
+      error: 'Failed to update profile picture'
+    });
+  }
+});
 //Delete your user account
 usersRouter.delete("/:id", tokenExtractor, userExtractor, async (request, response) => {
   let updatedData = { ...request.body }
