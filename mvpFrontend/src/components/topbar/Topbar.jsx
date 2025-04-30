@@ -20,7 +20,7 @@ const Topbar = () => {
       <div className="topbarLeft">
         <Link to="/" style={{ textDecoration: 'none', color: 'inherit', outline: 'none' }}>
           <LocalFlorist className="logoIcon" />
-          <span className="logo">Verdant</span>
+          <span className="logo">Authentra</span>
         </Link>
       </div>
       <div className="topbarCenter">

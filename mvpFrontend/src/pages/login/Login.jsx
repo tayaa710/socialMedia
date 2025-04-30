@@ -49,7 +49,7 @@ const Login = () => {
                 <div className="loginLeft">
                     <div className="loginLogoContainer">
                         <LocalFlorist className="logoIcon" />
-                        <h3 className="loginLogo">Verdant</h3>
+                        <h3 className="loginLogo">Authentra</h3>
                     </div>
                     <span className="loginDesc">Ethical Social Media for Authentic Connections</span>
                     <div className="ethicalStatement">
@@ -100,7 +100,7 @@ const Login = () => {
                         </button>
                         <span className="loginForgot">Forgot Password?</span>
                         <div className="divider">
-                            <span>New to Verdant?</span>
+                            <span>New to Authentra?</span>
                         </div>
                         <button type="button" className="loginRegisterButton">
                             <LocalFlorist className="buttonIcon" />
@@ -113,7 +113,7 @@ const Login = () => {
                 </div>
             </div>
             <footer className="loginFooter">
-                <p>© 2025 Verdant • Ethical Social Media • No AI-Generated Content</p>
+                <p>© 2025 Authentra • Ethical Social Media • No AI-Generated Content</p>
             </footer>
         </div>
     )
