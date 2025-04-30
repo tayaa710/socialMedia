@@ -74,15 +74,20 @@ If images are not being processed correctly, check the following:
 You can check the current queue status:
 
 ```bash
-# Get current queue status
+# Get current queue status via API
 curl http://localhost:4000/api/queue/status
-```
 
-To reset failed jobs (they will be automatically retried):
+# Using npm script to get queue status
+npm run queue status
 
-```bash
-# Run the reset script
-node test-reset-queue.js
+# Reset failed jobs
+npm run queue failed
+
+# Reset stuck processing jobs
+npm run queue stuck
+
+# Reset all failed and stuck jobs
+npm run queue all
 ```
 
 ## Testing with CLI
@@ -118,38 +123,6 @@ In the main backend, when a post is created, a request is sent to add it to the 
 // After saving a post
 const postId = savedPost._id.toString();
 await axios.post('http://localhost:4000/api/queue', { postId });
-```
-
-## Testing with Existing Posts
-
-Several utility scripts are provided to help test the service:
-
-### Add Posts to Queue
-
-```bash
-node test-queue-add.js
-```
-Finds all unprocessed posts with photos and adds them to the queue.
-
-### Check Queue Status
-
-```bash
-node test-queue-status.js
-```
-Shows the current queue statistics and lists recently processed posts.
-
-### Test Single Image
-
-```bash
-node test-single-image.js
-```
-Tests the BLIP captioning on a single image URL (edit the file to set the URL).
-
-### Reset Queue Items
-
-```bash
-node test-reset-queue.js failed  # Reset all failed jobs
-node test-reset-queue.js stuck   # Reset jobs stuck in 'processing' state
 ```
 
 ## Data Models

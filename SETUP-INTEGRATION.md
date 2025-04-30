@@ -41,7 +41,7 @@ pip install transformers pillow requests torch torchvision
 
 ### 3. Start the Services
 
-**Start the Classifier Backend:**
+**Start the Classifier Backend:** **This is the server that recieves posts and puts them into the queue for classification**
 
 In one terminal:
 ```bash
@@ -49,7 +49,7 @@ cd classifierBackend
 # Start the API server
 npm run server
 ```
-
+**This is the server that takes posts from the queue one by one and sends them to the model for classification and then updates the posts**
 In another terminal:
 ```bash
 cd classifierBackend
@@ -57,7 +57,7 @@ cd classifierBackend
 npm start
 ```
 
-**Start the Main Backend:**
+**Start the Main Backend:** **The backend for everything else so far**
 ```bash
 cd backend
 npm run dev
