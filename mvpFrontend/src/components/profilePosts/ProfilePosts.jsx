@@ -11,6 +11,7 @@ const ProfilePosts = ({user}) => {
   const [posts, setPosts] = useState([]);
   const [sortMethod, setSortMethod] = useState("recent");
   const [viewMode, setViewMode] = useState("grid");
+  const [file, setFile] = useState(null)
 
  useEffect(() => {
   const fetchPosts = async () => {
@@ -29,9 +30,9 @@ const ProfilePosts = ({user}) => {
 
   const sortedPosts = () => {
     if (sortMethod === "popular") {
-      return [...posts].sort((a, b) => b.like - a.like);
+      return [...posts].sort((a, b) => b.likes.length - a.likes.length);
     } else if (sortMethod === "recent") {
-      return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+      return [...posts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }
     return posts;
   };
