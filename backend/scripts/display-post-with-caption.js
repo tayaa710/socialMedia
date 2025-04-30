@@ -30,7 +30,7 @@ async function displayPostWithCaption() {
       userId: post.user,
       description: post.description || '',
       photo: post.photo,
-      caption: post.caption || 'No caption available',
+      caption: post.imageAnalysis?.caption || 'No caption available',
       processed: post.processed || false,
       processingFailed: post.processingFailed || false,
       imageAnalysis: post.imageAnalysis || null,

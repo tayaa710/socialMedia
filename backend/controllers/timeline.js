@@ -11,6 +11,9 @@ timelineRouter.get('/:userId', tokenExtractor, userExtractor, async (request, re
     const skip = (page - 1) * limit
     
     const user = await User.findById(request.params.userId)
+    if (!user) {
+      return response.status(404).json({ error: "User not found" })
+    }
     
     // Get all friend IDs including the user's own ID
     const friendIds = [...user.friends, user._id]
@@ -20,7 +23,21 @@ timelineRouter.get('/:userId', tokenExtractor, userExtractor, async (request, re
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('user', 'username profilePicture firstName lastName')
+      .populate({
+        path: 'user',
+        select: 'username profilePicture firstName lastName',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.replies.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
     
     // Get total count for pagination
     const total = await Post.countDocuments({ user: { $in: friendIds } })

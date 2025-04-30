@@ -12,7 +12,7 @@ async function checkAllCaptionedPosts() {
     // Find all processed posts
     const processedPosts = await Post.find({ 
       processed: true,
-      caption: { $exists: true, $ne: null }
+      'imageAnalysis.caption': { $exists: true, $ne: null }
     }).sort({ updatedAt: -1 });
     
     console.log(`\nFound ${processedPosts.length} posts with captions:`);
@@ -25,7 +25,7 @@ async function checkAllCaptionedPosts() {
       console.log(`Created: ${post.createdAt}`);
       console.log(`Updated: ${post.updatedAt}`);
       console.log(`Photo: ${post.photo.substring(0, 60)}...`);
-      console.log(`Caption: "${post.caption}"`);
+      console.log(`Caption: "${post.imageAnalysis?.caption}"`);
       
       if (post.description) {
         console.log(`Description: "${post.description}"`);

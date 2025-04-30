@@ -33,8 +33,8 @@ async function checkCaptionedPosts() {
       console.log(`Photo: ${post.photo.substring(0, 60)}...`);
       
       // Check if the post has a caption field (added by the classifier)
-      if (post.caption) {
-        console.log(`Caption: "${post.caption}"`);
+      if (post.imageAnalysis?.caption) {
+        console.log(`Caption: "${post.imageAnalysis.caption}"`);
       } else {
         console.log('Caption: Not available');
       }

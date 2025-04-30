@@ -172,6 +172,56 @@ export const postAPI = {
   likePost: async (postId) => {
     const response = await api.patch(`/posts/${postId}/like`);
     return response.data;
+  },
+  
+  likeComment: async (postId, commentId) => {
+    try {
+      const response = await api.patch(`/posts/${postId}/comment/${commentId}/like`);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to like/unlike comment:", error);
+      throw error;
+    }
+  },
+  
+  likeReply: async (postId, commentId, replyId) => {
+    try {
+      const response = await api.patch(`/posts/${postId}/comment/${commentId}/reply/${replyId}/like`);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to like/unlike reply:", error);
+      throw error;
+    }
+  },
+  
+  addComment: async (postId, commentText) => {
+    try {
+      const response = await api.post(`/posts/${postId}/comment`, { comment: commentText });
+      return response.data;
+    } catch (error) {
+      console.error("Failed to add comment:", error);
+      throw error;
+    }
+  },
+  
+  addReply: async (postId, commentId, replyText) => {
+    try {
+      const response = await api.post(`/posts/${postId}/comment/${commentId}/reply`, { reply: replyText });
+      return response.data;
+    } catch (error) {
+      console.error("Failed to add reply:", error);
+      throw error;
+    }
+  },
+  
+  getComments: async (postId) => {
+    try {
+      const response = await api.get(`/posts/${postId}/comment`);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to get comments:", error);
+      throw error;
+    }
   }
 };
 

@@ -93,7 +93,9 @@ const userSchema = new mongoose.Schema({
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
+    if (returnedObject._id) {
+      returnedObject.id = returnedObject._id.toString()
+    }
     delete returnedObject._id
     delete returnedObject.__v
   }

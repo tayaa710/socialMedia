@@ -25,7 +25,18 @@ const upload = multer({
 })
 
 postsRouter.get('/', async (request, response) => {
-  const posts = await Post.find({}).populate("user", { username: 1 })
+  const posts = await Post.find({})
+    .populate("user", { username: 1 })
+    .populate({
+      path: 'comments.user',
+      select: 'firstName lastName profilePicture',
+      options: { strictPopulate: false }
+    })
+    .populate({
+      path: 'comments.replies.user',
+      select: 'firstName lastName profilePicture',
+      options: { strictPopulate: false }
+    })
   response.json(posts)
 })
 
@@ -150,10 +161,96 @@ postsRouter.patch('/:id/like', tokenExtractor, userExtractor, async (req, res) =
   res.status(200).json(postToLike)
 })
 
+//comment on a post
+postsRouter.post('/:id/comment', tokenExtractor, userExtractor, async (req, res) => {
+  try {
+    const postToComment = await Post.findById(req.params.id)
+    if (!postToComment) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    const userId = req.user.id
+    const comment = req.body.comment
+    const commentObject = {
+      comment: comment,
+      user: userId
+    }
+    console.log(commentObject)
+
+    postToComment.comments = postToComment.comments.concat(commentObject)
+    await postToComment.save()
+    
+    // Populate user data for all comments before returning
+    const populatedPost = await Post.findById(req.params.id)
+      .populate({
+        path: 'user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.replies.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+    
+    res.status(201).json(populatedPost)
+  } catch (error) {
+    console.error("Error adding comment:", error)
+    res.status(500).json({ error: "Failed to add comment" })
+  }
+})
+
+//get comments for a post
+postsRouter.get('/:id/comment', async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id)
+      .populate('comments.user', 'firstName lastName profilePicture')
+      .populate('comments.replies.user', 'firstName lastName profilePicture')
+    
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    res.status(200).json(post.comments)
+  } catch (error) {
+    console.error("Error fetching comments:", error)
+    res.status(500).json({ error: "Failed to fetch comments" })
+  }
+})
+
 //get a post
 postsRouter.get('/:id',async (request, response) => {
-  const post = await Post.findById(request.params.id).populate("user", { firstName: 1 })
-  response.status(200).json(post)
+  try {
+    const post = await Post.findById(request.params.id)
+      .populate({
+        path: 'user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.replies.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+    
+    if (!post) {
+      return response.status(404).json({ error: "Post not found" })
+    }
+    
+    response.status(200).json(post)
+  } catch (error) {
+    console.error("Error fetching post:", error)
+    response.status(500).json({ error: "Failed to fetch post" })
+  }
 })
 
 //get all posts from a specific user
@@ -165,9 +262,221 @@ postsRouter.get('/user/:userId', async (request, response) => {
     }
     
     const userPosts = await Post.find({user: user._id})
+      .populate({
+        path: 'user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.replies.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .sort({ createdAt: -1 })
+
     response.status(200).json(userPosts)
   } catch (error) {
-    response.status(500).json({ error: 'Failed to fetch user posts' })
+    console.error("Error fetching user posts:", error)
+    response.status(500).json({ error: "Failed to fetch user posts" })
+  }
+})
+
+//add reply to a comment
+postsRouter.post('/:id/comment/:commentId/reply', tokenExtractor, userExtractor, async (req, res) => {
+  try {
+    const postId = req.params.id
+    const commentId = req.params.commentId
+    const userId = req.user.id
+    const replyText = req.body.reply
+
+    if (!replyText || !replyText.trim()) {
+      return res.status(400).json({ error: "Reply text is required" })
+    }
+
+    const post = await Post.findById(postId)
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" })
+    }
+
+    // Find the comment
+    const commentIndex = post.comments.findIndex(comment => 
+      comment._id.toString() === commentId
+    )
+
+    if (commentIndex === -1) {
+      return res.status(404).json({ error: "Comment not found" })
+    }
+
+    // Create reply object
+    const replyObject = {
+      reply: replyText,
+      user: userId
+    }
+
+    // Add reply to the comment
+    post.comments[commentIndex].replies = post.comments[commentIndex].replies || []
+    post.comments[commentIndex].replies.push(replyObject)
+    
+    await post.save()
+    
+    // Populate user data before returning
+    const populatedPost = await Post.findById(postId)
+      .populate({
+        path: 'user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.replies.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+    
+    res.status(201).json(populatedPost)
+  } catch (error) {
+    console.error("Error adding reply:", error)
+    res.status(500).json({ error: "Failed to add reply" })
+  }
+})
+
+//like/unlike a comment
+postsRouter.patch('/:id/comment/:commentId/like', tokenExtractor, userExtractor, async (req, res) => {
+  try {
+    const postId = req.params.id
+    const commentId = req.params.commentId
+    const userId = req.user.id
+
+    const post = await Post.findById(postId)
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" })
+    }
+
+    // Find the comment
+    const commentIndex = post.comments.findIndex(comment => 
+      comment._id.toString() === commentId
+    )
+
+    if (commentIndex === -1) {
+      return res.status(404).json({ error: "Comment not found" })
+    }
+
+    // Check if user already liked the comment
+    const alreadyLiked = post.comments[commentIndex].likes.includes(userId)
+    
+    if (alreadyLiked) {
+      // Unlike: remove user ID from likes array
+      post.comments[commentIndex].likes = post.comments[commentIndex].likes
+        .filter(id => id.toString() !== userId.toString())
+    } else {
+      // Like: add user ID to likes array
+      post.comments[commentIndex].likes.push(userId)
+    }
+    
+    await post.save()
+    
+    // Populate user data before returning
+    const populatedPost = await Post.findById(postId)
+      .populate({
+        path: 'user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.replies.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+    
+    res.status(200).json(populatedPost)
+  } catch (error) {
+    console.error("Error liking/unliking comment:", error)
+    res.status(500).json({ error: "Failed to like/unlike comment" })
+  }
+})
+
+//like/unlike a reply
+postsRouter.patch('/:id/comment/:commentId/reply/:replyId/like', tokenExtractor, userExtractor, async (req, res) => {
+  try {
+    const postId = req.params.id
+    const commentId = req.params.commentId
+    const replyId = req.params.replyId
+    const userId = req.user.id
+
+    const post = await Post.findById(postId)
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" })
+    }
+
+    // Find the comment
+    const commentIndex = post.comments.findIndex(comment => 
+      comment._id.toString() === commentId
+    )
+
+    if (commentIndex === -1) {
+      return res.status(404).json({ error: "Comment not found" })
+    }
+
+    // Find the reply
+    const replyIndex = post.comments[commentIndex].replies.findIndex(reply => 
+      reply._id.toString() === replyId
+    )
+
+    if (replyIndex === -1) {
+      return res.status(404).json({ error: "Reply not found" })
+    }
+
+    // Check if user already liked the reply
+    const alreadyLiked = post.comments[commentIndex].replies[replyIndex].likes.includes(userId)
+    
+    if (alreadyLiked) {
+      // Unlike: remove user ID from likes array
+      post.comments[commentIndex].replies[replyIndex].likes = 
+        post.comments[commentIndex].replies[replyIndex].likes
+          .filter(id => id.toString() !== userId.toString())
+    } else {
+      // Like: add user ID to likes array
+      post.comments[commentIndex].replies[replyIndex].likes.push(userId)
+    }
+    
+    await post.save()
+    
+    // Populate user data before returning
+    const populatedPost = await Post.findById(postId)
+      .populate({
+        path: 'user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+      .populate({
+        path: 'comments.replies.user',
+        select: 'firstName lastName profilePicture',
+        options: { strictPopulate: false }
+      })
+    
+    res.status(200).json(populatedPost)
+  } catch (error) {
+    console.error("Error liking/unliking reply:", error)
+    res.status(500).json({ error: "Failed to like/unlike reply" })
   }
 })
 

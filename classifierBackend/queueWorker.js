@@ -72,8 +72,6 @@ async function processJob() {
     
     // Update the post with caption and categories
     post.imageAnalysis = { caption, categories };
-    post.caption = caption;
-    post.categories = categories || [];
     post.processed = true;
     post.processingFailed = false;
     await post.save();
@@ -122,6 +120,16 @@ async function resetFailedJobs() {
   }
 }
 
+// Clean completed jobs
+async function cleanCompletedJobs() {
+  // Delete jobs that are marked as done
+  const result = await ImageQueue.deleteMany({ status: 'done' });
+  
+  if (result.deletedCount > 0) {
+    console.log(`Cleaned up ${result.deletedCount} completed jobs from queue`);
+  }
+}
+
 // Main worker function
 async function runWorker() {
   await connectDB();
@@ -144,6 +152,9 @@ async function runWorker() {
   
   // Set an interval to reset failed jobs every hour
   setInterval(resetFailedJobs, 60 * 60 * 1000);
+  
+  // Set an interval to clean completed jobs every hour
+  setInterval(cleanCompletedJobs, 60 * 60 * 1000);
   
   // Process jobs sequentially one by one
   while (true) {
