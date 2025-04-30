@@ -31,7 +31,7 @@ cd backend
 npm install
 ```
 
-**For Classifier Backend:**
+**For Classifier Backend:** **Create a virtual environment before installing called venv**
 ```bash
 cd classifierBackend
 npm install
@@ -46,7 +46,7 @@ pip install transformers pillow requests torch torchvision
 In one terminal:
 ```bash
 cd classifierBackend
-# Start the API server
+# Start the API server on port 4000
 npm run server
 ```
 **This is the server that takes posts from the queue one by one and sends them to the model for classification and then updates the posts**
@@ -55,6 +55,14 @@ In another terminal:
 cd classifierBackend
 # Start the queue worker
 npm start
+```
+
+**Start classifier model in python**
+```bash
+cd classifierBackend
+#Start the model
+source venv/bin/activate
+python classifier.py
 ```
 
 **Start the Main Backend:** **The backend for everything else so far**
