@@ -52,7 +52,7 @@ const Messenger = () => {
     e.preventDefault()
     const messageData = {
       conversationId: currentChat.id,
-      senderId: user.id,
+      sender: user.id,
       text: newMessage
     }
     try {
