@@ -15,7 +15,21 @@ router.post('/', tokenExtractor, userExtractor, async (req, res) => {
     res.status(500).json(err)
   }
 
-  //get conv of a user
+ 
+})
+
+//get conv of a user
+router.get('/:userId', tokenExtractor, userExtractor, async (req, res) => {
+  try {
+    console.log("req.params.userId:", req.params.userId, typeof req.params.userId);
+    const conversation = await Conversation.find({
+      members: { $in: [req.params.userId] }
+    })
+    console.log("conversations result:", conversation);
+    res.status(200).json(conversation)
+  } catch (err) {
+    res.status(500).json(err)
+  }
 })
 
 module.exports = router

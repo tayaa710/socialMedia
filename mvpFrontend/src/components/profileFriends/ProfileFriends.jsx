@@ -27,7 +27,7 @@ const ProfileFriends = ({ user: profileUser }) => {
     try {
       setLoading(true);
       // Make sure we're passing a string ID, not an object
-      const userId = typeof user.id === 'object' ? user.id._id || user.id.id : user.id;
+      const userId = typeof user.id === 'object' ? user.id.id : user.id;
       const userData = await userAPI.getUser(userId);
       setFriends(userData.friends || []);
     } catch (error) {
@@ -221,7 +221,7 @@ const ProfileFriends = ({ user: profileUser }) => {
           </div>
         ) : getDisplayUsers().length > 0 ? (
           getDisplayUsers().map(friend => (
-            <div className="friendCard" key={friend._id || friend.id}>
+            <div className="friendCard" key={friend.id}>
               <User user={friend} viewMode={viewMode} />
             </div>
           ))

@@ -34,17 +34,17 @@ loginRouter.post("/",async (request, response) => {
 
   const userToken = {
     email: user.email,
-    id: user._id
+    id: user.id
   }
   
-  console.log("Creating token for user ID:", user._id)
+  console.log("Creating token for user ID:", user.id)
   const token = jwt.sign(userToken, process.env.SECRET,{ expiresIn: '7d' })
 
   // Ensure we're returning the user document that matches the email provided
   const userData = {
     email: user.email,
     username: user.username,
-    id: user._id.toString(),
+    id: user.id.toString(),
     firstName: user.firstName,
     lastName: user.lastName,
     profilePicture: user.profilePicture

@@ -39,7 +39,7 @@ const Post = ({ post }) => {
           setUser(post.user);
         } else {
           // Otherwise fetch the user data using the user ID
-          const userId = typeof post.user === 'object' ? post.user._id : post.user;
+          const userId = typeof post.user === 'object' ? post.user.id : post.user;
           const userData = await userAPI.getUser(userId);
           setUser(userData);
         }
@@ -276,7 +276,7 @@ const Post = ({ post }) => {
                       <div className="commentActions">
                         <span 
                           className={`commentAction ${isCommentLiked(comment) ? 'liked' : ''}`}
-                          onClick={() => handleCommentLike(comment._id)}
+                          onClick={() => handleCommentLike(comment.id)}
                         >
                           {isCommentLiked(comment) ? (
                             <>
@@ -298,7 +298,7 @@ const Post = ({ post }) => {
                         </span>
                         <span 
                           className="commentAction"
-                          onClick={() => toggleReplyForm(comment._id)}
+                          onClick={() => toggleReplyForm(comment.id)}
                         >
                           Reply
                         </span>
@@ -306,10 +306,10 @@ const Post = ({ post }) => {
                       </div>
                       
                       {/* Reply Form */}
-                      {replyingTo === comment._id && (
+                      {replyingTo === comment.id && (
                         <form 
                           className="replyForm" 
-                          onSubmit={(e) => handleReplySubmit(e, comment._id)}
+                          onSubmit={(e) => handleReplySubmit(e, comment.id)}
                         >
                           <img 
                             src={currentUser.profilePicture || "/assets/person/noAvatar.png"} 
@@ -352,7 +352,7 @@ const Post = ({ post }) => {
                                 <div className="replyActions">
                                   <span 
                                     className={`replyAction ${isReplyLiked(reply) ? 'liked' : ''}`}
-                                    onClick={() => handleReplyLike(comment._id, reply._id)}
+                                    onClick={() => handleReplyLike(comment.id, reply.id)}
                                   >
                                     {isReplyLiked(reply) ? (
                                       <>

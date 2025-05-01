@@ -33,7 +33,7 @@ async function processJob() {
     return;
   }
 
-  console.log(`Processing job ${job._id} for image ${job.imageId}`);
+  console.log(`Processing job ${job.id} for image ${job.imageId}`);
 
   try {
     // Lookup the Post by its ID
@@ -54,7 +54,7 @@ async function processJob() {
     if (imageResult.error && 
         (imageResult.error.includes('Model is not loaded yet') || 
          imageResult.error.includes('Model is still loading'))) {
-      console.log(`Model not ready, putting job ${job._id} back in queue`);
+      console.log(`Model not ready, putting job ${job.id} back in queue`);
       job.status = 'queued';
       await job.save();
       return;
@@ -81,11 +81,11 @@ async function processJob() {
     job.processedAt = new Date();
     await job.save();
     
-    console.log(`Successfully processed image ${post._id}:`);
+    console.log(`Successfully processed image ${post.id}:`);
     console.log(`Caption: "${caption}"`);
     console.log(`Categories: ${categories ? categories.join(', ') : 'none'}`);
   } catch (error) {
-    console.error(`Error processing job ${job._id}:`, error);
+    console.error(`Error processing job ${job.id}:`, error);
     
     // Mark job as failed
     job.status = 'failed';

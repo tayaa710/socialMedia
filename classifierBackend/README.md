@@ -121,7 +121,7 @@ In the main backend, when a post is created, a request is sent to add it to the 
 
 ```javascript
 // After saving a post
-const postId = savedPost._id.toString();
+const postId = savedPost.id.toString();
 await axios.post('http://localhost:4000/api/queue', { postId });
 ```
 

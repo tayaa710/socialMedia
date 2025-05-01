@@ -43,7 +43,7 @@ const User = ({ user, viewMode = 'grid'}) => {
   
   return (
     <div className={`userContainer ${isList ? 'listView' : 'gridView'}`}>
-      <Link to={`/profile/${user?._id || user?.id}`} className="userLink">
+      <Link to={`/profile/${user?.id}`} className="userLink">
         <div className={`userHeader ${isList ? 'listHeader' : ''}`}>
           <div className={`profilePictureWrapper ${user?.isOnline ? 'online' : ''} ${isList ? 'listPicture' : ''}`}>
             <img src={user?.profilePicture} alt={`${user?.username}'s Profile`} className="profilePicture" />

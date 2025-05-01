@@ -97,15 +97,15 @@ postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), asy
     const post = await newPost.save()
     console.log('Post saved successfully:', post)
     
-    const postId = post._id
+    const postId = post.id
     const user = await User.findById(req.user.id)
     user.posts = user.posts.concat(postId)
-    await User.findByIdAndUpdate(user._id, user)
+    await User.findByIdAndUpdate(user.id, user)
 
     // Send the post ID to the classifier backend
     try {
       const classifierUrl = 'http://localhost:4000/api/queue';
-      const classifierResponse = await axios.post(classifierUrl, { postId: post._id.toString() });
+      const classifierResponse = await axios.post(classifierUrl, { postId: post.id.toString() });
       console.log('Classifier response:', classifierResponse.data);
     } catch (classifierError) {
       // We don't want to fail the post creation if the classifier fails
@@ -157,7 +157,7 @@ postsRouter.patch('/:id/like', tokenExtractor, userExtractor, async (req, res) =
   } else {
     postToLike.likes = postToLike.likes.concat(userId)
   }
-  await Post.findByIdAndUpdate(postToLike._id, postToLike, { new: true })
+  await Post.findByIdAndUpdate(postToLike.id, postToLike, { new: true })
   res.status(200).json(postToLike)
 })
 
@@ -261,7 +261,7 @@ postsRouter.get('/user/:userId', async (request, response) => {
       return response.status(404).json({ error: 'User not found' })
     }
     
-    const userPosts = await Post.find({user: user._id})
+    const userPosts = await Post.find({user: user.id})
       .populate({
         path: 'user',
         select: 'firstName lastName profilePicture',
@@ -305,7 +305,7 @@ postsRouter.post('/:id/comment/:commentId/reply', tokenExtractor, userExtractor,
 
     // Find the comment
     const commentIndex = post.comments.findIndex(comment => 
-      comment._id.toString() === commentId
+      comment.id.toString() === commentId
     )
 
     if (commentIndex === -1) {
@@ -363,7 +363,7 @@ postsRouter.patch('/:id/comment/:commentId/like', tokenExtractor, userExtractor,
 
     // Find the comment
     const commentIndex = post.comments.findIndex(comment => 
-      comment._id.toString() === commentId
+      comment.id.toString() === commentId
     )
 
     if (commentIndex === -1) {
@@ -424,7 +424,7 @@ postsRouter.patch('/:id/comment/:commentId/reply/:replyId/like', tokenExtractor,
 
     // Find the comment
     const commentIndex = post.comments.findIndex(comment => 
-      comment._id.toString() === commentId
+      comment.id.toString() === commentId
     )
 
     if (commentIndex === -1) {
@@ -433,7 +433,7 @@ postsRouter.patch('/:id/comment/:commentId/reply/:replyId/like', tokenExtractor,
 
     // Find the reply
     const replyIndex = post.comments[commentIndex].replies.findIndex(reply => 
-      reply._id.toString() === replyId
+      reply.id.toString() === replyId
     )
 
     if (replyIndex === -1) {

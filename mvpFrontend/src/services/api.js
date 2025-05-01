@@ -256,5 +256,58 @@ export const postAPI = {
   }
 };
 
+// Conversation API
+export const conversationAPI = {
+  // Get all conversations for a user
+  getUserConversations: async (userId) => {
+    try {
+      const response = await api.get(`/conversations/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to get conversations:", error);
+      throw error;
+    }
+  },
+  
+  // Create a new conversation
+  createConversation: async (senderId, receiverId) => {
+    try {
+      const response = await api.post('/conversations', {
+        senderId,
+        recieverId: receiverId // Note: Backend has a typo in "recieverId"
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Failed to create conversation:", error);
+      throw error;
+    }
+  }
+};
+
+// Message API
+export const messageAPI = {
+  // Get all messages for a conversation
+  getMessages: async (conversationId) => {
+    try {
+      const response = await api.get(`/messages/${conversationId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to get messages:", error);
+      throw error;
+    }
+  },
+  
+  // Send a new message
+  sendMessage: async (messageData) => {
+    try {
+      const response = await api.post('/messages', messageData);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      throw error;
+    }
+  }
+};
+
 // Export the axios instance for any custom needs
 export default api; 

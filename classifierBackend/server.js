@@ -36,18 +36,18 @@ app.post('/api/queue', async (req, res) => {
     }
 
     // Check if already in queue
-    const existing = await ImageQueue.findOne({ imageId: post._id });
+    const existing = await ImageQueue.findOne({ imageId: post.id });
     if (existing) {
       return res.status(200).json({ 
         message: 'Post already in queue', 
         status: existing.status,
-        queueId: existing._id
+        queueId: existing.id
       });
     }
 
     // Add to queue
     const queueItem = new ImageQueue({
-      imageId: post._id,
+      imageId: post.id,
       status: 'queued'
     });
     
@@ -55,7 +55,7 @@ app.post('/api/queue', async (req, res) => {
     
     res.status(201).json({ 
       message: 'Added to classification queue',
-      queueId: queueItem._id
+      queueId: queueItem.id
     });
   } catch (error) {
     console.error('Queue error:', error);

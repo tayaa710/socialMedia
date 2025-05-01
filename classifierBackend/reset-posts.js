@@ -60,14 +60,14 @@ async function resetAndRequeuePosts() {
     for (const post of posts) {
       // Check if post is already in queue
       const existingQueueItem = await ImageQueue.findOne({ 
-        imageId: post._id,
+        imageId: post.id,
         status: 'queued'
       });
       
       if (!existingQueueItem) {
         // Create a new queue item for this post
         const queueItem = new ImageQueue({
-          imageId: post._id,
+          imageId: post.id,
           status: 'queued'
         });
         

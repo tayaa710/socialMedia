@@ -123,7 +123,7 @@ const Userbar = ({ profileUser, onProfilePictureClick, isOwnProfile }) => {
   const fetchUpdatedUserData = async (userId) => {
     try {
       // Make sure we're passing a string ID, not an object
-      const id = typeof userId === 'object' ? userId._id || userId.id : userId;
+      const id = typeof userId === 'object' ? userId.id : userId;
       const userData = await userAPI.getUser(id);
       
       if (userId === currentUser.id) {

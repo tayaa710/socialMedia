@@ -152,11 +152,11 @@ usersRouter.put("/:id/friend", tokenExtractor, userExtractor, async (request, re
   const userBeingFriended = await User.findById(request.params.id)
   if (userBeingFriended.friends.filter(id => id.toString() === user.id.toString()).length > 0){
     response.status(409).json({"error" : "Already friends"})
-  }else if (userBeingFriended._id.toString() === user.id.toString()){
+  }else if (userBeingFriended.id.toString() === user.id.toString()){
     response.status(409).json({"error" : "Can't friend yourself"})
   }else{  
     userBeingFriended.friends = userBeingFriended.friends.concat(user.id)
-    const newFriendedUser = await User.findByIdAndUpdate(userBeingFriended._id, userBeingFriended,{ new: true })
+    const newFriendedUser = await User.findByIdAndUpdate(userBeingFriended.id, userBeingFriended,{ new: true })
     user.friends = user.friends.concat(request.params.id)
     const newFollowingUser = await User.findByIdAndUpdate(user.id, user,{ new: true })
     response.status(201).json(newFriendedUser)
@@ -170,7 +170,7 @@ usersRouter.put("/:id/unfriend", tokenExtractor, userExtractor, async (request, 
     response.status(409).json({"error" : "Not friends"})
   }else{  
     userBeingUnfriended.friends = userBeingUnfriended.friends.filter(id => id.toString() !== user.id.toString())
-    const newFriendedUser = await User.findByIdAndUpdate(userBeingUnfriended._id, userBeingUnfriended,{ new: true })
+    const newFriendedUser = await User.findByIdAndUpdate(userBeingUnfriended.id, userBeingUnfriended,{ new: true })
     user.friends = user.friends.filter(id => id.toString() !== request.params.id)
     await User.findByIdAndUpdate(user.id, user,{ new: true })
     response.status(201).json(newFriendedUser)

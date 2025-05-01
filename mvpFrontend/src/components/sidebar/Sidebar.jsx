@@ -18,7 +18,7 @@ const Sidebar = () => {
       try {
         setLoading(true)
         // Make sure we're passing a string ID, not an object
-        const userId = typeof user.id === 'object' ? user.id._id || user.id.id : user.id
+        const userId = typeof user.id === 'object' ? user.id.id : user.id
         const userData = await userAPI.getUser(userId)
         setFriends(userData.friends || [])
       } catch (error) {
@@ -44,8 +44,8 @@ const Sidebar = () => {
       ) : friends.length > 0 ? (
         <ul className="sidebarFriendList">
           {friends.map((friend) => (
-            <li className="sidebarFriend" key={friend._id || friend.id}>
-              <Link to={`/profile/${friend._id || friend.id}`} className="sidebarFriendLink">
+            <li className="sidebarFriend" key={friend.id}>
+              <Link to={`/profile/${friend.id}`} className="sidebarFriendLink">
                 <div className={`sidebarFriendImgContainer ${friend.isOnline ? 'online' : ''}`}>
                   <img 
                     src={friend.profilePicture} 

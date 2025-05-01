@@ -16,7 +16,7 @@ timelineRouter.get('/:userId', tokenExtractor, userExtractor, async (request, re
     }
     
     // Get all friend IDs including the user's own ID
-    const friendIds = [...user.friends, user._id]
+    const friendIds = [...user.friends, user.id]
     
     // Get paginated posts from user and friends
     const timeline = await Post.find({ user: { $in: friendIds } })
