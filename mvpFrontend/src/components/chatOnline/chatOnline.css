@@ -28,3 +28,16 @@ border: 1px solid white;
   top: -2px;
   right: -2px;
 }
+
+.conversationName {
+    font-weight: 500;
+}
+
+.noOnlineText {
+    display: block;
+    text-align: center;
+    padding: 20px;
+    color: #777;
+    font-size: 14px;
+    font-style: italic;
+}

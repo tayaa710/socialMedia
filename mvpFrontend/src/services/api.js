@@ -281,6 +281,17 @@ export const conversationAPI = {
       console.error("Failed to create conversation:", error);
       throw error;
     }
+  },
+  
+  // Find conversation between two users
+  findConversation: async (firstUserId, secondUserId) => {
+    try {
+      const response = await api.get(`/conversations/find/${firstUserId}/${secondUserId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to find conversation:", error);
+      throw error;
+    }
   }
 };
 

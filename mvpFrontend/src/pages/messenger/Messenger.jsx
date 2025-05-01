@@ -13,12 +13,65 @@ const Messenger = () => {
   const [currentChat, setCurrentChat] = useState(null)
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState("")
-  const [socket, setSocket] = useState(null)
-
+  const [arrivalMessage, setArrivalMessage] = useState(null)
+  const [onlineUsers, setOnlineUsers] = useState([])
+  const socket = useRef()
 
   const scrollRef = useRef()
 
   const { user } = useContext(AuthContext)
+
+  useEffect(() => {
+    socket.current = io("ws://localhost:8900")
+    socket.current.on("getMessage", data => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now()
+      })
+    })
+  }, [])
+
+  useEffect(() => {
+    arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) && setMessages(prev => [...prev, arrivalMessage])
+  }, [arrivalMessage, currentChat])
+
+  useEffect(() => {
+    socket.current.emit("addUser", user.id)
+    socket.current.on("getUsers", users => {
+      console.log("Socket users:", users)
+      console.log("User friends:", user.friends)
+      
+      // Check if user.friends exists and is an array
+      if (Array.isArray(user.friends) && user.friends.length > 0) {
+        // Extract just the user IDs from the socket users array
+        const socketUserIds = users.map(u => u.userId);
+        
+        // For each friend in user.friends, check if their ID is in the online users array
+        // This assumes user.friends contains the full user objects, not just IDs
+        let onlineFriendIds;
+        
+        // Check if user.friends contains objects or just IDs
+        if (typeof user.friends[0] === 'object') {
+          // Friends are objects, extract their IDs for online filtering
+          onlineFriendIds = user.friends
+            .filter(friend => socketUserIds.includes(friend.id))
+            .map(friend => friend.id);
+        } else {
+          // Friends are already IDs, filter them directly
+          onlineFriendIds = user.friends.filter(friendId => 
+            socketUserIds.includes(friendId)
+          );
+        }
+        
+        console.log("Online friend IDs after filtering:", onlineFriendIds);
+        setOnlineUsers(onlineFriendIds);
+      } else {
+        console.error("User friends is not an array or is empty:", user.friends);
+        setOnlineUsers([]);
+      }
+    })
+  }, [user])
 
   // Fetch conversations
   useEffect(() => {
@@ -57,9 +110,11 @@ const Messenger = () => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  useEffect(() => {
-    setSocket(io("ws://localhost:8900"))
-  }, [])
+
+
+
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -68,6 +123,14 @@ const Messenger = () => {
       sender: user.id,
       text: newMessage
     }
+
+    const recieverId = currentChat.members.find(member => member !== user.id)
+
+    socket.current.emit("sendMessage", {
+      senderId: user.id,
+      recieverId,
+      text: newMessage
+    })
     try {
       const res = await messageAPI.sendMessage(messageData)
       setMessages([...messages, res])
@@ -121,7 +184,7 @@ const Messenger = () => {
         </div>
         <div className="chatOnline">
           <div className="chatOnlineWrapper">
-            <ChatOnline />
+            <ChatOnline onlineUsers={onlineUsers} currentId={user.id} setCurrentChat={setCurrentChat} />
           </div>
         </div>
       </div>
