@@ -255,7 +255,7 @@ const Profile = () => {
       )}
       
       <footer className="ethicalFooter">
-        <p>Ethical Social Media • No AI-Generated Content</p>
+        <p>Authentra • Ethical Social Media • No AI-Generated Content</p>
         <p>© 2025 • <a href="#">Privacy Policy</a> • <a href="#">Content Guidelines</a> • <a href="#">Authenticity Pledge</a></p>
       </footer>
     </div>

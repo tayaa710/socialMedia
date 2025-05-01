@@ -75,7 +75,7 @@ const Register = () => {
                 <div className="registerLeft">
                     <div className="registerLogoContainer">
                         <LocalFlorist className="logoIcon" />
-                        <h3 className="registerLogo">Verdant</h3>
+                        <h3 className="registerLogo">Authentra</h3>
                     </div>
                     <span className="registerDesc">Ethical Social Media for Authentic Connections</span>
                     <div className="ethicalStatement">
@@ -305,7 +305,7 @@ const Register = () => {
                 </div>
             </div>
             <footer className="registerFooter">
-                <p>© 2025 Verdant • Ethical Social Media • No AI-Generated Content</p>
+                <p>© 2025 Authentra • Ethical Social Media • No AI-Generated Content</p>
             </footer>
         </div>
     )

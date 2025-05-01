@@ -1,6 +1,6 @@
 # Image Classification Backend
 
-A standalone Node.js service that processes social media images asynchronously with the BLIP image captioning model.
+A standalone Node.js service that processes Authentra images asynchronously with the BLIP image captioning model.
 
 ## Features
 
