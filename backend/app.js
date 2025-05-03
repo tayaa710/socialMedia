@@ -28,6 +28,13 @@ mongoose.connect(config.MONGODB_URI)
   })
 
 
+// Determine the client URL based on environment
+const clientUrl = process.env.NODE_ENV === 'production'
+  ? process.env.CLIENT_URL || 'https://authentra-frontend.onrender.com'
+  : "http://localhost:5173";
+
+console.log("Client URL for CORS:", clientUrl);
+
 //Middleware
 app.use(cors())
 app.use(express.static('dist'))

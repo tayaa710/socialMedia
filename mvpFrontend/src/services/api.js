@@ -6,6 +6,7 @@ const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
 // Create axios instance with default config
 const api = axios.create({
   baseURL,
+  withCredentials: true, // Include credentials in requests
   // Remove the default Content-Type header to allow proper file uploads
 });
 
