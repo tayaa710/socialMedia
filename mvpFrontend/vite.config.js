@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
         ? JSON.stringify('https://authentra-backend.onrender.com/api')
         : JSON.stringify(''),
       'import.meta.env.VITE_SOCKET_URL': isProd
-        ? JSON.stringify('wss://authentra-backend.onrender.com')
+        ? JSON.stringify('https://socialmedia-wvs5.onrender.com')
         : JSON.stringify('ws://localhost:8900')
     },
     build: {
