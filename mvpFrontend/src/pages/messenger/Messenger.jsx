@@ -23,8 +23,27 @@ const Messenger = () => {
 
   useEffect(() => {
     // Use environment variable for socket URL, fallback to localhost for development
-    const socketUrl = import.meta.env.VITE_SOCKET_URL || "ws://localhost:8900"
-    socket.current = io(socketUrl)
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:8900"
+    console.log("Connecting to socket server at:", socketUrl)
+    
+    // Configure socket with necessary options
+    socket.current = io(socketUrl, {
+      withCredentials: true,
+      transports: ['websocket', 'polling'],
+      autoConnect: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000
+    })
+    
+    socket.current.on("connect", () => {
+      console.log("Socket connected successfully")
+    })
+    
+    socket.current.on("connect_error", (error) => {
+      console.error("Socket connection error:", error.message)
+    })
+    
     socket.current.on("getMessage", data => {
       setArrivalMessage({
         sender: data.senderId,
@@ -32,6 +51,12 @@ const Messenger = () => {
         createdAt: Date.now()
       })
     })
+    
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect()
+      }
+    }
   }, [])
 
   useEffect(() => {

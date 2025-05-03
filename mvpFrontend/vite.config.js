@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
         : JSON.stringify(''),
       'import.meta.env.VITE_SOCKET_URL': isProd
         ? JSON.stringify('https://socialmedia-wvs5.onrender.com')
-        : JSON.stringify('ws://localhost:8900')
+        : JSON.stringify('http://localhost:8900')
     },
     build: {
       rollupOptions: {
