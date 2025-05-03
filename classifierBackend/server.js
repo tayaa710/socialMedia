@@ -8,8 +8,20 @@ const ImageQueue = require('./models/ImageQueue');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Determine the client URL based on environment
+const clientUrl = process.env.NODE_ENV === 'production'
+  ? process.env.CLIENT_URL || 'https://authentra-frontend.onrender.com'
+  : "http://localhost:5173";
+
+console.log("Client URL for CORS:", clientUrl);
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: clientUrl,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // Connect to MongoDB
