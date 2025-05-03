@@ -18,7 +18,10 @@ export default defineConfig(({ mode }) => {
     define: {
       'import.meta.env.VITE_API_BASE_URL': isProd 
         ? JSON.stringify('https://authentra-backend.onrender.com/api')
-        : JSON.stringify('')
+        : JSON.stringify(''),
+      'import.meta.env.VITE_SOCKET_URL': isProd
+        ? JSON.stringify('wss://authentra-backend.onrender.com')
+        : JSON.stringify('ws://localhost:8900')
     },
     build: {
       rollupOptions: {
@@ -31,11 +34,6 @@ export default defineConfig(({ mode }) => {
           warn(warning);
         }
       }
-    },
-    preview: {
-      port: 3000,
-      strictPort: true,
-      host: true
     }
   }
 })

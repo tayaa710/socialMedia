@@ -22,7 +22,9 @@ const Messenger = () => {
   const { user } = useContext(AuthContext)
 
   useEffect(() => {
-    socket.current = io("ws://localhost:8900")
+    // Use environment variable for socket URL, fallback to localhost for development
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || "ws://localhost:8900"
+    socket.current = io(socketUrl)
     socket.current.on("getMessage", data => {
       setArrivalMessage({
         sender: data.senderId,
@@ -110,12 +112,6 @@ const Messenger = () => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-
-
-
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     const messageData = {
@@ -139,8 +135,6 @@ const Messenger = () => {
       console.error("Failed to send message:", err)
     }
   }
-
-
 
   return (
     <>

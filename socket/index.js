@@ -1,15 +1,25 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
+
 const server = http.createServer(app);
+
+// Determine the client URL based on environment
+const clientUrl = process.env.NODE_ENV === 'production'
+  ? process.env.CLIENT_URL
+  : "http://localhost:5173";
+
+console.log("Client URL for CORS:", clientUrl);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production'
-      ? process.env.CLIENT_URL
-      : "http://localhost:5173"
+    origin: clientUrl,
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
