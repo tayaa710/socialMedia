@@ -10,12 +10,17 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
-
-
 const tokenExtractor = (request, response, next) => {
+  console.log("Starting tokenExtractor middleware")
+  console.log("Authorization header:", request.get('authorization'))
+  
   const authorization = request.get('authorization')
   if (authorization && authorization.startsWith('Bearer ')) {
     request.token = authorization.replace('Bearer ', '')
+    console.log("Token extracted successfully:", request.token.substring(0, 10) + '...')
+  } else {
+    console.log("No valid authorization header found")
+    request.token = null
   }
   next()
 }

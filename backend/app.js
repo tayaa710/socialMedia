@@ -36,7 +36,16 @@ const clientUrl = process.env.NODE_ENV === 'production'
 console.log("Client URL for CORS:", clientUrl);
 
 //Middleware
-app.use(cors())
+app.use(cors({
+  origin: clientUrl,
+  credentials: true
+}));
+
+// enable preflight across all routes
+app.options('*', cors({
+  origin: clientUrl,
+  credentials: true
+}));
 app.use(express.static('dist'))
 app.use(express.json())
 app.use(helmet())
