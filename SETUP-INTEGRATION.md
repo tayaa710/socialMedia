@@ -31,6 +31,11 @@ cd backend
 npm install
 ```
 
+**For Socket Server**
+```bash
+cd socket
+npm install
+
 **For Classifier Backend:** **Create a virtual environment before installing called venv**
 ```bash
 cd classifierBackend
@@ -68,6 +73,11 @@ python classifier.py
 **Start the Main Backend:** **The backend for everything else so far**
 ```bash
 cd backend
+npm run dev
+```
+
+```bash
+cd socket
 npm run dev
 ```
 

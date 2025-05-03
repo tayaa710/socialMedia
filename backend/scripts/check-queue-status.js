@@ -2,8 +2,11 @@
  * Script to check the status of the classifier queue
  */
 const axios = require('axios');
+require('dotenv').config();
 
-const CLASSIFIER_STATUS_URL = 'http://localhost:4000/api/queue/status';
+const CLASSIFIER_STATUS_URL = process.env.NODE_ENV === 'production'
+  ? 'https://authentra-backend.onrender.com/api/queue/status'
+  : 'http://localhost:4000/api/queue/status';
 
 async function checkQueueStatus() {
   try {

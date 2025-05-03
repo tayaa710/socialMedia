@@ -104,7 +104,9 @@ postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), asy
 
     // Send the post ID to the classifier backend
     try {
-      const classifierUrl = 'http://localhost:4000/api/queue';
+      const classifierUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://authentra-backend.onrender.com/api/queue'
+        : 'http://localhost:4000/api/queue';
       const classifierResponse = await axios.post(classifierUrl, { postId: post.id.toString() });
       console.log('Classifier response:', classifierResponse.data);
     } catch (classifierError) {

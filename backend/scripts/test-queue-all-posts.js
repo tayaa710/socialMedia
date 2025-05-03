@@ -6,7 +6,9 @@ const mongoose = require('mongoose');
 const axios = require('axios');
 const Post = require('../models/post');
 
-const CLASSIFIER_URL = 'http://localhost:4000/api/queue';
+const CLASSIFIER_URL = process.env.NODE_ENV === 'production'
+  ? 'https://authentra-backend.onrender.com/api/queue'
+  : 'http://localhost:4000/api/queue';
 
 async function sendPostsToClassifier() {
   try {
