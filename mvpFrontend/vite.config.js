@@ -19,6 +19,18 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_API_BASE_URL': isProd 
         ? JSON.stringify('https://authentra-backend.onrender.com/api')
         : JSON.stringify('')
+    },
+    build: {
+      rollupOptions: {
+        onwarn(warning, warn) {
+          // Ignore warnings about "use client" directives
+          if (warning.code === 'MODULE_LEVEL_DIRECTIVE' && 
+              warning.message.includes('"use client"')) {
+            return;
+          }
+          warn(warning);
+        }
+      }
     }
   }
 })
