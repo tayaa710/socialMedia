@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import './ProfileInfo.css'
+import './profileInfo.css'
 import { School, Favorite, Cake, AccessTime, Public, LocationOn, Phone, LocalFlorist } from '@mui/icons-material'
 import { useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'

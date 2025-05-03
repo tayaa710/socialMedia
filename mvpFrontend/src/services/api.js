@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+// Get the base URL from environment variables (set in vite.config.js)
+const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
+
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: '/api',
+  baseURL,
   // Remove the default Content-Type header to allow proper file uploads
 });
 
