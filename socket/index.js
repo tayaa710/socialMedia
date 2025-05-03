@@ -1,10 +1,17 @@
-const io = require("socket.io")(process.env.PORT || 8900, {
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+
+const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' 
-      ? process.env.CLIENT_URL 
+    origin: process.env.NODE_ENV === 'production'
+      ? process.env.CLIENT_URL
       : "http://localhost:5173"
   }
-})
+});
 
 let users = []
 
@@ -44,6 +51,9 @@ io.on("connection", (socket) => {
     removeUser(socket.id)
     io.emit("getUsers", users)
   })
-
-  socket.on
 })
+
+const PORT = process.env.PORT || 8900;
+server.listen(PORT, () => {
+  console.log(`Socket server running on port ${PORT}`);
+});
