@@ -12,7 +12,7 @@ const clientUrl = process.env.NODE_ENV === 'production'
 console.log("Client URL for CORS:", clientUrl);
 
 app.use(cors({
-  origin: clientUrl,
+  origin: [clientUrl, clientUrl + '/'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -22,7 +22,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: clientUrl,
+    origin: [clientUrl, clientUrl + '/'],
     methods: ["GET", "POST"],
     credentials: true
   }
