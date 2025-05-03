@@ -1,6 +1,5 @@
-import './selectionBar.css'
+import './selectionbar.css'
 import Option from './option/Option'
-import { useState } from 'react'
 
 const SelectionBar = ({setSelectedOption, selectedOption}) => {
   const options = ["Posts", "Friends", "Info"]
