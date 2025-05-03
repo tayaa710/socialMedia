@@ -31,6 +31,11 @@ export default defineConfig(({ mode }) => {
           warn(warning);
         }
       }
+    },
+    preview: {
+      port: 3000,
+      strictPort: true,
+      host: true
     }
   }
 })
