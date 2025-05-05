@@ -38,7 +38,8 @@ const Login = () => {
         
         const credentials = { 
             email: emailRef.current.value, 
-            password: passwordRef.current.value 
+            password: passwordRef.current.value,
+            captcha: captchaValue
         }
         console.log("Submitting login with email:", credentials.email)
         loginCall(credentials, dispatch)

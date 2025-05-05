@@ -5,6 +5,7 @@ const { tokenExtractor, userExtractor } = require('../utils/middleware');
 const multer = require('multer')
 const { uploadImage } = require('../utils/cloudinary')
 const { checkImage } = require('../utils/sightengine')
+const axios = require('axios')
 
 // Configure multer for memory storage (no disk writing)
 const storage = multer.memoryStorage()
@@ -24,7 +25,30 @@ const upload = multer({
 })
 
 usersRouter.post("/register", async (request, response) => {
-  const { password, ...body } = request.body
+  const { password, captcha, ...body } = request.body
+
+  // 1. Verify reCAPTCHA
+  if (!captcha) {
+    return response.status(400).json({ error: "Captcha is required" })
+  }
+  try {
+    const verifyRes = await axios.post(
+      'https://www.google.com/recaptcha/api/siteverify',
+      null,
+      {
+        params: {
+          secret: process.env.RECAPTCHA_SECRET_KEY,
+          response: captcha,
+        }
+      }
+    )
+    if (!verifyRes.data.success) {
+      return response.status(400).json({ error: "Captcha verification failed" })
+    }
+  } catch (err) {
+    return response.status(500).json({ error: "Captcha verification error" })
+  }
+
   if (!password) {
     return response.status(400).json({ error: "password required" })
   }
