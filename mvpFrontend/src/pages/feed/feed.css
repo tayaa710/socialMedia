@@ -22,13 +22,13 @@ body::-webkit-scrollbar {
 
 /* Left sidebar container */
 .feedSidebar {
-  flex: 2;  /* Reduced from 2.5 to give more space to feed */
+  flex: 3;  /* Increased from 2 to make sidebar wider */
   position: fixed;
   top: 72px;
   padding: 20px;
   height: calc(100vh - 72px);
   overflow-y: auto;
-  width: 16.67%; /* ~2/12 of the screen width to match the flex: 2 */
+  width: 25%; /* Increased from 16.67% to make sidebar wider */
   z-index: 10;
 }
 
@@ -44,11 +44,11 @@ body::-webkit-scrollbar {
 
 /* Center feed container - with left margin to account for fixed sidebar */
 .feedCenter {
-  flex: 10; /* Increased from 9.5 */
+  flex: 9; /* Decreased from 10 to account for wider sidebar */
   padding: 20px;
   transition: all 0.3s ease;
-  margin-left: 16.67%; /* Same as sidebar width */
-  width: 83.33%; /* Remaining width */
+  margin-left: 25%; /* Updated to match sidebar width */
+  width: 75%; /* Updated to complement sidebar width */
 }
 
 .feedCenter.filtersPanelOpen {
@@ -232,12 +232,12 @@ body::-webkit-scrollbar {
 @media (max-width: 992px) {
   .feedCenter {
     flex: 1;
-    margin-left: 20%; /* Slightly adjust margin for medium screens */
-    width: 80%;
+    margin-left: 28%; /* Slightly adjust margin for medium screens */
+    width: 72%;
   }
   
   .feedSidebar {
-    width: 20%; /* Slightly wider sidebar on medium screens */
+    width: 28%; /* Slightly wider sidebar on medium screens */
   }
   
   .feedCenter.filtersPanelOpen {
