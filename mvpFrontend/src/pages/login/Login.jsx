@@ -5,6 +5,7 @@ import { CircularProgress } from '@mui/material'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { loginCall } from '../../apiCalls'
 import { AuthContext } from '../../context/AuthContext.jsx'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
     // const [captchaValue, setCaptchaValue] = useState(null)
@@ -14,6 +15,7 @@ const Login = () => {
     const passwordRef = useRef()
     // eslint-disable-next-line no-unused-vars
     const { user, isFetching, error, dispatch } = useContext(AuthContext)
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (user) {
@@ -102,7 +104,7 @@ const Login = () => {
                         <div className="divider">
                             <span>New to Authentra?</span>
                         </div>
-                        <button type="button" className="loginRegisterButton">
+                        <button type="button" className="loginRegisterButton" onClick={() => navigate('/register')}>
                             <LocalFlorist className="buttonIcon" />
                             <span>Create Account</span>
                         </button>

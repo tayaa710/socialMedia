@@ -294,7 +294,7 @@ const Register = () => {
                         <div className="divider">
                             <span>Already have an account?</span>
                         </div>
-                        <button type="button" className="registerLoginButton">
+                        <button type="button" className="registerLoginButton" onClick={() => navigate('/login')}>
                             <LocalFlorist className="buttonIcon" />
                             <span>Sign In</span>
                         </button>

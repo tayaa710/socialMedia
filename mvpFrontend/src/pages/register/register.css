@@ -139,9 +139,9 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  max-height: 500px;
+ max-height: 500px;
   overflow-y: auto;
-  scrollbar-width: thin;
+   scrollbar-width: thin;
   scrollbar-color: #74C69D transparent;
 }
 
@@ -187,13 +187,7 @@
   box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.2);
 }
 
-.textArea {
-  height: auto;
-  min-height: 100px;
-  padding: 15px 20px;
-  resize: vertical;
-  font-family: inherit;
-}
+
 
 .registerButton, 
 .registerLoginButton {
@@ -210,6 +204,7 @@
   gap: 10px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  padding: 12px 24px;
 }
 
 .registerButton {
@@ -254,6 +249,7 @@
   border: 1px dashed #74C69D;
   width: 100%;
   clip-path: polygon(0 0%, 96% 0%, 100% 100%, 4% 100%);
+  
 }
 
 .registerLoginButton:hover {
@@ -266,18 +262,19 @@
 }
 
 .footerText {
-  color: #74C69D;
-  font-size: 12px;
-  text-align: center;
   margin-top: 25px;
+  text-align: center;
+  font-size: 13px;
+  color: #6B9080;
+  opacity: 0.8;
 }
 
 .registerFooter {
-  margin-top: 40px;
+  margin-top: 30px;
+  font-size: 13px;
   color: #2D6A4F;
-  font-size: 12px;
-  opacity: 0.7;
-  position: relative;
+  text-align: center;
+  opacity: 0.8;
   z-index: 1;
 }
 
@@ -294,17 +291,18 @@
 @media (max-width: 900px) {
   .registerWrapper {
     flex-direction: column;
-    width: 95%;
-    min-height: auto;
+    width: 90%;
   }
 
   .registerLeft {
     clip-path: none;
     padding: 30px;
+    padding-bottom: 50px;
   }
 
   .registerRight {
     padding: 30px;
+    align-items: center;
   }
 
   .registerBox {
