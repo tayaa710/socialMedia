@@ -6,6 +6,7 @@
   margin-top: 72px;
   position: relative; /* For absolute positioning of the filter panel */
   overflow-x: hidden; /* Prevent horizontal scrolling when panel slides */
+  max-width: 100%;
 }
 
 /* Hide scrollbar for the entire page */

@@ -3,6 +3,20 @@
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Remove the pulsing dots scroll indicator */
+.sidebarWrapper::after {
+  content: '⌄';  /* Down arrow character */
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(64, 145, 108, 0.5);  /* Subtle green */
+  font-size: 18px;
+  z-index: 5;
+  pointer-events: none;
 }
 
 .sidebarTitle {
@@ -78,20 +92,36 @@
   margin: 0;
   max-height: 400px;
   overflow-y: auto;
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(64, 145, 108, 0.07);
+  scrollbar-width: none; /* Firefox */
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+.sidebarFriendList::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebarFriend {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  padding: 12px 10px;
   margin-bottom: 8px;
-  border-radius: 8px;
-  transition: background-color 0.3s;
+  border-radius: 10px;
+  background: rgba(233, 246, 240, 0.5);
+  box-shadow: 0 1px 4px rgba(64, 145, 108, 0.04);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
 }
 
 .sidebarFriend:hover {
-  background-color: #E9F6F0; /* Light green hover */
+  background: linear-gradient(90deg, #e9f6f0 60%, #d8f3dc 100%);
+  box-shadow: 0 4px 12px rgba(64, 145, 108, 0.10);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .sidebarFriendLink {
@@ -155,23 +185,4 @@
 
 .sidebarMessageIcon {
   font-size: 18px !important;
-}
-
-/* Custom scrollbar for friend list */
-.sidebarFriendList::-webkit-scrollbar {
-  width: 6px;
-}
-
-.sidebarFriendList::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.sidebarFriendList::-webkit-scrollbar-thumb {
-  background: #D8F3DC;
-  border-radius: 10px;
-}
-
-.sidebarFriendList::-webkit-scrollbar-thumb:hover {
-  background: #2D6A4F;
 } 

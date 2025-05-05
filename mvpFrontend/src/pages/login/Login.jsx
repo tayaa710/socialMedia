@@ -8,9 +8,8 @@ import { AuthContext } from '../../context/AuthContext.jsx'
 import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
-    // const [captchaValue, setCaptchaValue] = useState(null)
-
-    // const recaptchaRef = useRef(null)
+    const [captchaValue, setCaptchaValue] = useState(null)
+    const recaptchaRef = useRef(null)
     const emailRef = useRef()
     const passwordRef = useRef()
     // eslint-disable-next-line no-unused-vars
@@ -32,10 +31,10 @@ const Login = () => {
         e.preventDefault()
         
         // Check if CAPTCHA is completed
-        // if (!captchaValue) {
-        //     alert("Please complete the CAPTCHA verification")
-        //     return
-        // }
+        if (!captchaValue) {
+            alert("Please complete the CAPTCHA verification")
+            return
+        }
         
         const credentials = { 
             email: emailRef.current.value, 
@@ -43,6 +42,8 @@ const Login = () => {
         }
         console.log("Submitting login with email:", credentials.email)
         loginCall(credentials, dispatch)
+        recaptchaRef.current.reset()
+        setCaptchaValue(null)
     }
     
     return (
@@ -92,12 +93,12 @@ const Login = () => {
                                 minLength={8}
                             />
                         </div>
-                        {/* <ReCAPTCHA
+                        <ReCAPTCHA
                             ref={recaptchaRef}
                             sitekey="6LeghB0rAAAAAMlalrzzGgaJc-C_vf4PRKkNEuze"
                             onChange={handleCaptchaChange}
-                        /> */}
-                        <button type="submit" className='loginButton' disabled={isFetching}>
+                        />
+                        <button type="submit" className='loginButton' disabled={isFetching || !captchaValue}>
                             <span>{isFetching ? <CircularProgress size={20} /> : "Sign In"}</span>
                         </button>
                         <span className="loginForgot">Forgot Password?</span>
@@ -109,14 +110,8 @@ const Login = () => {
                             <span>Create Account</span>
                         </button>
                     </form>
-                    <div className="footerText">
-                        <p>By joining, you agree to our commitment to ethical social media practices</p>
-                    </div>
                 </div>
             </div>
-            <footer className="loginFooter">
-                <p>© 2025 Authentra • Ethical Social Media • No AI-Generated Content</p>
-            </footer>
         </div>
     )
 }
