@@ -1,15 +1,15 @@
 import './login.css'
-import { useState, useRef, useContext, useEffect } from 'react'
+import { useRef, useContext, useEffect } from 'react'
 import { LocalFlorist } from '@mui/icons-material'
 import { CircularProgress } from '@mui/material'
-import ReCAPTCHA from 'react-google-recaptcha'
+// import ReCAPTCHA from 'react-google-recaptcha'
 import { loginCall } from '../../apiCalls'
 import { AuthContext } from '../../context/AuthContext.jsx'
 import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
-    const [captchaValue, setCaptchaValue] = useState(null)
-    const recaptchaRef = useRef(null)
+    // const [captchaValue, setCaptchaValue] = useState(null)
+    // const recaptchaRef = useRef(null)
     const emailRef = useRef()
     const passwordRef = useRef()
     // eslint-disable-next-line no-unused-vars
@@ -22,29 +22,33 @@ const Login = () => {
         }
     }, [user])
 
+    /* Commenting out captcha handling temporarily
     const handleCaptchaChange = (value) => {
         console.log("Captcha value:", value)
         setCaptchaValue(value)
     }
+    */
 
     const handleSubmit = (e) => {
         e.preventDefault()
         
+        /* Commenting out captcha check temporarily
         // Check if CAPTCHA is completed
         if (!captchaValue) {
             alert("Please complete the CAPTCHA verification")
             return
         }
+        */
         
         const credentials = { 
             email: emailRef.current.value, 
             password: passwordRef.current.value,
-            captcha: captchaValue
+            // captcha: captchaValue
         }
         console.log("Submitting login with email:", credentials.email)
         loginCall(credentials, dispatch)
-        recaptchaRef.current.reset()
-        setCaptchaValue(null)
+        // recaptchaRef.current.reset()
+        // setCaptchaValue(null)
     }
     
     return (
@@ -94,12 +98,14 @@ const Login = () => {
                                 minLength={8}
                             />
                         </div>
+                        {/* Commenting out ReCAPTCHA component temporarily
                         <ReCAPTCHA
                             ref={recaptchaRef}
                             sitekey="6LeghB0rAAAAAMlalrzzGgaJc-C_vf4PRKkNEuze"
                             onChange={handleCaptchaChange}
                         />
-                        <button type="submit" className='loginButton' disabled={isFetching || !captchaValue}>
+                        */}
+                        <button type="submit" className='loginButton' disabled={isFetching}>
                             <span>{isFetching ? <CircularProgress size={20} /> : "Sign In"}</span>
                         </button>
                         <span className="loginForgot">Forgot Password?</span>

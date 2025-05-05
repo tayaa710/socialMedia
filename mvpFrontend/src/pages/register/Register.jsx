@@ -1,7 +1,7 @@
 import './register.css'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { LocalFlorist } from '@mui/icons-material'
-import ReCAPTCHA from 'react-google-recaptcha'
+// import ReCAPTCHA from 'react-google-recaptcha'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 const Register = () => {
@@ -9,25 +9,26 @@ const Register = () => {
     const emailRef = useRef(null)
     const passwordRef = useRef(null)
     const confirmPasswordRef = useRef(null)
-    const recaptchaRef = useRef(null)
-    const [captchaValue, setCaptchaValue] = useState(null)
+    // const recaptchaRef = useRef(null)
+    // const [captchaValue, setCaptchaValue] = useState(null)
     const navigate = useNavigate()
 
+    /* Commenting out captcha handling temporarily
     const handleCaptchaChange = (value) => {
         setCaptchaValue(value)
     }
+    */
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (confirmPasswordRef.current.value !== passwordRef.current.value) {
             passwordRef.current.setCustomValidity("Passwords do not match")
         } else {
-
             const user = {
                 username: usernameRef.current.value,
                 email: emailRef.current.value,
                 password: passwordRef.current.value, 
-                captchaValue: captchaValue
+                // captchaValue: captchaValue
             }
             try {
                 const response = await axios.post('/api/users/register', user)
@@ -61,7 +62,6 @@ const Register = () => {
                 <div className="registerRight">
                     <h2 className="formTitle">Create Your Account</h2>
                     <form className="registerBox" onSubmit={handleSubmit}>
-
                         <div className="inputGroup">
                             <label htmlFor="username">Username</label>
                             <input
@@ -112,12 +112,14 @@ const Register = () => {
                             />
                         </div>
 
+                        {/* Commenting out ReCAPTCHA component temporarily
                         <ReCAPTCHA
                             ref={recaptchaRef}
                             sitekey="6LeghB0rAAAAAMlalrzzGgaJc-C_vf4PRKkNEuze"
                             onChange={handleCaptchaChange}
                         />
-                        <button type="submit" className='registerButton' disabled={!captchaValue}>
+                        */}
+                        <button type="submit" className='registerButton'>
                             <span>Sign Up</span>
                         </button>
                         <div className="divider">

@@ -12,6 +12,7 @@ loginRouter.post("/", async (request, response) => {
     const {email, password, captcha} = request.body
     
     // 1. Verify reCAPTCHA
+    /* Commenting out reCAPTCHA verification temporarily
     if (!captcha) {
       return response.status(400).json({ error: "Captcha is required" })
     }
@@ -35,6 +36,7 @@ loginRouter.post("/", async (request, response) => {
     } catch (err) {
       return response.status(500).json({ error: err.message })
     }
+    */
 
     console.log("Login attempt with email:", email)
     

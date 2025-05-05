@@ -27,6 +27,7 @@ const upload = multer({
 usersRouter.post("/register", async (request, response) => {
   const { password, captcha, ...body } = request.body
 
+  /* Commenting out reCAPTCHA verification temporarily
   // 1. Verify reCAPTCHA
   if (!captcha) {
     return response.status(400).json({ error: "Captcha is required" })
@@ -48,6 +49,7 @@ usersRouter.post("/register", async (request, response) => {
   } catch (err) {
     return response.status(500).json({ error: "Captcha verification error" })
   }
+  */
 
   if (!password) {
     return response.status(400).json({ error: "password required" })
