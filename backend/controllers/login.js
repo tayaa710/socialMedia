@@ -33,7 +33,7 @@ loginRouter.post("/", async (request, response) => {
         console.log("Captcha verification successful")
       }
     } catch (err) {
-      return response.status(500).json({ error:  })
+      return response.status(500).json({ error: err.message })
     }
 
     console.log("Login attempt with email:", email)
@@ -84,7 +84,7 @@ loginRouter.post("/", async (request, response) => {
       .send({ token, user: userData })
   } catch (error) {
     console.error('Unhandled error in login route:', error)
-    response.status(500).json({ error: 'Internal server error' })
+    response.status(500).json({ error: error.message })
   }
 })
 
