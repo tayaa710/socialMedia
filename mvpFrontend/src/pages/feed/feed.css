@@ -22,119 +22,63 @@ body::-webkit-scrollbar {
 
 /* Left sidebar container */
 .feedSidebar {
-  flex: 3;  /* Increased from 2 to make sidebar wider */
+  flex: 2.5; 
   position: fixed;
   top: 72px;
-  padding: 20px;
+  padding: 15px 10px;
   height: calc(100vh - 72px);
   overflow-y: auto;
-  width: 25%; /* Increased from 16.67% to make sidebar wider */
+  width: 17%; /* Reduced from 20% to make more space for content */
   z-index: 10;
 }
 
+/* Right sidebar container for feed filters */
+.feedRightSidebar {
+  flex: 2.5;
+  position: fixed;
+  top: 72px;
+  right: 0;
+  padding: 15px 10px;
+  height: calc(100vh - 72px);
+  overflow-y: auto;
+  width: 17%;
+  z-index: 10;
+  background-color: #E6F5EE;
+}
+
 /* Hide scrollbar for sidebar */
-.feedSidebar {
+.feedSidebar, .feedRightSidebar {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
 }
 
-.feedSidebar::-webkit-scrollbar {
+.feedSidebar::-webkit-scrollbar, .feedRightSidebar::-webkit-scrollbar {
   display: none;
 }
 
-/* Center feed container - with left margin to account for fixed sidebar */
+/* Center feed container - with margins to account for fixed sidebars */
 .feedCenter {
-  flex: 9; /* Decreased from 10 to account for wider sidebar */
-  padding: 20px;
-  transition: all 0.3s ease;
-  margin-left: 25%; /* Updated to match sidebar width */
-  width: 75%; /* Updated to complement sidebar width */
-}
-
-.feedCenter.filtersPanelOpen {
-  flex: 8; /* Increased from 7 */
+  flex: 7;
+  padding: 15px 10px;
+  margin-left: 17%; 
+  margin-right: 17%;
+  width: 66%;
 }
 
 .feedWrapper {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px; /* Reduced from 20px to save vertical space */
   align-items: center;
   width: 100%;
-  max-width: 1000px;
+  max-width: 800px; /* Reduced from 1000px to make posts more compact */
   margin: 0 auto;
-  transition: max-width 0.3s ease;
-}
-
-.filtersPanelOpen .feedWrapper {
-  max-width: 850px;
-}
-
-/* Filters toggle button */
-.filterToggleBtn {
-  position: fixed;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #40916C;
-  color: white;
-  border: none;
-  width: 80px; /* Increased further from 60px */
-  height: 80px; /* Increased further from 70px */
-  border-radius: 12px 0 0 12px; /* Increased border radius */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  cursor: pointer;
-  box-shadow: -3px 0 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
-  transition: all 0.3s ease;
-  z-index: 100;
-  font-size: 12px; /* Increased from 10px */
-  font-weight: 600;
-  padding: 10px 5px;
-}
-
-.filterToggleBtn svg {
-  font-size: 28px; /* Make the icon larger */
-  margin-bottom: 5px;
-}
-
-.filterToggleBtn.active {
-  right: 320px;
-  background-color: #2D6A4F;
-}
-
-.filterToggleBtn:hover {
-  background-color: #2D6A4F;
-  width: 90px; /* Expands on hover */
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
-}
-
-/* Filters panel */
-.filtersPanel {
-  position: fixed;
-  right: -350px;
-  top: 72px;
-  width: 320px;
-  height: calc(100vh - 72px);
-  background-color: #E6F5EE;
-  padding: 20px;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  transition: right 0.3s ease;
-  overflow-y: auto;
-  z-index: 99;
-}
-
-.filtersPanel.open {
-  right: 0;
 }
 
 /* Loading states */
 .loadingSpinner {
   text-align: center;
-  padding: 20px;
+  padding: 15px;
   color: #666;
   font-size: 14px;
 }
@@ -145,8 +89,8 @@ body::-webkit-scrollbar {
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 12px 24px;
-  margin: 20px 0;
+  padding: 10px 20px;
+  margin: 15px 0;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -171,7 +115,7 @@ body::-webkit-scrollbar {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 20px 0;
+  margin: 15px 0;
   gap: 15px;
 }
 
@@ -183,8 +127,8 @@ body::-webkit-scrollbar {
   color: white;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 36px; /* Reduced from 40px */
+  height: 36px; /* Reduced from 40px */
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -220,7 +164,7 @@ body::-webkit-scrollbar {
 
 .noPostsMessage {
   text-align: center;
-  padding: 40px 20px;
+  padding: 30px 15px;
   color: #666;
   background-color: white;
   border-radius: 8px;
@@ -229,46 +173,66 @@ body::-webkit-scrollbar {
 }
 
 /* Responsive adjustments */
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
   .feedCenter {
     flex: 1;
-    margin-left: 28%; /* Slightly adjust margin for medium screens */
-    width: 72%;
+    margin-left: 20%; 
+    margin-right: 20%;
+    width: 60%;
   }
   
   .feedSidebar {
-    width: 28%; /* Slightly wider sidebar on medium screens */
+    width: 20%;
   }
   
-  .feedCenter.filtersPanelOpen {
-    flex: 1;
-  }
-  
-  .feedWrapper {
-    max-width: 90%;
-  }
-}
-
-@media (max-width: 768px) {
-  .feedSidebar {
-    display: none;
-  }
-
-  .feedCenter {
-    margin-left: 0;
-    width: 100%;
+  .feedRightSidebar {
+    width: 20%;
   }
   
   .feedWrapper {
     max-width: 100%;
   }
+}
+
+@media (max-width: 992px) {
+  .feedCenter {
+    flex: 1;
+    margin-left: 22%;
+    margin-right: 22%;
+    width: 56%;
+  }
   
-  .filterToggleBtn.active {
-    right: 320px;
+  .feedSidebar {
+    width: 22%;
+  }
+  
+  .feedRightSidebar {
+    width: 22%;
   }
 }
 
-/* Filter applied feedback notification */
+@media (max-width: 768px) {
+  .feedSidebar {
+    display: none; /* Hide sidebar on mobile */
+  }
+  
+  .feedRightSidebar {
+    display: none; /* Hide right sidebar on mobile */
+  }
+  
+  .feedCenter {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    padding: 10px;
+  }
+  
+  .feedWrapper {
+    max-width: 100%;
+    gap: 10px;
+  }
+}
+
 .filterAppliedFeedback {
   position: fixed;
   bottom: 30px;
@@ -276,14 +240,14 @@ body::-webkit-scrollbar {
   transform: translateX(-50%);
   background-color: #40916C;
   color: white;
-  padding: 12px 25px;
-  border-radius: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  padding: 10px 20px;
+  border-radius: 8px;
   font-weight: 500;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-  animation: slideUp 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  animation: slideUp 0.3s ease-out forwards;
+  opacity: 0.95;
+  transition: opacity 0.3s;
 }
 
 .filterAppliedFeedback.fadeOut {
@@ -292,11 +256,11 @@ body::-webkit-scrollbar {
 
 @keyframes slideUp {
   from {
-    transform: translate(-50%, 20px);
+    bottom: 0;
     opacity: 0;
   }
   to {
-    transform: translate(-50%, 0);
-    opacity: 1;
+    bottom: 30px;
+    opacity: 0.95;
   }
 }

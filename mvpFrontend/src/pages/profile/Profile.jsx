@@ -17,6 +17,7 @@ const Profile = () => {
   const id = useParams().id
   const [selectedOption, setSelectedOption] = useState("Posts")
   const [user, setUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [error, setError] = useState(null)
   const [validationErrors, setValidationErrors] = useState([])
@@ -149,19 +150,28 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      setIsLoading(true);
       try {
         const userData = await userAPI.getUser(id);
-        setUser(userData)
+        setUser(userData);
       } catch (error) {
-        console.error("Failed to fetch user data:", error)
+        console.error("Failed to fetch user data:", error);
+        setError("Failed to load user profile");
+      } finally {
+        setIsLoading(false);
       }
     };
     
     fetchUser();
   }, [id]);
   
+  // Show nothing while loading
+  if (isLoading) {
+    return null;
+  }
+  
   // If user not found, show an error message
-  if (!user) {
+  if (!user && !isLoading) {
     return (
       <div className='pageContainer'>
         <Topbar />
@@ -248,16 +258,11 @@ const Profile = () => {
       {isAnalyzing && (
         <div className="analysisStatusContainer">
           <div className="analysisStatus">
-            <p>Analyzing image for policy compliance...</p>
-            <div className="spinner"></div>
+            <div className="analysisSpinner"></div>
+            <p>Analyzing image...</p>
           </div>
         </div>
       )}
-      
-      <footer className="ethicalFooter">
-        <p>Authentra • Ethical Social Media • No AI-Generated Content</p>
-        <p>© 2025 • <a href="#">Privacy Policy</a> • <a href="#">Content Guidelines</a> • <a href="#">Authenticity Pledge</a></p>
-      </footer>
     </div>
   )
 }
