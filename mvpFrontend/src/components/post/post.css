@@ -44,8 +44,7 @@
 .userProfileLink {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 13px;
+  gap: 6px;
   text-decoration: none;
   color: inherit;
   transition: opacity 0.2s ease;
@@ -65,13 +64,12 @@
 .postUsername {
   font-weight: 600;
   color: #333;
-  font-size: 22px;
+  font-size: 15px;
 }
 
 .datePosted {
-  
   margin: 0;
-  font-size: 19px;
+  font-size: 12px;
   color: #888;
 }
 
@@ -164,7 +162,7 @@
 
 .postImage {
   width: 100%;
-  max-height: 100%;
+  max-height: 450px;
   object-fit: cover;
   transition: filter 0.3s ease;
 }
@@ -383,8 +381,8 @@
 }
 
 .userProfilePic {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
   margin-right: 12px;

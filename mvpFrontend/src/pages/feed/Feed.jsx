@@ -7,7 +7,7 @@ import FeedFilters from '../../components/feedFilters/FeedFilters'
 import { useState, useEffect, useContext, useRef, useCallback } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import { postAPI } from '../../services/api'
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material'
+import { KeyboardArrowLeft, KeyboardArrowRight, TuneRounded } from '@mui/icons-material'
 
 const Feed = () => {
     const [posts, setPosts] = useState([])
@@ -19,67 +19,82 @@ const Feed = () => {
     const [loadingMethod, setLoadingMethod] = useState('infinite')
     const [postsPerPage, setPostsPerPage] = useState(15) // Default for infinite scroll
     const [totalPages, setTotalPages] = useState(1)
+    const [filtersOpen, setFiltersOpen] = useState(false)
     const { user } = useContext(AuthContext)
-    const filtersPanelRef = useRef(null)
-
+    
+    // Toggle filters panel
+    const toggleFilters = () => {
+        setFiltersOpen(!filtersOpen)
+    }
+    
     const observer = useRef()
-
-    // Intersection observer for infinite scroll
     const lastPostElementRef = useCallback(node => {
         if (loading) return
         if (loadingMethod !== 'infinite') return
-
+        
         if (observer.current) observer.current.disconnect()
-
+        
         observer.current = new IntersectionObserver(entries => {
+            console.log('🔍 Intersection observer triggered:', entries[0].isIntersecting ? 'Element is visible' : 'Element not visible')
             if (entries[0].isIntersecting && hasMore) {
+                console.log('📜 Loading next page:', page + 1)
                 setPage(prevPage => prevPage + 1)
             }
         })
+        
         if (node) {
+            console.log('🔄 Observer attached to new post element')
             observer.current.observe(node)
         }
-    }, [loading, hasMore, loadingMethod])
+    }, [loading, hasMore, page, loadingMethod])
 
-    // Fetch posts from the API
-    const fetchPosts = useCallback(async (pageNum = 1, requestedPostsPerPage = null) => {
+    const fetchPosts = async (pageNum = 1, requestedPostsPerPage = null) => {
         try {
             const limit = requestedPostsPerPage || postsPerPage;
+            console.log(`📊 Fetching posts page ${pageNum} with ${limit} posts per page`);
             setLoading(true);
-            const response = await postAPI.getTimeline(user.id, pageNum, {
-                filterSettings,
+            const response = await postAPI.getTimeline(user.id, pageNum, { 
+                filterSettings, 
                 excludedTags,
                 limit
             });
-
+            
+            console.log(`✅ Fetched ${response.posts.length} posts for page ${pageNum}`);
+            console.log(`📈 Has more posts: ${response.hasMore}`);
+            
             if (pageNum === 1 || loadingMethod === 'pagination') {
                 setPosts(response.posts);
+                console.log('🔄 Reset posts list with new data');
             } else {
-                setPosts(prev => [...prev, ...response.posts]);
+                setPosts(prev => {
+                    console.log(`🔄 Adding ${response.posts.length} new posts to existing ${prev.length} posts`);
+                    return [...prev, ...response.posts];
+                });
             }
-
+            
             setHasMore(response.hasMore);
             if (response.totalPages) {
                 setTotalPages(response.totalPages);
             }
         } catch (error) {
-            console.error("Failed to fetch posts:", error);
+            console.error("❌ Failed to fetch posts:", error);
         } finally {
             setLoading(false);
+            console.log('⏳ Loading state set to false');
         }
-    }, [user.id, postsPerPage, filterSettings, excludedTags, loadingMethod]);
-
-    // Fetch initial posts
+    };
+    
     useEffect(() => {
+        console.log('👤 User changed, fetching initial posts')
         fetchPosts(1)
-    }, [fetchPosts])
+    }, [user.id])
 
-    // Fetch more posts when the page changes
     useEffect(() => {
         if (page > 1 && loadingMethod !== 'pagination') {
+            console.log(`📄 Page changed to ${page}, fetching more posts`)
             fetchPosts(page)
         }
-    }, [page, loadingMethod, fetchPosts])
+    }, [page, loadingMethod])
 
     // When loading method changes to pagination, reset to page 1
     useEffect(() => {
@@ -87,24 +102,28 @@ const Feed = () => {
             setPage(1)
             fetchPosts(1)
         }
-    }, [loadingMethod, fetchPosts])
+    }, [loadingMethod])
 
-    // Refresh posts when a new post is created
     const handleNewPost = () => {
+        console.log('📝 New post created, refreshing feed')
         setPage(1)
-        fetchPosts(1) 
+        fetchPosts(1) // Refresh posts when a new post is created
     }
 
-    // Handle filter changes
     const handleFilterChange = ({ excludedTags, settings, loadingMethod: newLoadingMethod, postsPerPage: newPostsPerPage }) => {
-
+        console.log('🔍 Filters changed, refreshing feed with new filters')
+        console.log('🏷️ Excluded tags:', excludedTags)
+        console.log('⚙️ Filter settings:', settings)
+        console.log('📱 Loading method:', newLoadingMethod)
+        console.log('📊 Posts per page:', newPostsPerPage)
+        
         setExcludedTags(excludedTags)
         setFilterSettings(settings)
         setLoadingMethod(newLoadingMethod)
-
+        
         // Update posts per page
         let updatedPostsPerPage;
-
+        
         if (newLoadingMethod === 'infinite') {
             // Always use 15 for infinite scroll
             updatedPostsPerPage = 15;
@@ -118,19 +137,22 @@ const Feed = () => {
             // Keep current setting for other cases
             updatedPostsPerPage = postsPerPage;
         }
-
+        
         setPostsPerPage(updatedPostsPerPage);
         setPage(1)
-
+        
         // Call the API with updated state
         fetchPosts(1, updatedPostsPerPage)
-
+        
+        // Optional: Close the panel after settings are applied
+        setFiltersOpen(false)
+        
         // Show feedback that filters were applied
         const feedback = document.createElement('div')
         feedback.className = 'filterAppliedFeedback'
         feedback.textContent = 'Filters applied!'
         document.body.appendChild(feedback)
-
+        
         // Remove the feedback after animation
         setTimeout(() => {
             feedback.classList.add('fadeOut')
@@ -139,14 +161,13 @@ const Feed = () => {
             }, 300) // Match this with the CSS fadeOut animation duration
         }, 1500)
     }
-    // Load more posts
+
     const handleLoadMore = () => {
         if (!loading && hasMore) {
             setPage(prevPage => prevPage + 1);
         }
     }
 
-    // Handle page changes
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= totalPages && !loading) {
             setPage(newPage);
@@ -156,14 +177,13 @@ const Feed = () => {
         }
     }
 
-    // Render pagination controls
     const renderPaginationControls = () => {
         if (loadingMethod !== 'pagination') return null;
-
+        
         return (
             <div className="paginationControls">
-                <button
-                    className="pageButton"
+                <button 
+                    className="pageButton" 
                     onClick={() => handlePageChange(page - 1)}
                     disabled={page === 1 || loading}
                 >
@@ -174,8 +194,8 @@ const Feed = () => {
                     <span className="pageDivider">/</span>
                     <span className="totalPages">{totalPages}</span>
                 </div>
-                <button
-                    className="pageButton"
+                <button 
+                    className="pageButton" 
                     onClick={() => handlePageChange(page + 1)}
                     disabled={page === totalPages || loading}
                 >
@@ -193,16 +213,16 @@ const Feed = () => {
                     <Sidebar />
                 </div>
 
-                <div className="feedCenter">
+                <div className={`feedCenter ${filtersOpen ? 'filtersPanelOpen' : ''}`}>
                     <div className="feedWrapper">
                         <PostCreate onPostCreated={handleNewPost} />
-
+                        
                         {posts.length === 0 && !loading && (
                             <div className="noPostsMessage">
                                 <p>No posts to display</p>
                             </div>
                         )}
-
+                        
                         {posts.map((post, index) => {
                             if (posts.length === index + 1 && loadingMethod === 'infinite') {
                                 console.log(`🏁 Attaching ref to last post (index: ${index})`)
@@ -215,7 +235,7 @@ const Feed = () => {
                                 return <Post key={post.id} post={post} />
                             }
                         })}
-
+                        
                         {loading && (
                             <div className="loadingSpinner">
                                 Loading more posts...
@@ -232,8 +252,18 @@ const Feed = () => {
                     </div>
                 </div>
 
-                <div className="feedRightSidebar" ref={filtersPanelRef}>
-                    <FeedFilters
+                <button 
+                    className={`filterToggleBtn ${filtersOpen ? 'active' : ''}`}
+                    onClick={toggleFilters}
+                    aria-label="Customize feed settings"
+                >
+                    <TuneRounded />
+                    <span>{filtersOpen ? 'Close' : 'Customize'}</span>
+                    <span>Feed</span>
+                </button>
+
+                <div className={`filtersPanel ${filtersOpen ? 'open' : ''}`}>
+                    <FeedFilters 
                         onFilterChange={handleFilterChange}
                         initialExcludedTags={excludedTags}
                         initialLoadingMethod={loadingMethod}

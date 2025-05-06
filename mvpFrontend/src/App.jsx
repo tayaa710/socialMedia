@@ -3,29 +3,17 @@ import Profile from "./pages/profile/Profile"
 import Login from "./pages/login/Login"
 import Register from "./pages/register/Register"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import { useEffect, useContext, useState } from "react"
+import { useEffect, useContext } from "react"
 import { initializeAuth } from "./apiCalls"
 import { AuthContext } from "./context/AuthContext"
 import Messenger from "./pages/messenger/Messenger"
-
 function App() {
   const { user, dispatch } = useContext(AuthContext)
-  const [isAuthLoading, setIsAuthLoading] = useState(true)
 
   useEffect(() => {
     // Initialize authentication on app load
-    const verifyAuth = async () => {
-      await initializeAuth(dispatch)
-      setIsAuthLoading(false)
-    }
-    
-    verifyAuth()
+    initializeAuth(dispatch)
   }, [dispatch])
-
-  // Show nothing while checking authentication
-  if (isAuthLoading) {
-    return null // This prevents the login flash
-  }
 
   return (
     <Router>
