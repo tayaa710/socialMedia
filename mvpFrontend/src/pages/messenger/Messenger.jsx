@@ -15,7 +15,6 @@ const Messenger = () => {
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState("")
   const [arrivalMessage, setArrivalMessage] = useState(null)
-  
 
   const scrollRef = useRef()
 
@@ -33,6 +32,9 @@ const Messenger = () => {
     
     // Register user with socket
     emit("addUser", user.id);
+    
+    // Set up listener for online users
+    
     
     // Clean up listener when component unmounts
     return () => {
