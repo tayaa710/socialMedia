@@ -114,7 +114,11 @@ const ProfilePosts = ({user}) => {
           <div className="emptyPostsMessage">
             <LocalFlorist className="emptyIcon" />
             <h3>No posts yet</h3>
-            <p>{user ? user.username : currentUser.username} hasn&apos;t shared any posts yet.</p>
+            {user && user.id !== currentUser.id ? (
+              <p>{user.username} hasn&apos;t shared any posts yet.</p>
+            ) : (
+              <p>You haven&apos;t shared anything yet. Get started by posting an idea!</p>
+            )}
           </div>
         )
       )}

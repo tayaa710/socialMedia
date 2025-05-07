@@ -70,7 +70,8 @@ const Sidebar = () => {
         </ul>
       ) : (
         <div className="sidebarNoFriends">
-          <p>No friends found</p>
+          <p>No friends yet</p>
+          <p className="sidebarNoFriendsSubtext">Connect with others to see them here!</p>
         </div>
       )}
     </div>

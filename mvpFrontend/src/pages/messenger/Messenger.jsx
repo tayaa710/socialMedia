@@ -5,8 +5,9 @@ import Message from '../../components/message/Message'
 import ChatOnline from '../../components/chatOnline/ChatOnline'
 import { useContext, useEffect, useState, useRef } from 'react'
 import { AuthContext } from '../../context/AuthContext'
+import { SocketContext } from '../../context/SocketContext'
 import { conversationAPI, messageAPI } from '../../services/api'
-import { io } from "socket.io-client"
+import { OnlineUsersContext } from '../../context/OnlineUsersContext'
 
 const Messenger = () => {
   const [conversations, setConversations] = useState([])
@@ -14,91 +15,30 @@ const Messenger = () => {
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState("")
   const [arrivalMessage, setArrivalMessage] = useState(null)
-  const [onlineUsers, setOnlineUsers] = useState([])
-  const socket = useRef()
+  
 
   const scrollRef = useRef()
 
   const { user } = useContext(AuthContext)
-
-  useEffect(() => {
-    // Use environment variable for socket URL, fallback to localhost for development
-    const socketUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:8900"
-    console.log("Connecting to socket server at:", socketUrl)
-    
-    // Configure socket with necessary options
-    socket.current = io(socketUrl, {
-      withCredentials: true,
-      transports: ['websocket', 'polling'],
-      autoConnect: true,
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000
-    })
-    
-    socket.current.on("connect", () => {
-      console.log("Socket connected successfully")
-    })
-    
-    socket.current.on("connect_error", (error) => {
-      console.error("Socket connection error:", error.message)
-    })
-    
-    socket.current.on("getMessage", data => {
-      setArrivalMessage({
-        sender: data.senderId,
-        text: data.text,
-        createdAt: Date.now()
-      })
-    })
-    
-    return () => {
-      if (socket.current) {
-        socket.current.disconnect()
-      }
-    }
-  }, [])
+  const { emit, on } = useContext(SocketContext)
+  const { onlineUsers } = useContext(OnlineUsersContext)
 
   useEffect(() => {
     arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) && setMessages(prev => [...prev, arrivalMessage])
   }, [arrivalMessage, currentChat])
 
+  // Handle socket users and online status
   useEffect(() => {
-    socket.current.emit("addUser", user.id)
-    socket.current.on("getUsers", users => {
-      console.log("Socket users:", users)
-      console.log("User friends:", user.friends)
-      
-      // Check if user.friends exists and is an array
-      if (Array.isArray(user.friends) && user.friends.length > 0) {
-        // Extract just the user IDs from the socket users array
-        const socketUserIds = users.map(u => u.userId);
-        
-        // For each friend in user.friends, check if their ID is in the online users array
-        // This assumes user.friends contains the full user objects, not just IDs
-        let onlineFriendIds;
-        
-        // Check if user.friends contains objects or just IDs
-        if (typeof user.friends[0] === 'object') {
-          // Friends are objects, extract their IDs for online filtering
-          onlineFriendIds = user.friends
-            .filter(friend => socketUserIds.includes(friend.id))
-            .map(friend => friend.id);
-        } else {
-          // Friends are already IDs, filter them directly
-          onlineFriendIds = user.friends.filter(friendId => 
-            socketUserIds.includes(friendId)
-          );
-        }
-        
-        console.log("Online friend IDs after filtering:", onlineFriendIds);
-        setOnlineUsers(onlineFriendIds);
-      } else {
-        console.error("User friends is not an array or is empty:", user.friends);
-        setOnlineUsers([]);
-      }
-    })
-  }, [user])
+    if (!user?.id) return;
+    
+    // Register user with socket
+    emit("addUser", user.id);
+    
+    // Clean up listener when component unmounts
+    return () => {
+      emit("disconnected");
+    };
+  }, [user, emit, on]);
 
   // Fetch conversations
   useEffect(() => {
@@ -147,7 +87,7 @@ const Messenger = () => {
 
     const recieverId = currentChat.members.find(member => member !== user.id)
 
-    socket.current.emit("sendMessage", {
+    emit("sendMessage", {
       senderId: user.id,
       recieverId,
       text: newMessage

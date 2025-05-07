@@ -8,10 +8,12 @@ import { initializeAuth } from "./apiCalls"
 import { AuthContext } from "./context/AuthContext"
 import Messenger from "./pages/messenger/Messenger"
 import "./app.css"
-
+import { OnlineUsersContext } from "./context/OnlineUsersContext"
 function App() {
   const { user, dispatch } = useContext(AuthContext)
   const [isAuthLoading, setIsAuthLoading] = useState(true)
+  const { onlineUsers } = useContext(OnlineUsersContext)
+  console.log("Online users:", onlineUsers)
 
   useEffect(() => {
     const verifyAuth = async () => {

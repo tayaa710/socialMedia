@@ -14,11 +14,14 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
+  border: 1px solid rgba(45, 106, 79, 0.08);
+  background-color: #fdfdfd;
 }
 
 .postContainer:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(45, 106, 79, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(45, 106, 79, 0.12);
+  border-color: rgba(45, 106, 79, 0.15);
 }
 
 .postContainer::before {
@@ -31,8 +34,33 @@
   background: linear-gradient(180deg, #52b788, #2D6A4F);
 }
 
+/* Add subtle divider between post sections */
+.postContainer::after {
+  content: '';
+  position: absolute;
+  top: 60px; /* Adjust based on your header height */
+  left: 15px;
+  right: 15px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(45, 106, 79, 0.1), transparent);
+  pointer-events: none;
+}
+
 .postContentWrapper {
   padding: 0 15px 15px;
+  position: relative;
+}
+
+/* Creates visual separation between content and actions */
+.postContentWrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(45, 106, 79, 0.08), transparent);
+  pointer-events: none;
 }
 
 /* Animations used by child components */

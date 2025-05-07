@@ -225,11 +225,21 @@ const ProfileFriends = ({ user: profileUser }) => {
               <User user={friend} viewMode={viewMode} />
             </div>
           ))
-        ) : (
+        ) : searchTerm ? (
           <div className="noFriendsMessage">
             <LocalFlorist className="noFriendsIcon" />
             <h3>No friends found</h3>
             <p>Try adjusting your search or filters</p>
+          </div>
+        ) : (
+          <div className="noFriendsMessage">
+            <LocalFlorist className="noFriendsIcon" />
+            <h3>No friends yet</h3>
+            {user.id === currentUser.id ? (
+              <p>Ready to connect? Find and add friends to see them here!</p>
+            ) : (
+              <p>{user.username} hasn&apos;t added any friends yet.</p>
+            )}
           </div>
         )}
       </div>

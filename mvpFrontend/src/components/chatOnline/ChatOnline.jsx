@@ -19,17 +19,15 @@ const ChatOnline = ({ onlineUsers, currentId, setCurrentChat }) => {
         console.log("Online users in ChatOnline:", onlineUsers)
         
         if (Array.isArray(friends) && Array.isArray(onlineUsers)) {
-            // Debug each friend to see its structure
-            friends.forEach(friend => {
-                console.log("Friend object:", friend);
-                console.log("Friend id:", friend.id);
-                console.log("Is online:", onlineUsers.includes(friend.id));
-            });
+            // Convert all IDs to strings for reliable comparison
+            const onlineUserIds = onlineUsers.map(id => String(id));
             
-            // Try matching by string comparison since MongoDB IDs might be objects
+            // Filter friends that are online by comparing string IDs
             const online = friends.filter(friend => {
-                // Convert IDs to strings for comparison
-                return onlineUsers.some(userId => userId === friend.id);
+                const friendId = String(friend.id);
+                const isOnline = onlineUserIds.includes(friendId);
+                console.log(`Friend ${friend.firstName} (${friendId}): online = ${isOnline}`);
+                return isOnline;
             });
             
             console.log("Online friends after filter:", online)
