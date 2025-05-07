@@ -48,33 +48,32 @@
   padding: 15px;
 }
 
+/* Styles for text-only posts */
+.postContentText.textOnly {
+  padding: 20px 15px;
+  font-size: 1.05em;
+}
+
+.postContentText.textOnly .postCaption {
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+.postContentText.textOnly .captionUsername {
+  font-size: 1.1em;
+  display: block;
+  color: #2D6A4F;
+}
+
 .postCaption {
   margin: 0 0 15px 0;
   font-size: 15px;
   line-height: 1.5;
-  color: #333;
+  color: #444;
 }
 
 .captionUsername {
   font-weight: 600;
-  color: #5271ff;
+  color: #444;
   margin-right: 5px;
-}
-
-.aiCaption {
-  margin: 8px 0;
-  padding: 8px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  font-size: 0.9em;
-}
-
-.aiLabel {
-  font-weight: 600;
-  color: #666;
-  margin-right: 8px;
-}
-
-.captionText {
-  color: #333;
 } 

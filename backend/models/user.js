@@ -22,16 +22,6 @@ const userSchema = new mongoose.Schema({
     ref: 'User',
     default: []
   }],
-  impactPoints: {
-    type: Number,
-    default: 0
-  },
-  trustRating: {
-    type: Number,
-    min: 0,
-    max: 100,
-    default: 0
-  },
   isOnline: {
     type: Boolean,
     default: false

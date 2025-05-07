@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import './user.css'
-import { LocalFlorist, Favorite, PersonAdd, Message, LocationOn, EmojiEvents, VerifiedUser, Cake, Today } from '@mui/icons-material'
+import { LocalFlorist, Favorite, PersonAdd, Message, LocationOn, EmojiEvents, Cake, Today } from '@mui/icons-material'
 import { format } from 'timeago.js'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
@@ -83,26 +83,6 @@ const User = ({ user, viewMode = 'grid'}) => {
               <Today className="dateIcon" />
               <span className="friendLabel">Member since:</span>
               <span className="friendDate">{friendDate}</span>
-            </div>
-          )}
-          
-          {isList && (
-            <div className="userStats">
-              {user?.impactPoints !== undefined && (
-                <div className="statItem">
-                  <LocalFlorist className="statIcon" />
-                  <span className="statValue">{user.impactPoints}</span>
-                  <span className="statLabel">Impact</span>
-                </div>
-              )}
-              
-              {user?.trustRating !== undefined && (
-                <div className="statItem">
-                  <VerifiedUser className="statIcon" />
-                  <span className="statValue">{user.trustRating}</span>
-                  <span className="statLabel">Trust</span>
-                </div>
-              )}
             </div>
           )}
           

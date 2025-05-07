@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import Button from '../button/Button'
 import './userbar.css'
-import { VerifiedUser, LocationOn, Cake, LocalFlorist, CameraAlt } from '@mui/icons-material'
+import { VerifiedUser, LocationOn, Cake, CameraAlt } from '@mui/icons-material'
 import { AuthContext } from '../../context/AuthContext'
 import { useContext, useState, useEffect } from 'react'
 import { userAPI } from '../../services/api'
 import { FRIEND_UPDATE_EVENT } from '../profileFriends/ProfileFriends'
+import { Link } from 'react-router-dom'
 
 const Userbar = ({ profileUser, onProfilePictureClick, isOwnProfile }) => {
   const { user: currentUser, dispatch } = useContext(AuthContext)
@@ -146,18 +147,7 @@ const Userbar = ({ profileUser, onProfilePictureClick, isOwnProfile }) => {
   return (
     <div className="userbarContainer">
       <div className="userbarLeft">
-        <div className="statsContainer">
-          <div className="statItem">
-            <LocalFlorist className="statIcon" />
-            <span className="statCount">{localUser.impactPoints}</span>
-            <span className="statLabel">Impact Points</span>
-          </div>
-          <div className="statItem">
-            <LocalFlorist className="statIcon" />
-            <span className="statCount">{localUser.trustRating}</span>
-            <span className="statLabel">Trust Rating</span>
-          </div>
-        </div>
+       
       </div>
 
       <div className="userbarCenter">

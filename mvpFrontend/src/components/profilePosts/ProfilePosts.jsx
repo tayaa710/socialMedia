@@ -11,7 +11,6 @@ const ProfilePosts = ({user}) => {
   const [posts, setPosts] = useState([]);
   const [sortMethod, setSortMethod] = useState("recent");
   const [viewMode, setViewMode] = useState("grid");
-  const [file, setFile] = useState(null)
 
  useEffect(() => {
   const fetchPosts = async () => {
@@ -36,6 +35,10 @@ const ProfilePosts = ({user}) => {
     }
     return posts;
   };
+
+  // Only separate text posts in grid view
+  const textOnlyPosts = viewMode === 'grid' ? sortedPosts().filter(post => !post.photo) : [];
+  const photoPosts = viewMode === 'grid' ? sortedPosts().filter(post => post.photo) : sortedPosts();
 
   return (
     <div className="profilePostsContainer">
@@ -83,20 +86,37 @@ const ProfilePosts = ({user}) => {
         </div>
       </div>
       
-      {posts.length > 0 ? (
+      {/* Text-only posts horizontal scroll section - only in grid mode */}
+      {viewMode === 'grid' && textOnlyPosts.length > 0 && (
+        <div className="textOnlyPostsSection">
+          <h3 className="sectionTitle">Text Posts</h3>
+          <div className="textOnlyPostsScroll">
+            {textOnlyPosts.map((post) => (
+              <div className="textOnlyPostItem" key={post.id}>
+                <Post post={post} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* Photo posts section */}
+      {photoPosts.length > 0 ? (
         <div className={`postsDisplay ${viewMode}`}>
-          {sortedPosts().map((post) => (
+          {photoPosts.map((post) => (
             <div className="profilePostItem" key={post.id}>
               <Post post={post} />
             </div>
           ))}
         </div>
       ) : (
-        <div className="emptyPostsMessage">
-          <LocalFlorist className="emptyIcon" />
-          <h3>No posts yet</h3>
-          <p>{user ? user.username : currentUser.username} hasn&apos;t shared any posts yet.</p>
-        </div>
+        textOnlyPosts.length === 0 && (
+          <div className="emptyPostsMessage">
+            <LocalFlorist className="emptyIcon" />
+            <h3>No posts yet</h3>
+            <p>{user ? user.username : currentUser.username} hasn&apos;t shared any posts yet.</p>
+          </div>
+        )
       )}
     </div>
   );

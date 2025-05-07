@@ -1,34 +1,30 @@
 import './postContent.css';
 
 const PostContent = ({ post, user }) => {
+  // Determine if this is a text-only post
+  const isTextOnly = !post.photo;
+
   return (
     <>
-      <div className="imageWrapper">
-        {post.photo && (
+      {post.photo && (
+        <div className="imageWrapper">
           <img
             src={post.photo}
             alt={`Post by ${user.firstName} ${user.lastName}`}
             className="postImage"
           />
-        )}
-        <div className="hoverOverlay">
-          <div className="overlayContent">
-            <span>{post.description}</span>
+          <div className="hoverOverlay">
+            <div className="overlayContent">
+              <span>{post.description}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      <div className="postContentText">
+      <div className={`postContentText ${isTextOnly ? 'textOnly' : ''}`}>
         <p className="postCaption">
           <span className="captionUsername">{post.description}</span>
         </p>
-        
-        {post.imageAnalysis?.caption && (
-          <div className="aiCaption">
-            <span className="aiLabel">AI Description:</span>
-            <span className="captionText">{post.imageAnalysis.caption}</span>
-          </div>
-        )}
       </div>
     </>
   );

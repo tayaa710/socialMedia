@@ -68,25 +68,3 @@
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(183, 228, 199, 0.5);
 }
-
-.warningBtn {
-  background: linear-gradient(45deg, #B81C1C, #E63946);
-  color: white;
-}
-
-.warningBtn:hover {
-  background: linear-gradient(45deg, #9D1717, #C1121F);
-}
-
-.iconButton {
-  gap: 8px;
-}
-
-.iconButton svg {
-  font-size: 18px;
-  transition: transform 0.2s ease;
-}
-
-.iconButton:hover svg {
-  transform: scale(1.15);
-}
