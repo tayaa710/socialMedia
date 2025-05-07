@@ -22,10 +22,6 @@ const userSchema = new mongoose.Schema({
     ref: 'User',
     default: []
   }],
-  isOnline: {
-    type: Boolean,
-    default: false
-  },
   personal: {
     birthday: {
       type: String

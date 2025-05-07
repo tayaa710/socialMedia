@@ -1,9 +1,8 @@
 import './sidebar.css'
-import { Message } from "@mui/icons-material"
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import { userAPI } from '../../services/api'
-import { Link } from 'react-router-dom'
+import FriendListItem from './FriendListItem'
 
 const Sidebar = () => {
   const { user } = useContext(AuthContext)
@@ -44,28 +43,11 @@ const Sidebar = () => {
       ) : friends.length > 0 ? (
         <ul className="sidebarFriendList">
           {friends.map((friend) => (
-            <li className="sidebarFriend" key={friend.id}>
-              <Link to={`/profile/${friend.id}`} className="sidebarFriendLink">
-                <div className={`sidebarFriendImgContainer ${friend.isOnline ? 'online' : ''}`}>
-                  <img 
-                    src={friend.profilePicture} 
-                    alt={friend.username} 
-                    className="sidebarFriendImg" 
-                  />
-                  {friend.isOnline && <div className="sidebarOnlineBadge"></div>}
-                </div>
-                <span className="sidebarFriendName">{friend.username}</span>
-              </Link>
-              <button 
-                className="sidebarMessageBtn" 
-                onClick={(e) => {
-                  e.preventDefault()
-                  handleMessageClick(friend)
-                }}
-              >
-                <Message className="sidebarMessageIcon" />
-              </button>
-            </li>
+            <FriendListItem 
+              key={friend.id}
+              friend={friend}
+              handleMessageClick={handleMessageClick}
+            />
           ))}
         </ul>
       ) : (

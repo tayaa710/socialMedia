@@ -66,12 +66,15 @@ const io = new Server(server, {
 let users = []
 
 const addUser = (userId, socketId) => {
+  // Convert userId to string to ensure consistent type comparison
+  const userIdStr = String(userId);
+  
   // Remove any existing entries for this user to avoid duplicates
-  users = users.filter(user => user.userId !== userId);
+  users = users.filter(user => String(user.userId) !== userIdStr);
   
   // Add the user with new socket ID
-  users.push({ userId, socketId });
-  console.log(`User ${userId} added with socket ${socketId}`);
+  users.push({ userId: userIdStr, socketId });
+  console.log(`User ${userIdStr} added with socket ${socketId}`);
   console.log("Current users:", users);
 }
 
@@ -84,7 +87,9 @@ const removeUser = (socketId) => {
 }
 
 const getUser = (userId) => {
-  return users.find(user => user.userId === userId);
+  // Convert userId to string for consistent comparison
+  const userIdStr = String(userId);
+  return users.find(user => String(user.userId) === userIdStr);
 }
 
 io.on("connection", (socket) => {

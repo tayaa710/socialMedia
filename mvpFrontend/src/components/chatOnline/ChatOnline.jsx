@@ -26,7 +26,7 @@ const ChatOnline = ({ onlineUsers, currentId, setCurrentChat }) => {
             const online = friends.filter(friend => {
                 const friendId = String(friend.id);
                 const isOnline = onlineUserIds.includes(friendId);
-                console.log(`Friend ${friend.firstName} (${friendId}): online = ${isOnline}`);
+                console.log(`Friend ${friend.firstName || friend.username} (${friendId}): online = ${isOnline}`);
                 return isOnline;
             });
             
@@ -35,45 +35,38 @@ const ChatOnline = ({ onlineUsers, currentId, setCurrentChat }) => {
         }
     }, [friends, onlineUsers])
 
+    // Handle click on an online friend
     const handleClick = async (user) => {
         try {
-            // First try to find an existing conversation
-            const existingConversation = await conversationAPI.findConversation(currentId, user.id)
-            
-            if (existingConversation) {
-                // If conversation exists, use it
-                setCurrentChat(existingConversation)
+            // Try to find existing conversation
+            const res = await conversationAPI.getConversation(currentId, user.id)
+
+            if (res && res.length > 0) {
+                setCurrentChat(res[0])
             } else {
-                // If no conversation exists, create a new one
-                const newConversation = await conversationAPI.createConversation(currentId, user.id)
+                // Create a new conversation if none exists
+                const newConversation = await conversationAPI.createConversation({
+                    senderId: currentId,
+                    receiverId: user.id
+                })
                 setCurrentChat(newConversation)
             }
         } catch (err) {
-            console.error(err)
+            console.error("Error setting up conversation:", err)
         }
     }
 
     return (
         <div className="chatOnline">
-            {onlineFriends.length > 0 ? (
-                onlineFriends.map(o => (
-                    <div className="chatOnlineFriend" key={o.id} onClick={() => handleClick(o)}>
-                        <div className="chatOnlineImgContainer">
-                            <img 
-                                src={o?.profilePicture || "https://images.pexels.com/photos/3686769/pexels-photo-3686769.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"} 
-                                alt="" 
-                                className="chatOnlineImg" 
-                            />
-                            <div className="chatOnlineBadge">
-                                <span className="chatOnlineBadgeIcon"></span>
-                            </div>
-                        </div>
-                        <span className="chatOnlineName">{o.firstName} {o.lastName}</span>
+            {onlineFriends.map((o) => (
+                <div className="chatOnlineFriend" onClick={() => handleClick(o)} key={o.id}>
+                    <div className="chatOnlineImgContainer">
+                        <img className="chatOnlineImg" src={o.profilePicture} alt="" />
+                        <div className="chatOnlineBadge"></div>
                     </div>
-                ))
-            ) : (
-                <span className="noOnlineText">No friends online</span>
-            )}
+                    <span className="chatOnlineName">{o.username}</span>
+                </div>
+            ))}
         </div>
     )
 }

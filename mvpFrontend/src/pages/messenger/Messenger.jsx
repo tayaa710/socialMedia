@@ -32,9 +32,15 @@ const Messenger = () => {
     
     // Register user with socket
     emit("addUser", user.id);
-    
-    // Set up listener for online users
-    
+
+    on("getMessage", data => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now()
+      })
+    })
+
     
     // Clean up listener when component unmounts
     return () => {
@@ -126,7 +132,7 @@ const Messenger = () => {
                 <>
                   <div className="chatBoxTop">
                     {messages.map((m) => (
-                      <div ref={scrollRef} key={m.id}>
+                      <div ref={scrollRef} key={`message-${m.id || m.createdAt}`}>
                         <Message message={m} own={m.sender === user.id} />
                       </div>
                     ))}
