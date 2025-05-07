@@ -19,12 +19,14 @@ export const loginCall = async (userCredentials, dispatch) => {
 // Function to initialize auth state from localStorage
 export const initializeAuth = async (dispatch) => {
   try {
-    dispatch({ type: "LOGIN_START" })
+    // Don't dispatch LOGIN_START immediately to avoid UI flash
+    // We'll let the App component handle the loading state
     console.log("Verifying token from localStorage")
     const data = await authAPI.verifyToken()
     
     if (data) {
       console.log("Token verification response:", data)
+      // Once verification is complete, dispatch the success action
       dispatch({ type: "LOGIN_SUCCESS", payload: data })
       return data
     } else {
@@ -33,6 +35,7 @@ export const initializeAuth = async (dispatch) => {
   } catch (err) {
     console.error("Token verification error:", err)
     authAPI.logout()
+    // Only dispatch failure after verification is complete
     dispatch({ type: "LOGIN_FAILURE", payload: err })
     return null
   }

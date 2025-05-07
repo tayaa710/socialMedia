@@ -1,0 +1,22 @@
+.authLoadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #F5F7F4;
+}
+
+.authLoadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(27, 67, 50, 0.1);
+  border-left-color: #1B4332;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+} 

@@ -17,6 +17,7 @@ const Profile = () => {
   const id = useParams().id
   const [selectedOption, setSelectedOption] = useState("Posts")
   const [user, setUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [error, setError] = useState(null)
   const [validationErrors, setValidationErrors] = useState([])
@@ -149,19 +150,35 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      setIsLoading(true);
       try {
         const userData = await userAPI.getUser(id);
-        setUser(userData)
+        setUser(userData);
       } catch (error) {
-        console.error("Failed to fetch user data:", error)
+        console.error("Failed to fetch user data:", error);
+        setError("Failed to load user data");
+      } finally {
+        setIsLoading(false);
       }
     };
     
     fetchUser();
   }, [id]);
   
-  // If user not found, show an error message
-  if (!user) {
+  // Show loading state while fetching user data
+  if (isLoading) {
+    return (
+      <div className='pageContainer'>
+        <Topbar />
+        <div className="loadingContainer">
+          <div className="loadingSpinner"></div>
+        </div>
+      </div>
+    );
+  }
+  
+  // If user not found after loading completes, show an error message
+  if (!user && !isLoading) {
     return (
       <div className='pageContainer'>
         <Topbar />

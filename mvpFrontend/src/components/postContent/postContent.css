@@ -1,0 +1,80 @@
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.postImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.3s ease;
+}
+
+.hoverOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.imageWrapper:hover .hoverOverlay {
+  opacity: 1;
+}
+
+.imageWrapper:hover .postImage {
+  filter: blur(2px);
+}
+
+.overlayContent {
+  max-width: 80%;
+}
+
+.postContentText {
+  padding: 15px;
+}
+
+.postCaption {
+  margin: 0 0 15px 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.captionUsername {
+  font-weight: 600;
+  color: #5271ff;
+  margin-right: 5px;
+}
+
+.aiCaption {
+  margin: 8px 0;
+  padding: 8px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  font-size: 0.9em;
+}
+
+.aiLabel {
+  font-weight: 600;
+  color: #666;
+  margin-right: 8px;
+}
+
+.captionText {
+  color: #333;
+} 

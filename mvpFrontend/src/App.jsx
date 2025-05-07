@@ -3,17 +3,36 @@ import Profile from "./pages/profile/Profile"
 import Login from "./pages/login/Login"
 import Register from "./pages/register/Register"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import { useEffect, useContext } from "react"
+import { useEffect, useContext, useState } from "react"
 import { initializeAuth } from "./apiCalls"
 import { AuthContext } from "./context/AuthContext"
 import Messenger from "./pages/messenger/Messenger"
+import "./app.css"
+
 function App() {
   const { user, dispatch } = useContext(AuthContext)
+  const [isAuthLoading, setIsAuthLoading] = useState(true)
 
   useEffect(() => {
-    // Initialize authentication on app load
-    initializeAuth(dispatch)
+    const verifyAuth = async () => {
+      try {
+        await initializeAuth(dispatch)
+      } finally {
+        setIsAuthLoading(false)
+      }
+    }
+    
+    verifyAuth()
   }, [dispatch])
+
+  // Don't render routes until authentication status is determined
+  if (isAuthLoading) {
+    return (
+      <div className="authLoadingContainer">
+        <div className="authLoadingSpinner"></div>
+      </div>
+    )
+  }
 
   return (
     <Router>

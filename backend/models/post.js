@@ -72,6 +72,19 @@ postSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
+
+    if (returnedObject.comments) {
+      returnedObject.comments.forEach(comment => {
+        comment.id = comment._id.toString()
+        delete comment._id
+        if (comment.replies) {
+          comment.replies.forEach(reply => {
+            reply.id = reply._id.toString()
+            delete reply._id
+          })
+        }
+      })
+    }
   }
 })
 

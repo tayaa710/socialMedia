@@ -7,25 +7,20 @@ import FeedFilters from '../../components/feedFilters/FeedFilters'
 import { useState, useEffect, useContext, useRef, useCallback } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import { postAPI } from '../../services/api'
-import { KeyboardArrowLeft, KeyboardArrowRight, TuneRounded } from '@mui/icons-material'
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material'
 
 const Feed = () => {
     const [posts, setPosts] = useState([])
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false)
+    const [isInitialLoad, setIsInitialLoad] = useState(true)
     const [excludedTags, setExcludedTags] = useState(['Adult'])
     const [filterSettings, setFilterSettings] = useState({})
     const [loadingMethod, setLoadingMethod] = useState('infinite')
     const [postsPerPage, setPostsPerPage] = useState(15) // Default for infinite scroll
     const [totalPages, setTotalPages] = useState(1)
-    const [filtersOpen, setFiltersOpen] = useState(false)
     const { user } = useContext(AuthContext)
-    
-    // Toggle filters panel
-    const toggleFilters = () => {
-        setFiltersOpen(!filtersOpen)
-    }
     
     const observer = useRef()
     const lastPostElementRef = useCallback(node => {
@@ -80,6 +75,7 @@ const Feed = () => {
             console.error("❌ Failed to fetch posts:", error);
         } finally {
             setLoading(false);
+            setIsInitialLoad(false);
             console.log('⏳ Loading state set to false');
         }
     };
@@ -143,9 +139,6 @@ const Feed = () => {
         
         // Call the API with updated state
         fetchPosts(1, updatedPostsPerPage)
-        
-        // Optional: Close the panel after settings are applied
-        setFiltersOpen(false)
         
         // Show feedback that filters were applied
         const feedback = document.createElement('div')
@@ -213,7 +206,7 @@ const Feed = () => {
                     <Sidebar />
                 </div>
 
-                <div className={`feedCenter ${filtersOpen ? 'filtersPanelOpen' : ''}`}>
+                <div className="feedCenter">
                     <div className="feedWrapper">
                         <PostCreate onPostCreated={handleNewPost} />
                         
@@ -236,7 +229,7 @@ const Feed = () => {
                             }
                         })}
                         
-                        {loading && (
+                        {loading && !isInitialLoad && (
                             <div className="loadingSpinner">
                                 Loading more posts...
                             </div>
@@ -252,17 +245,7 @@ const Feed = () => {
                     </div>
                 </div>
 
-                <button 
-                    className={`filterToggleBtn ${filtersOpen ? 'active' : ''}`}
-                    onClick={toggleFilters}
-                    aria-label="Customize feed settings"
-                >
-                    <TuneRounded />
-                    <span>{filtersOpen ? 'Close' : 'Customize'}</span>
-                    <span>Feed</span>
-                </button>
-
-                <div className={`filtersPanel ${filtersOpen ? 'open' : ''}`}>
+                <div className="feedRightSidebar">
                     <FeedFilters 
                         onFilterChange={handleFilterChange}
                         initialExcludedTags={excludedTags}
