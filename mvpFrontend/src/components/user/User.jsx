@@ -4,14 +4,21 @@ import { LocalFlorist, Favorite, PersonAdd, Message, LocationOn, EmojiEvents, Ca
 import { format } from 'timeago.js'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
-import { useContext } from 'react'
-
+import { useContext, useEffect, useState } from 'react'
+import { OnlineUsersContext } from '../../context/OnlineUsersContext'
 const User = ({ user, viewMode = 'grid'}) => {
   const { user: currentUser } = useContext(AuthContext);
+  const [isOnline, setIsOnline] = useState(false);
   // Create a proper date from createdAt if available
   const friendDate = user?.createdAt ? format(new Date(user.createdAt)) : null;
   console.log(currentUser);
   console.log(user);
+  const { onlineUsers } = useContext(OnlineUsersContext);
+
+  useEffect(() => {
+    const isOnline = onlineUsers.includes(user.id);
+    setIsOnline(isOnline);
+  }, [onlineUsers, user.id]);
 
   const mutualFriendsCount = () => {
     let count = 0;
@@ -45,15 +52,15 @@ const User = ({ user, viewMode = 'grid'}) => {
     <div className={`userContainer ${isList ? 'listView' : 'gridView'}`}>
       <Link to={`/profile/${user?.id}`} className="userLink">
         <div className={`userHeader ${isList ? 'listHeader' : ''}`}>
-          <div className={`profilePictureWrapper ${user?.isOnline ? 'online' : ''} ${isList ? 'listPicture' : ''}`}>
+          <div className={`profilePictureWrapper ${isOnline ? 'online' : ''} ${isList ? 'listPicture' : ''}`}>
             <img src={user?.profilePicture} alt={`${user?.username}'s Profile`} className="profilePicture" />
-            {user?.isOnline && <div className="onlineIndicator"></div>}
+            {isOnline && <div className="onlineIndicator"></div>}
           </div>
           
           <div className="userNameSection">
             <h3 className="userName">{user?.username}</h3>
             {fullName && <span className="fullName">{fullName}</span>}
-            {user?.isOnline && <span className="onlineStatus">Online</span>}
+            {isOnline && <span className="onlineStatus">Online</span>}
             
             {isList && user?.location && (
               <div className="userLocation">

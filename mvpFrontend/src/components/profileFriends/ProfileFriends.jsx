@@ -5,12 +5,13 @@ import "./profileFriends.css";
 import { Person, SortByAlpha, AccessTime, Search, LocalFlorist, ViewModule, ViewList } from "@mui/icons-material";
 import { AuthContext } from "../../context/AuthContext";
 import { userAPI } from "../../services/api";
-
+import { OnlineUsersContext } from "../../context/OnlineUsersContext";
 // Custom event name for friend updates
 const FRIEND_UPDATE_EVENT = 'friendStatusUpdated';
 
 const ProfileFriends = ({ user: profileUser }) => {
   const { user: currentUser } = useContext(AuthContext);
+  const { onlineUsers } = useContext(OnlineUsersContext);
   const [friends, setFriends] = useState([]);
   const [sortMethod, setSortMethod] = useState("default");
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +21,7 @@ const ProfileFriends = ({ user: profileUser }) => {
 
   // Use profileUser if provided, otherwise fallback to currentUser
   const user = profileUser || currentUser;
+  const isOwnProfile = !profileUser || profileUser.id === currentUser.id;
 
   const fetchUserData = async () => {
     if (!user?.id) return;
@@ -77,8 +79,12 @@ const ProfileFriends = ({ user: profileUser }) => {
       result.sort((a, b) => (a.username || "").localeCompare(b.username || ""));
     } else if (sortMethod === "recent") {
       result.sort((a, b) => (b.friendedDate || 0) - (a.friendedDate || 0));
-    } else if (sortMethod === "online") {
-      result.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
+    } else if (sortMethod === "online" && isOwnProfile) {
+      result.sort((a, b) => {
+        const aOnline = onlineUsers.includes(String(a.id));
+        const bOnline = onlineUsers.includes(String(b.id));
+        return (bOnline ? 1 : 0) - (aOnline ? 1 : 0);
+      });
     }
 
     return result;
@@ -91,6 +97,11 @@ const ProfileFriends = ({ user: profileUser }) => {
     // Pages and Groups will be implemented later
     return [];
   };
+
+  // Count online friends
+  const onlineFriendsCount = friends.filter(friend => 
+    onlineUsers.includes(String(friend.id))
+  ).length;
 
   if (loading) {
     return (
@@ -118,12 +129,14 @@ const ProfileFriends = ({ user: profileUser }) => {
               </span>
               <span className="friendsStatLabel">Total</span>
             </div>
-            <div className="friendsStat online">
-              <span className="friendsStatNumber">
-                {activeTab === "friends" ? friends.filter(f => f.isOnline).length : 0}
-              </span>
-              <span className="friendsStatLabel">Online</span>
-            </div>
+            {isOwnProfile && (
+              <div className="friendsStat online">
+                <span className="friendsStatNumber">
+                  {activeTab === "friends" ? onlineFriendsCount : 0}
+                </span>
+                <span className="friendsStatLabel">Online</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -186,13 +199,15 @@ const ProfileFriends = ({ user: profileUser }) => {
               <AccessTime className="sortIcon" />
               <span>Recent</span>
             </button>
-            <button
-              className={`sortButton ${sortMethod === "online" ? 'active' : ''}`}
-              onClick={() => setSortMethod("online")}
-            >
-              <span className="onlineDot"></span>
-              <span>Online</span>
-            </button>
+            {isOwnProfile && (
+              <button
+                className={`sortButton ${sortMethod === "online" ? 'active' : ''}`}
+                onClick={() => setSortMethod("online")}
+              >
+                <span className="onlineDot"></span>
+                <span>Online</span>
+              </button>
+            )}
           </div>
 
           <div className="viewModeToggle">
@@ -222,7 +237,7 @@ const ProfileFriends = ({ user: profileUser }) => {
         ) : getDisplayUsers().length > 0 ? (
           getDisplayUsers().map(friend => (
             <div className="friendCard" key={friend.id}>
-              <User user={friend} viewMode={viewMode} />
+              <User user={friend} viewMode={viewMode} showOnlineStatus={isOwnProfile} />
             </div>
           ))
         ) : searchTerm ? (

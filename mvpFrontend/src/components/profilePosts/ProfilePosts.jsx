@@ -93,7 +93,7 @@ const ProfilePosts = ({user}) => {
           <div className="textOnlyPostsScroll">
             {textOnlyPosts.map((post) => (
               <div className="textOnlyPostItem" key={post.id}>
-                <Post post={post} />
+                <Post post={post} isTimeline={false}/>
               </div>
             ))}
           </div>
@@ -105,7 +105,7 @@ const ProfilePosts = ({user}) => {
         <div className={`postsDisplay ${viewMode}`}>
           {photoPosts.map((post) => (
             <div className="profilePostItem" key={post.id}>
-              <Post post={post} />
+              <Post post={post} isTimeline={false}/>
             </div>
           ))}
         </div>

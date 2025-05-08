@@ -107,6 +107,12 @@ io.on("connection", (socket) => {
     io.emit("getUsers", users);
   });
 
+  // Handle getUsers request
+  socket.on("getUsers", () => {
+    console.log("getUsers request received, sending current users:", users);
+    io.emit("getUsers", users);
+  });
+
   //send and get message
   socket.on("sendMessage", ({ senderId, recieverId, text }) => {
     if (!senderId || !recieverId || !text) {

@@ -27,13 +27,6 @@ const FilterSlider = ({
         75: "Mostly new users",
         100: "Discover content from new users only"
       },
-      controversialVsChill: {
-        0: "All content, including controversial",
-        25: "Some filtering of controversial content",
-        50: "Moderately filtered content",
-        75: "Mostly chill content",
-        100: "Only chill, non-controversial content"
-      },
       factualVsEntertainment: {
         0: "Entertainment and memes only",
         25: "Mostly entertainment, some educational",
@@ -47,6 +40,27 @@ const FilterSlider = ({
         50: "Mix of serious and lighthearted content",
         75: "Mostly lighthearted content",
         100: "Fun and lighthearted content only"
+      },
+      recentVsPopular: {
+        0: "Only recent content, regardless of popularity",
+        25: "Mostly recent content, some popular",
+        50: "Balance of recent and popular content",
+        75: "Mostly popular content, some recent",
+        100: "Only popular content, regardless of age"
+      },
+      textHeavyVsImageHeavy: {
+        0: "Text-heavy content only",
+        25: "Mostly text content, some images",
+        50: "Balance of text and image content",
+        75: "Mostly image content, some text",
+        100: "Image-heavy content only"
+      },
+      localVsGlobal: {
+        0: "Only local content from your area",
+        25: "Mostly local content, some global",
+        50: "Balance of local and global content",
+        75: "Mostly global content, some local",
+        100: "Global content from anywhere"
       }
     };
 

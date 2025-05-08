@@ -150,6 +150,11 @@ export const postAPI = {
     const response = await api.get(url);
     return response.data;
   },
+
+  updateFilterSettings: async (filterSettings) => {
+    const response = await api.put('/timeline/preferences', filterSettings);
+    return response.data;
+  },
   
   createPost: async (postData) => {
     // Create a custom event we can use to track analysis progress
@@ -257,7 +262,24 @@ export const postAPI = {
       console.error("Failed to get comments:", error);
       throw error;
     }
-  }
+  },
+
+  sendEngagement: async (engagementQueue) => {
+    try {
+      
+      const response = await api.put('/posts/actions/engagement', { engagementArray: engagementQueue });
+      
+      console.log('[API] Engagement data sent successfully', { 
+        status: response.status,
+        response: response.data
+      })
+      
+      return response.data;
+    } catch (error) {
+      console.error("[API] Failed to send engagement data:", error);
+      throw error;
+    }
+  },
 };
 
 // Conversation API

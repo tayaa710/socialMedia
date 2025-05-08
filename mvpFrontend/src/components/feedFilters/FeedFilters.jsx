@@ -1,13 +1,13 @@
 import './feedFilters.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
-  Close, TrendingUp, People, Pets, WbSunny, LocalFlorist, 
+  Close, People, Pets, LocalFlorist, 
   EmojiEmotions, FactCheck, MenuBook, SentimentVerySatisfied, ExploreOutlined, 
   SpaOutlined, LightbulbOutlined, SentimentVeryDissatisfiedOutlined,
   AutorenewOutlined, MoreHorizOutlined, NavigateNextOutlined, FormatListNumberedOutlined
 } from '@mui/icons-material'
 import FilterSlider from './FilterSlider'
-
+import { postAPI } from '../../services/api'
 const FeedFilters = ({ 
   onFilterChange, 
   initialExcludedTags = ['Crypto'], 
@@ -20,10 +20,22 @@ const FeedFilters = ({
   const [filterSettings, setFilterSettings] = useState({
     friendsVsCommunities: 50, // 0: all communities, 100: all friends
     newVsFollowing: 50, // 0: all following, 100: all new users
-    controversialVsChill: 20, // 0: includes controversial, 100: only chill content
     factualVsEntertainment: 60, // 0: all entertainment, 100: all factual
-    seriousVsLighthearted: 40 // 0: serious/in-depth, 100: lighthearted/fun
+    seriousVsLighthearted: 40, // 0: serious/in-depth, 100: lighthearted/fun
+    recentVsPopular: 50, // 0: recent only, 100: popular only
+    textHeavyVsImageHeavy: 50, // 0: text heavy, 100: image heavy
+    localVsGlobal: 50 // 0: local only, 100: global only
   })
+
+  // Add temporary state for slider values
+  const [tempFilterSettings, setTempFilterSettings] = useState(filterSettings)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+
+  // Update temporary settings when main settings change
+  useEffect(() => {
+    setTempFilterSettings(filterSettings)
+    setHasUnsavedChanges(false)
+  }, [filterSettings])
 
   // Options for posts per page
   const postsPerPageOptions = [
@@ -39,58 +51,74 @@ const FeedFilters = ({
     zen: {
       friendsVsCommunities: 75, // More friends content
       newVsFollowing: 30, // Favor following over new users
-      controversialVsChill: 90, // Max chill, no controversial
       factualVsEntertainment: 60, // Slightly more factual content
-      seriousVsLighthearted: 70 // More lighthearted content
+      seriousVsLighthearted: 70, // More lighthearted content
+      recentVsPopular: 30, // Favor recent content
+      textHeavyVsImageHeavy: 40, // Slightly more text content
+      localVsGlobal: 60 // Slightly more local content
     },
     explore: {
       friendsVsCommunities: 20, // More communities content
       newVsFollowing: 80, // Boost new users
-      controversialVsChill: 10, // Allow controversial content
       factualVsEntertainment: 50, // Balanced factual/entertainment
-      seriousVsLighthearted: 50 // Balanced serious/lighthearted
+      seriousVsLighthearted: 50, // Balanced serious/lighthearted
+      recentVsPopular: 70, // Mix of recent and popular
+      textHeavyVsImageHeavy: 50, // Balanced text and images
+      localVsGlobal: 30 // More global content
     },
     focus: {
       friendsVsCommunities: 30, // More communities, but some friends
       newVsFollowing: 20, // Mostly people you follow
-      controversialVsChill: 70, // Fairly chill, limit controversial
       factualVsEntertainment: 90, // Highly factual and educational
-      seriousVsLighthearted: 20 // Serious and in-depth content
+      seriousVsLighthearted: 20, // Serious and in-depth content
+      recentVsPopular: 40, // Mix of recent and popular
+      textHeavyVsImageHeavy: 70, // More text-heavy content
+      localVsGlobal: 50 // Balanced local and global
     },
     social: {
       friendsVsCommunities: 90, // Almost all friends content
       newVsFollowing: 40, // Favor people you follow
-      controversialVsChill: 60, // Moderately chill
       factualVsEntertainment: 30, // More fun content
-      seriousVsLighthearted: 80 // Very lighthearted and fun
+      seriousVsLighthearted: 80, // Very lighthearted and fun
+      recentVsPopular: 60, // Mix of recent and popular
+      textHeavyVsImageHeavy: 30, // More image-heavy content
+      localVsGlobal: 70 // More local content
     },
     educational: {
       friendsVsCommunities: 40, // Balanced but favoring communities
       newVsFollowing: 60, // Some new perspectives
-      controversialVsChill: 50, // Balanced controversial/chill
       factualVsEntertainment: 85, // Very factual and educational
-      seriousVsLighthearted: 30 // More serious and in-depth
+      seriousVsLighthearted: 30, // More serious and in-depth
+      recentVsPopular: 50, // Balanced recent and popular
+      textHeavyVsImageHeavy: 80, // More text-heavy content
+      localVsGlobal: 40 // More local content
     },
     meme: {
       friendsVsCommunities: 30, // More communities for diverse memes
       newVsFollowing: 50, // Balanced mix of familiar and new meme creators
-      controversialVsChill: 30, // Some spicy memes allowed
       factualVsEntertainment: 10, // Almost all entertainment
-      seriousVsLighthearted: 95 // Extremely lighthearted content
+      seriousVsLighthearted: 95, // Extremely lighthearted content
+      recentVsPopular: 80, // Favor recent content
+      textHeavyVsImageHeavy: 20, // Very image-heavy content
+      localVsGlobal: 60 // More local content
     },
     party: {
       friendsVsCommunities: 70, // More friends for the party vibe
       newVsFollowing: 70, // Discover new party people
-      controversialVsChill: 40, // Some controversy for a lively party
       factualVsEntertainment: 20, // Heavy on entertainment
-      seriousVsLighthearted: 90 // Very fun and lighthearted
+      seriousVsLighthearted: 90, // Very fun and lighthearted
+      recentVsPopular: 90, // Very recent content
+      textHeavyVsImageHeavy: 10, // Very image-heavy content
+      localVsGlobal: 80 // Very local content
     },
     surprise: {
       friendsVsCommunities: 50, // Balanced
       newVsFollowing: 80, // Heavily favor new and unknown
-      controversialVsChill: 35, // Mix of controversial and chill
       factualVsEntertainment: 50, // Balanced learning and fun
-      seriousVsLighthearted: 50 // Balanced serious and lighthearted
+      seriousVsLighthearted: 50, // Balanced serious and lighthearted
+      recentVsPopular: 50, // Balanced recent and popular
+      textHeavyVsImageHeavy: 50, // Balanced text and images
+      localVsGlobal: 50 // Balanced local and global
     }
   }
 
@@ -121,16 +149,29 @@ const FeedFilters = ({
 
   const handleSliderChange = (setting, value) => {
     const newSettings = {
-      ...filterSettings,
-      [setting]: value
+      ...tempFilterSettings,
+      [setting]: parseInt(value, 10)
     };
-    setFilterSettings(newSettings);
+    setTempFilterSettings(newSettings);
+    setHasUnsavedChanges(true);
+  }
+
+  const handleSaveFilterSettings = async () => {
+    setFilterSettings(tempFilterSettings);
+    const updatedSettings = await postAPI.updateFilterSettings(tempFilterSettings)
+    console.log("Updated user:", updatedSettings)
     onFilterChange({ 
       excludedTags, 
-      settings: newSettings, 
+      settings: updatedSettings, 
       loadingMethod,
       postsPerPage 
     });
+    setHasUnsavedChanges(false);
+  }
+
+  const handleResetFilterSettings = () => {
+    setTempFilterSettings(filterSettings);
+    setHasUnsavedChanges(false);
   }
 
   const applyPresetMode = (mode) => {
@@ -187,7 +228,7 @@ const FeedFilters = ({
       setting: 'friendsVsCommunities',
       leftIcon: <People />,
       rightIcon: <Pets />,
-      leftLabel: 'Friends',
+      leftLabel: 'People',
       rightLabel: 'Communities'
     },
     {
@@ -198,28 +239,41 @@ const FeedFilters = ({
       rightLabel: 'New Users'
     },
     {
-      setting: 'controversialVsChill',
-      leftIcon: <TrendingUp />,
-      rightIcon: <WbSunny />,
-      leftLabel: 'Show Controversial',
-      rightLabel: 'Keep it Chill'
-    },
-    {
       setting: 'factualVsEntertainment',
       leftIcon: <EmojiEmotions />,
       rightIcon: <FactCheck />,
-      leftLabel: 'Fun & Memes',
-      rightLabel: 'Educational & Factual'
+      leftLabel: 'Entertainment-Focused',
+      rightLabel: 'Factual-Focused'
     },
     {
       setting: 'seriousVsLighthearted',
       leftIcon: <MenuBook />,
       rightIcon: <SentimentVerySatisfied />,
-      leftLabel: 'Serious & In-depth',
-      rightLabel: 'Lighthearted & Fun'
+      leftLabel: 'Serious',
+      rightLabel: 'Lighthearted'
+    },
+    {
+      setting: 'recentVsPopular',
+      leftIcon: <MenuBook />,
+      rightIcon: <SentimentVerySatisfied />,
+      leftLabel: 'Recent',
+      rightLabel: 'Popular'
+    },
+    {
+      setting: 'textHeavyVsImageHeavy',
+      leftIcon: <MenuBook />,
+      rightIcon: <SentimentVerySatisfied />,
+      leftLabel: 'Text Heavy',
+      rightLabel: 'Image Heavy'
+    },
+    {
+      setting: 'localVsGlobal',
+      leftIcon: <MenuBook />,
+      rightIcon: <SentimentVerySatisfied />,
+      leftLabel: 'Local',
+      rightLabel: 'Global'
     }
   ];
-
   return (
     <div className="feedControls">
       <div className="filterPanel">
@@ -341,7 +395,7 @@ const FeedFilters = ({
             <FilterSlider 
               key={slider.setting}
               setting={slider.setting}
-              value={filterSettings[slider.setting]}
+              value={tempFilterSettings[slider.setting]}
               onChange={handleSliderChange}
               leftIcon={slider.leftIcon}
               rightIcon={slider.rightIcon}
@@ -349,6 +403,23 @@ const FeedFilters = ({
               rightLabel={slider.rightLabel}
             />
           ))}
+          <div className="filterActions">
+            <button 
+              className={`saveButton ${hasUnsavedChanges ? 'active' : ''}`}
+              onClick={handleSaveFilterSettings}
+              disabled={!hasUnsavedChanges}
+            >
+              Save Filter Settings
+            </button>
+            {hasUnsavedChanges && (
+              <button 
+                className="resetButton"
+                onClick={handleResetFilterSettings}
+              >
+                Reset Changes
+              </button>
+            )}
+          </div>
         </div>
         
         <div className="excludeFilters">

@@ -6,11 +6,22 @@ export const OnlineUsersContext = createContext()
 
 export const OnlineUsersContextProvider = ({ children }) => {
     const [onlineUsers, setOnlineUsers] = useState([])
-    const { on } = useContext(SocketContext)
+    const { on, emit, isConnected } = useContext(SocketContext)
     const { user } = useContext(AuthContext)
     
     useEffect(() => {
-      on("getUsers", (users) => {
+      // When socket connection is established and user is logged in
+      if (isConnected && user) {
+        // Request current online users list
+        emit("getUsers");
+      }
+    }, [isConnected, user, emit]);
+
+    useEffect(() => {
+      if (!isConnected || !user) return;
+
+      // Listen for online users updates
+      const handleGetUsers = (users) => {
         // Convert all user IDs to strings for consistent type comparison
         const userIds = users
           .map((user) => String(user.userId))
@@ -20,8 +31,13 @@ export const OnlineUsersContextProvider = ({ children }) => {
         console.log("Filtered online user IDs:", userIds);
         
         setOnlineUsers(userIds)
-      })
-    }, [on, user])
+      };
+
+      // Set up event listener for getUsers events
+      const cleanup = on("getUsers", handleGetUsers);
+
+      return cleanup;
+    }, [on, user, isConnected]);
 
     return (
         <OnlineUsersContext.Provider value={{ onlineUsers }}>

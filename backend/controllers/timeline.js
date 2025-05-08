@@ -54,4 +54,21 @@ timelineRouter.get('/:userId', tokenExtractor, userExtractor, async (request, re
   }
 })
 
+timelineRouter.put('/preferences', tokenExtractor, userExtractor, async (request, response) => {
+  try {
+    const filterSettings = request.body
+    const user = request.user
+    
+    const updatedUser = await User.findByIdAndUpdate(user.id, { filterSettings }, { new: true })
+    console.log(updatedUser.filterSettings)
+    response.status(200).json(updatedUser.filterSettings)
+  }catch (error) {
+    console.error("Timeline error:", error)
+    response.status(500).json({ error: "Failed to fetch timeline" })
+  }
+})
+
+    // Update user preferences
+  
+
 module.exports = timelineRouter

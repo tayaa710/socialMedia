@@ -62,7 +62,82 @@ const postSchema = new mongoose.Schema(
           default: []
         }
       }]
-    }]
+    }],
+    engagementMetrics:{
+      viewCount: {
+        type: Number,
+        default: 0
+      },
+      averageViewDuration: {
+        type: Number,
+        default: 0
+      },
+      longViewCount: {
+        type: Number,
+        default: 0
+      },
+      scrollPastRate: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+      },
+      revisitRate: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+      }
+    },
+    contentAnalysis: {
+      factualAccuracy: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+      },
+      communityPost: {
+        type: Boolean,
+        default: false
+      },
+      educationalValue: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+      },
+      entertainmentValue: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+      },
+      seriousness: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+      },
+      lightheartedness: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+      },
+      positivity: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+      },
+      negativity: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+      }
+    }
+
   },
   { timestamps: true }
 )

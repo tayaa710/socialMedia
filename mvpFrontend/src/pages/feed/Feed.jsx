@@ -9,6 +9,7 @@ import { AuthContext } from '../../context/AuthContext'
 import { postAPI } from '../../services/api'
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material'
 
+
 const Feed = () => {
     const [posts, setPosts] = useState([])
     const [page, setPage] = useState(1)
@@ -21,7 +22,9 @@ const Feed = () => {
     const [postsPerPage, setPostsPerPage] = useState(15) // Default for infinite scroll
     const [totalPages, setTotalPages] = useState(1)
     const { user } = useContext(AuthContext)
-    
+    const [engagementQueue, setEngagementQueue] = useState([])
+    const engagementQueueRef = useRef([])
+
     const observer = useRef()
     const lastPostElementRef = useCallback(node => {
         if (loading) return
@@ -30,23 +33,69 @@ const Feed = () => {
         if (observer.current) observer.current.disconnect()
         
         observer.current = new IntersectionObserver(entries => {
-            console.log('🔍 Intersection observer triggered:', entries[0].isIntersecting ? 'Element is visible' : 'Element not visible')
+    
             if (entries[0].isIntersecting && hasMore) {
-                console.log('📜 Loading next page:', page + 1)
                 setPage(prevPage => prevPage + 1)
             }
         })
         
         if (node) {
-            console.log('🔄 Observer attached to new post element')
             observer.current.observe(node)
         }
-    }, [loading, hasMore, page, loadingMethod])
+    }, [loading, hasMore, loadingMethod])
+
+    // Keep the ref updated with the latest queue state
+    useEffect(() => {
+        engagementQueueRef.current = engagementQueue;
+    }, [engagementQueue]);
+
+    useEffect(() => {
+        console.log('[Feed] Setting up engagement submission interval')
+        const interval = setInterval(async () => {
+            await sendEngagement()
+        }, 10000);
+
+        return async () => {
+            clearInterval(interval)
+            await sendEngagement()
+        };
+    }, []);
+
+    const sendEngagement = async () => {
+        // Use the ref to get the latest state
+        const currentQueue = [...engagementQueueRef.current];
+        
+        if (currentQueue.length === 0) {
+            console.log('[Feed] Engagement queue empty - nothing to send')
+            return
+        }
+
+        console.log(`[Feed] Sending engagement data: ${currentQueue.length} items`)
+        
+        try {
+            // Clear the queue first to prevent duplicate sends if the component re-renders
+            setEngagementQueue([])
+            
+            await postAPI.sendEngagement(currentQueue)
+            console.log('[Feed] Engagement data sent successfully')
+        } catch (error) {
+            console.error('[Feed] Error sending engagement:', error)
+            
+            // If there was an error, put the items back in the queue
+            setEngagementQueue(prevQueue => {
+                // Avoid duplicating items that might have been added since the error
+                const itemsToRestore = currentQueue.filter(item => 
+                    !prevQueue.some(existingItem => existingItem.postId === item.postId)
+                )
+                return [...prevQueue, ...itemsToRestore]
+            })
+        }
+    }
+
 
     const fetchPosts = async (pageNum = 1, requestedPostsPerPage = null) => {
         try {
             const limit = requestedPostsPerPage || postsPerPage;
-            console.log(`📊 Fetching posts page ${pageNum} with ${limit} posts per page`);
             setLoading(true);
             const response = await postAPI.getTimeline(user.id, pageNum, { 
                 filterSettings, 
@@ -54,15 +103,12 @@ const Feed = () => {
                 limit
             });
             
-            console.log(`✅ Fetched ${response.posts.length} posts for page ${pageNum}`);
-            console.log(`📈 Has more posts: ${response.hasMore}`);
+
             
             if (pageNum === 1 || loadingMethod === 'pagination') {
                 setPosts(response.posts);
-                console.log('🔄 Reset posts list with new data');
             } else {
                 setPosts(prev => {
-                    console.log(`🔄 Adding ${response.posts.length} new posts to existing ${prev.length} posts`);
                     return [...prev, ...response.posts];
                 });
             }
@@ -72,22 +118,19 @@ const Feed = () => {
                 setTotalPages(response.totalPages);
             }
         } catch (error) {
-            console.error("❌ Failed to fetch posts:", error);
+            console.error('Error fetching posts:', error)
         } finally {
             setLoading(false);
             setIsInitialLoad(false);
-            console.log('⏳ Loading state set to false');
         }
     };
     
     useEffect(() => {
-        console.log('👤 User changed, fetching initial posts')
         fetchPosts(1)
     }, [user.id])
 
     useEffect(() => {
         if (page > 1 && loadingMethod !== 'pagination') {
-            console.log(`📄 Page changed to ${page}, fetching more posts`)
             fetchPosts(page)
         }
     }, [page, loadingMethod])
@@ -101,17 +144,12 @@ const Feed = () => {
     }, [loadingMethod])
 
     const handleNewPost = () => {
-        console.log('📝 New post created, refreshing feed')
         setPage(1)
         fetchPosts(1) // Refresh posts when a new post is created
     }
 
-    const handleFilterChange = ({ excludedTags, settings, loadingMethod: newLoadingMethod, postsPerPage: newPostsPerPage }) => {
-        console.log('🔍 Filters changed, refreshing feed with new filters')
-        console.log('🏷️ Excluded tags:', excludedTags)
-        console.log('⚙️ Filter settings:', settings)
-        console.log('📱 Loading method:', newLoadingMethod)
-        console.log('📊 Posts per page:', newPostsPerPage)
+    const handleFilterChange = ({ excludedTags, settings, loadingMethod: newLoadingMethod, postsPerPage: newPostsPerPage }) => { 
+
         
         setExcludedTags(excludedTags)
         setFilterSettings(settings)
@@ -218,14 +256,13 @@ const Feed = () => {
                         
                         {posts.map((post, index) => {
                             if (posts.length === index + 1 && loadingMethod === 'infinite') {
-                                console.log(`🏁 Attaching ref to last post (index: ${index})`)
                                 return (
                                     <div ref={lastPostElementRef} key={post.id}>
-                                        <Post post={post} />
+                                        <Post post={post} isTimeline={true} setEngagementQueue={setEngagementQueue} />
                                     </div>
                                 )
                             } else {
-                                return <Post key={post.id} post={post} />
+                                return <Post key={post.id} post={post} isTimeline={true} setEngagementQueue={setEngagementQueue} />
                             }
                         })}
                         

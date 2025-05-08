@@ -153,6 +153,49 @@
   z-index: 2;
 }
 
+.tooltipText {
+  visibility: hidden;
+  background-color: #ffffff;
+  color: #2D6A4F;
+  text-align: center;
+  border-radius: 8px;
+  padding: 8px 12px;
+  width: max-content;
+  max-width: 200px;
+  position: absolute;
+  z-index: 10;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border: 1px solid #e0e0e0;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: normal;
+  pointer-events: none;
+}
+
+.tooltipMarker:hover .tooltipText {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* Arrow for tooltip */
+.tooltipText::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #ffffff transparent transparent transparent;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+}
+
 .tooltipMarker {
   position: relative;
   display: flex;
@@ -163,12 +206,13 @@
   min-width: 40px;
   text-align: center;
   transition: all 0.2s ease;
-  padding: 3px 5px;
+  padding: 4px 8px;
   border-radius: 12px;
   color: #2D6A4F;
   background-color: rgba(216, 243, 220, 0.3);
   line-height: 1.2;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  user-select: none;
 }
 
 .tooltipMarker:hover {
@@ -176,43 +220,4 @@
   background-color: rgba(216, 243, 220, 0.8);
   transform: translateY(-2px);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Make tooltips appear above the marker on hover */
-.tooltipText {
-  visibility: hidden;
-  background-color: #f8f8f8;
-  color: #2D6A4F;
-  text-align: center;
-  border-radius: 6px;
-  padding: 6px 10px;
-  width: max-content;
-  max-width: 180px;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  border: 1px solid #e0e0e0;
-  font-size: 11px;
-}
-
-.tooltipMarker:hover .tooltipText {
-  visibility: visible;
-  opacity: 1;
-}
-
-/* Arrow for tooltip */
-.tooltipText::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #e0e0e0 transparent transparent transparent;
 } 

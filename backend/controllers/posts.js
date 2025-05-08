@@ -9,7 +9,7 @@ const axios = require('axios') // Add axios for HTTP requests
 
 // Configure multer for memory storage (no disk writing)
 const storage = multer.memoryStorage()
-const upload = multer({ 
+const upload = multer({
   storage,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
@@ -54,22 +54,22 @@ postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), asy
         size: req.file.size,
         buffer: req.file.buffer ? 'Buffer present' : 'No buffer'
       });
-      
+
       // Perform content moderation check
       const imageCheck = await checkImage(req.file.buffer)
       console.log('Image check:', imageCheck)
-      
+
       // Check if the image passes validation
       if (imageCheck.validation && !imageCheck.validation.approved) {
-        return res.status(400).json({ 
-          error: 'Image content not allowed', 
-          reasons: imageCheck.validation.rejectionReasons 
+        return res.status(400).json({
+          error: 'Image content not allowed',
+          reasons: imageCheck.validation.rejectionReasons
         });
       }
-      
+
       // Store the image analysis data
       imageAnalysis = imageCheck
-      
+
       // Upload the image to Cloudinary
       try {
         photo = await uploadImage(req.file.buffer)
@@ -81,11 +81,11 @@ postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), asy
     } else {
       console.log('No file received in request')
     }
-    
+
     // Get description from form data
     const description = req.body.description
     console.log('Creating post with description:', description)
-    
+
     // Create the post
     const newPost = new Post({
       user: req.user.id,
@@ -93,10 +93,10 @@ postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), asy
       photo,
       imageAnalysis,
     })
-    
+
     const post = await newPost.save()
     console.log('Post saved successfully:', post)
-    
+
     const postId = post.id
     const user = await User.findById(req.user.id)
     user.posts = user.posts.concat(postId)
@@ -104,7 +104,7 @@ postsRouter.post('/', tokenExtractor, userExtractor, upload.single('image'), asy
 
     // Send the post ID to the classifier backend
     try {
-      const classifierUrl = process.env.NODE_ENV === 'production' 
+      const classifierUrl = process.env.NODE_ENV === 'production'
         ? 'https://authentra-backend.onrender.com/api/queue'
         : 'http://localhost:4000/api/queue';
       const classifierResponse = await axios.post(classifierUrl, { postId: post.id.toString() });
@@ -180,7 +180,7 @@ postsRouter.post('/:id/comment', tokenExtractor, userExtractor, async (req, res)
 
     postToComment.comments = postToComment.comments.concat(commentObject)
     await postToComment.save()
-    
+
     // Populate user data for all comments before returning
     const populatedPost = await Post.findById(req.params.id)
       .populate({
@@ -198,7 +198,7 @@ postsRouter.post('/:id/comment', tokenExtractor, userExtractor, async (req, res)
         select: 'firstName lastName profilePicture',
         options: { strictPopulate: false }
       })
-    
+
     res.status(201).json(populatedPost)
   } catch (error) {
     console.error("Error adding comment:", error)
@@ -212,7 +212,7 @@ postsRouter.get('/:id/comment', async (req, res) => {
     const post = await Post.findById(req.params.id)
       .populate('comments.user', 'firstName lastName profilePicture')
       .populate('comments.replies.user', 'firstName lastName profilePicture')
-    
+
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
@@ -225,7 +225,7 @@ postsRouter.get('/:id/comment', async (req, res) => {
 })
 
 //get a post
-postsRouter.get('/:id',async (request, response) => {
+postsRouter.get('/:id', async (request, response) => {
   try {
     const post = await Post.findById(request.params.id)
       .populate({
@@ -243,11 +243,11 @@ postsRouter.get('/:id',async (request, response) => {
         select: 'firstName lastName profilePicture',
         options: { strictPopulate: false }
       })
-    
+
     if (!post) {
       return response.status(404).json({ error: "Post not found" })
     }
-    
+
     response.status(200).json(post)
   } catch (error) {
     console.error("Error fetching post:", error)
@@ -262,8 +262,8 @@ postsRouter.get('/user/:userId', async (request, response) => {
     if (!user) {
       return response.status(404).json({ error: 'User not found' })
     }
-    
-    const userPosts = await Post.find({user: user.id})
+
+    const userPosts = await Post.find({ user: user.id })
       .populate({
         path: 'user',
         select: 'firstName lastName profilePicture',
@@ -306,7 +306,7 @@ postsRouter.post('/:id/comment/:commentId/reply', tokenExtractor, userExtractor,
     }
 
     // Find the comment
-    const commentIndex = post.comments.findIndex(comment => 
+    const commentIndex = post.comments.findIndex(comment =>
       comment.id.toString() === commentId
     )
 
@@ -323,9 +323,9 @@ postsRouter.post('/:id/comment/:commentId/reply', tokenExtractor, userExtractor,
     // Add reply to the comment
     post.comments[commentIndex].replies = post.comments[commentIndex].replies || []
     post.comments[commentIndex].replies.push(replyObject)
-    
+
     await post.save()
-    
+
     // Populate user data before returning
     const populatedPost = await Post.findById(postId)
       .populate({
@@ -343,7 +343,7 @@ postsRouter.post('/:id/comment/:commentId/reply', tokenExtractor, userExtractor,
         select: 'firstName lastName profilePicture',
         options: { strictPopulate: false }
       })
-    
+
     res.status(201).json(populatedPost)
   } catch (error) {
     console.error("Error adding reply:", error)
@@ -364,7 +364,7 @@ postsRouter.patch('/:id/comment/:commentId/like', tokenExtractor, userExtractor,
     }
 
     // Find the comment
-    const commentIndex = post.comments.findIndex(comment => 
+    const commentIndex = post.comments.findIndex(comment =>
       comment.id.toString() === commentId
     )
 
@@ -374,7 +374,7 @@ postsRouter.patch('/:id/comment/:commentId/like', tokenExtractor, userExtractor,
 
     // Check if user already liked the comment
     const alreadyLiked = post.comments[commentIndex].likes.includes(userId)
-    
+
     if (alreadyLiked) {
       // Unlike: remove user ID from likes array
       post.comments[commentIndex].likes = post.comments[commentIndex].likes
@@ -383,9 +383,9 @@ postsRouter.patch('/:id/comment/:commentId/like', tokenExtractor, userExtractor,
       // Like: add user ID to likes array
       post.comments[commentIndex].likes.push(userId)
     }
-    
+
     await post.save()
-    
+
     // Populate user data before returning
     const populatedPost = await Post.findById(postId)
       .populate({
@@ -403,7 +403,7 @@ postsRouter.patch('/:id/comment/:commentId/like', tokenExtractor, userExtractor,
         select: 'firstName lastName profilePicture',
         options: { strictPopulate: false }
       })
-    
+
     res.status(200).json(populatedPost)
   } catch (error) {
     console.error("Error liking/unliking comment:", error)
@@ -425,7 +425,7 @@ postsRouter.patch('/:id/comment/:commentId/reply/:replyId/like', tokenExtractor,
     }
 
     // Find the comment
-    const commentIndex = post.comments.findIndex(comment => 
+    const commentIndex = post.comments.findIndex(comment =>
       comment.id.toString() === commentId
     )
 
@@ -434,7 +434,7 @@ postsRouter.patch('/:id/comment/:commentId/reply/:replyId/like', tokenExtractor,
     }
 
     // Find the reply
-    const replyIndex = post.comments[commentIndex].replies.findIndex(reply => 
+    const replyIndex = post.comments[commentIndex].replies.findIndex(reply =>
       reply.id.toString() === replyId
     )
 
@@ -444,19 +444,19 @@ postsRouter.patch('/:id/comment/:commentId/reply/:replyId/like', tokenExtractor,
 
     // Check if user already liked the reply
     const alreadyLiked = post.comments[commentIndex].replies[replyIndex].likes.includes(userId)
-    
+
     if (alreadyLiked) {
       // Unlike: remove user ID from likes array
-      post.comments[commentIndex].replies[replyIndex].likes = 
+      post.comments[commentIndex].replies[replyIndex].likes =
         post.comments[commentIndex].replies[replyIndex].likes
           .filter(id => id.toString() !== userId.toString())
     } else {
       // Like: add user ID to likes array
       post.comments[commentIndex].replies[replyIndex].likes.push(userId)
     }
-    
+
     await post.save()
-    
+
     // Populate user data before returning
     const populatedPost = await Post.findById(postId)
       .populate({
@@ -474,7 +474,7 @@ postsRouter.patch('/:id/comment/:commentId/reply/:replyId/like', tokenExtractor,
         select: 'firstName lastName profilePicture',
         options: { strictPopulate: false }
       })
-    
+
     res.status(200).json(populatedPost)
   } catch (error) {
     console.error("Error liking/unliking reply:", error)
@@ -482,4 +482,44 @@ postsRouter.patch('/:id/comment/:commentId/reply/:replyId/like', tokenExtractor,
   }
 })
 
+//record engagement
+postsRouter.put('/actions/engagement', async (req, res) => {
+  try {
+    const { engagementArray } = req.body
+
+    for (const engagementData of engagementArray) {
+      const postId = engagementData.postId
+      const post = await Post.findById(postId)
+      if (!post) {
+        console.warn(`Post not found: ${postId}`)
+        continue
+      }
+
+      const currentPostViewCount = post.engagementMetrics.viewCount
+      const newPostViewCount = engagementData.skipped ? currentPostViewCount : currentPostViewCount + 1
+
+      const currentPostAverageViewDuration = post.engagementMetrics.averageViewDuration
+      const newPostAverageViewDuration = engagementData.skipped ? currentPostAverageViewDuration : ((currentPostAverageViewDuration * currentPostViewCount) + engagementData.viewDuration) / newPostViewCount
+
+      const currentPostLongViewCount = post.engagementMetrics.longViewCount
+      const newPostLongViewCount = engagementData.longView ? currentPostLongViewCount + 1 : currentPostLongViewCount
+
+      const currentPostScrollPastRate = post.engagementMetrics.scrollPastRate
+      const newPostScrollPastRate = engagementData.skipped ? 
+        ((currentPostScrollPastRate * currentPostViewCount) + 1) / (currentPostViewCount + 1) : 
+        (currentPostScrollPastRate * currentPostViewCount) / (currentPostViewCount + 1)
+
+      post.engagementMetrics.viewCount = newPostViewCount
+      post.engagementMetrics.averageViewDuration = newPostAverageViewDuration
+      post.engagementMetrics.longViewCount = newPostLongViewCount
+      post.engagementMetrics.scrollPastRate = newPostScrollPastRate
+
+      await post.save()
+    }
+    res.status(200).json({ message: "Engagement recorded successfully" })
+  } catch (error) {
+    console.error("Error recording engagement:", error)
+    res.status(500).json({ error: "Failed to record engagement" })
+  }
+})
 module.exports = postsRouter
